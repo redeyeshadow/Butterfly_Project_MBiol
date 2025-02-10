@@ -1,0 +1,421 @@
+---
+title: "Lepidoptera_code"
+author: "Elsa Heywood"
+date: "2024-03-18"
+output:
+  word_document: default
+  html_document: default
+---
+
+
+Checks that my dataset isn't biased
+
+Check the coverage of my data
+
+```{r}
+library(ggplot2)
+ggplot(Project_data_copynew, aes(x = Year)) +
+  geom_bar(fill = "#2895F5", width = 0.7) +  # Set the width of bars to 0.7
+  labs(title = "Coverage of Specimens Across Years", x = "Year", y = "Count") +
+  theme_minimal()
+```
+
+
+Add latitude as a continuous variable to dataset
+
+```{r}
+midpoints <- c(1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5)
+Project_data_copynew$Latitude_Continuous <- midpoints[Project_data_copynew$Lattitude_Group]
+```
+
+Check species shifting latitude over time isn't causing effects
+
+```{r}
+library(ggplot2)
+library(colorspace)
+
+# Generate a color palette with 29 distinct colors
+species_palette <- rainbow_hcl(29)
+
+# Plot Latitude_Continuous against Year, with different lines for each Species
+ggplot(Project_data_copynew, aes(x = Year, y = Latitude_Continuous, color = Species)) +
+  geom_point() +
+  scale_color_manual(values = species_palette) +
+  labs(x = "Year", y = "Latitude Group", color = "Species") +
+  theme_minimal() +
+  facet_wrap(~Species)+
+  geom_smooth(col='black')+guides(col='none')
+```
+
+
+Z transform my data by species
+
+```{r}
+library(dplyr)
+# Define a function for log transformation
+scale_this <- function(x){
+  (x - mean(x, na.rm=TRUE)) / sd(x, na.rm=TRUE)
+}
+
+unscale_this <- function(x, sd_z, mean_z){
+  (x - mean(x, na.rm=TRUE)) / sd(x, na.rm=TRUE)
+}
+
+# Applying custom scaling function within each group
+Project_data_copynew <- 
+  Project_data_copynew %>%
+  group_by(Species) %>%
+  mutate(Z_Forewing_Area = scale_this(Forewing_Area),
+         Z_Wing_Length = scale_this(Wing_Length),
+         Z_Abdomen_Length = scale_this(Abdomen_Length),
+         Z_Abdomen_Width = scale_this(Abdomen_Width))
+```
+
+
+Examine the overall changes over time
+Build the models
+
+```{r}
+area_model <- lm(Z_Forewing_Area ~ Year, data = Project_data_copynew)
+abwidth_model <- lm(Z_Abdomen_Width ~ Year, data = Project_data_copynew)
+wing_length_model <- lm(Z_Wing_Length ~ Year, data = Project_data_copynew)
+ablength_model <- lm(Z_Abdomen_Length ~ Year, data = Project_data_copynew)
+```
+
+Look at results
+
+```{r}
+summary(area_model)
+summary(abwidth_model)
+summary(wing_length_model)
+summary(ablength_model)
+```
+
+Visualise wing area over time
+
+```{r}
+#load ggplot
+library(ggplot2)
+library(broom)
+
+# Extract coefficients and p-value
+area_model_summary <- tidy(area_model)
+
+# Filter the p-value for the specific coefficient you are interested in
+# Let's say you want the p-value for the coefficient of Year
+p_value <- area_model_summary$p.value[area_model_summary$term == "Year"]
+
+# Create the plot
+ggplot(Project_data_copynew, aes(x = Year, y = Z_Forewing_Area, color = Species)) +
+  geom_point() +  # Scatter plot
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ x, color = "black") +  # Overall regression line
+  annotate("text", x = max(Project_data_copynew$Year),
+           y = max(Project_data_copynew$Z_Forewing_Area),
+           label = paste("p-value =", formatC(p_value, digits = 2)),
+           hjust = 1, vjust = 0.1, size = 4, color = "black") +  # Add p-value text
+  labs(title = " Z Forewing Area Changes Over Time by Species",
+       x = "Year",
+       y = "Z Forewing Area",
+       color = "Species") +
+  theme_minimal() 
+```
+Visualise abdomen width over time
+
+```{r}
+#load ggplot
+library(ggplot2)
+library(broom)
+
+# Extract coefficients and p-value
+abwidth_model_summary <- tidy(abwidth_model)
+
+# Filter the p-value for the specific coefficient you are interested in
+# Let's say you want the p-value for the coefficient of Year
+p_value <- abwidth_model_summary$p.value[abwidth_model_summary$term == "Year"]
+
+# Create the plot
+ggplot(Project_data_copynew, aes(x = Year, y = Z_Abdomen_Width, color = Species)) +
+ geom_point() +  # Scatter plot
+ geom_smooth(method = "lm", se = FALSE, formula = y ~ x, color = "black") +  # Overall regression line
+  annotate("text", x = max(Project_data_copynew$Year),
+           y = max(Project_data_copynew$Z_Abdomen_Width),
+           label = paste("p-value =", formatC(p_value, digits = 2)),
+           hjust = 1, vjust = 0.1, size = 4, color = "black") +  # Add p-value text
+  labs(title = " Z Abdomen Width Changes Over Time by Species",
+       x = "Year",
+       y = "Z Abdomen Width",
+       color = "Species") +
+  theme_minimal()
+```
+Visualise what individual species are doing over time
+
+```{r}
+#forewing area
+Project_data_copynew %>%
+  ggplot(aes(y = Forewing_Area, x = Year)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +  # Add regression line
+  facet_wrap(~Species, scales = 'free_y')
+
+#abdomen width
+Project_data_copynew %>%
+  ggplot(aes(y = Abdomen_Width, x = Year)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +  # Add regression line
+  facet_wrap(~Species, scales = 'free_y')
+```
+Looking at the rates of change in each species across the time period
+
+```{r}
+library(dplyr)
+library(broom)
+library(tidyr)
+
+# Define a function to calculate the overall rate of change for each species
+calculate_overall_rate_per_species <- function(Project_data_copynew, Forewing_Area) {
+  species_data <- split(Project_data_copynew, Project_data_copynew$Species)
+  overall_rates <- sapply(species_data, function(sub_data) {
+    model <- lm(substitute(Forewing_Area ~ Year), data = sub_data)
+    coef(model)["Year"]
+  })
+  overall_rates_df <- data.frame(Species = names(overall_rates), Overall_Rate = overall_rates, row.names = NULL)
+  return(overall_rates_df)
+}
+
+# Calculate the overall rate of change for each species for Forewing_Area using your data
+forewing_overall_rate_per_species <- calculate_overall_rate_per_species(Project_data_copynew, Project_data_copynew$Forewing_Area)
+
+# Print the table
+print(forewing_overall_rate_per_species)
+
+##same for abdomen width
+calculate_overall_rate_per_species_ab <- function(Project_data_copynew, Abdomen_Width) {
+  species_data_ab <- split(Project_data_copynew, Project_data_copynew$Species)
+  overall_rates_ab <- sapply(species_data_ab, function(sub_data) {
+    model <- lm(substitute(Abdomen_Width ~ Year), data = sub_data)
+    coef(model)["Year"]
+  })
+  overall_rates_df_ab <- data.frame(Species = names(overall_rates_ab), Overall_Rate = overall_rates_ab, row.names = NULL)
+  return(overall_rates_df_ab)
+}
+
+# Calculate the overall rate of change for each species for Abdomen width using your data
+ab_overall_rate_per_species <- calculate_overall_rate_per_species_ab(Project_data_copynew, Project_data_copynew$Abdomen_Width)
+
+# Print the table
+print(ab_overall_rate_per_species)
+```
+
+
+
+What factors explain these changes? main model
+
+multiple regression on forewing area and abdomen width
+
+```{r}
+multiple_model <- lm(Z_Forewing_Area ~Year + Temperature_Before + Ecology + Latitude_Continuous + Family + Family*Year + Ecology*Year + Ecology*Temperature_Before, data = Project_data_copynew)
+
+multiple_model_ab <- lm(Z_Abdomen_Width ~Year + Temperature_Before + Ecology + Latitude_Continuous + Family + Family*Year + Ecology*Year + Ecology*Temperature_Before, data = Project_data_copynew)
+```
+
+Examine results
+
+```{r}
+summary(multiple_model)
+anova(multiple_model)
+
+summary(multiple_model_ab)
+anova(multiple_model_ab)
+```
+
+Ecology*Year interaction so lets look at the trends within ecology
+
+Subset the data by ecology
+
+```{r}
+# Create separate datasets for each group
+group_SS <- subset(Project_data_copynew, Species %in% c("swallowtail", "white admiral", "adonis blue", "large heath", "silver spotted skipper", "silver washed fritillary", "small blue"))
+group_GS <- subset(Project_data_copynew, Species %in% c("brimstone", "dark green fritillary", "peacock", "purple hairstreak", "small copper", "small skipper", "small tortoiseshell", "large white"))
+group_GG <- subset(Project_data_copynew, Species %in% c("brown argus", "common blue", "comma", "gatekeeper", "grizzled skipper", "holly blue", "meadow brown", "orange tip", "speckled wood", "wall", "wood white", "dingy skipper", "marbled white"))
+```
+
+
+Multiple regression wing area within ecology
+
+```{r}
+#multiple regression and anova for forewing changes within ecological group
+model_SS <- lm(Z_Forewing_Area ~ Temperature_Before + Year + Species + Year*Species + Temperature_Before*Species + Latitude_Continuous, data = group_SS)
+summary(model_SS)
+anova(model_SS)
+model_GS <- lm(Z_Forewing_Area ~ Temperature_Before + Year + Species + Year*Species + Temperature_Before*Species + Latitude_Continuous, data = group_GS)
+summary(model_GS)
+anova(model_GS)
+model_GG <- lm(Z_Forewing_Area ~ Temperature_Before + Year + Species + Year*Species+ Temperature_Before*Species + Latitude_Continuous, data = group_GG)
+summary(model_GG)
+anova(model_GG)
+```
+
+Multiple regression abdomen width within ecology
+
+```{r}
+#multiple regression and anova for abdomen changes within ecological group
+model_ab_SS <- lm(Z_Abdomen_Width ~ Temperature_Before + Year + Species + Year*Species+ Temperature_Before*Species + Latitude_Continuous, data = group_SS)
+summary(model_ab_SS)
+anova(model_ab_SS)
+model_ab_GS <- lm(Z_Abdomen_Width ~ Temperature_Before + Year + Species + Year*Species + Temperature_Before*Species + Latitude_Continuous, data = group_GS)
+summary(model_ab_GS)
+anova(model_ab_GS)
+model_ab_GG <- lm(Z_Abdomen_Width ~ Temperature_Before + Year + Species + Year*Species+ Temperature_Before*Species + Latitude_Continuous, data = group_GG)
+summary(model_ab_GG)
+anova(model_ab_GG)
+```
+Visualise wing and abdomen trends
+
+```{r}
+# Plot the forewing area over time
+ggplot(group_SS, aes(x = Year, y = Z_Forewing_Area)) +
+  geom_point(color = "#EFA028") +  # Scatter plot
+  labs(title = "Forewing area over time in habitat and food plant specialists",
+       x = "Year",
+       y = "Forewing area") +
+  theme_minimal() +  # Optional: Adjust the theme if needed
+  # Calculate linear regression
+  geom_abline(slope = coef(lm(Z_Forewing_Area ~ Year, data = group_SS))[2],
+              intercept = coef(lm(Z_Forewing_Area ~ Year, data = group_SS))[1],
+              color = "black") +
+  annotate(
+    "text",
+    x = max(group_SS$Year),
+    y = max(group_SS$Z_Forewing_Area),
+    label = paste("p =", formatC(0.74776, digits = 3)),
+    hjust = 1,
+    vjust = 1,
+    color = "black"
+  )
+
+# Plot the forewing area over time
+ggplot(group_GS, aes(x = Year, y = Z_Forewing_Area)) +
+  geom_point(color = "#EFA028") +  # Scatter plot
+  labs(title = "Forewing area over time in habitat generalists and food plant specialists",
+       x = "Year",
+       y = "Forewing area") +
+  theme_minimal() +  # Optional: Adjust the theme if needed
+  # Calculate linear regression
+  geom_abline(slope = coef(lm(Z_Forewing_Area ~ Year, data = group_GS))[2],
+              intercept = coef(lm(Z_Forewing_Area ~ Year, data = group_GS))[1],
+              color = "black") +
+  annotate(
+    "text",
+    x = max(group_GS$Year),
+    y = max(group_GS$Z_Forewing_Area),
+    label = paste("p =", formatC(0.0001948, digits = 3)),
+    hjust = 1,
+    vjust = 1,
+    color = "black"
+  )
+
+# Plot the forewing area over time
+ggplot(group_GG, aes(x = Year, y = Z_Forewing_Area)) +
+  geom_point(color = "#EFA028") +  # Scatter plot
+  labs(title = "Forewing area over time in habitat and food plant generalists",
+       x = "Year",
+       y = "Forewing area") +
+  theme_minimal() +  # Optional: Adjust the theme if needed
+  # Calculate linear regression
+  geom_abline(slope = coef(lm(Z_Forewing_Area ~ Year, data = group_GG))[2],
+              intercept = coef(lm(Z_Forewing_Area ~ Year, data = group_GG))[1],
+              color = "black") +
+  annotate(
+    "text",
+    x = max(group_GG$Year),
+    y = max(group_GG$Z_Forewing_Area),
+    label = paste("p =", formatC(0.0003496, digits = 3)),
+    hjust = 1,
+    vjust = 1,
+    color = "black"
+  )
+
+# Plot the abdomen width over time
+ggplot(group_SS, aes(x = Year, y = Z_Abdomen_Width)) +
+  geom_point(color = "#2895F5") +  # Scatter plot
+  labs(title = "Abdomen width over time in habitat and food plant specialists",
+       x = "Year",
+       y = "Abdomen width") +
+  theme_minimal() +  # Optional: Adjust the theme if needed
+  # Calculate linear regression
+  geom_abline(slope = coef(lm(Z_Abdomen_Width ~ Year, data = group_SS))[2],
+              intercept = coef(lm(Z_Abdomen_Width ~ Year, data = group_SS))[1],
+              color = "black") +
+  annotate(
+    "text",
+    x = max(group_SS$Year),
+    y = max(group_SS$Z_Abdomen_Width),
+    label = paste("p =", formatC(0.97486 , digits = 3)),
+    hjust = 1,
+    vjust = 1,
+    color = "black"
+  )
+
+# Plot the abdomen width over time
+ggplot(group_GS, aes(x = Year, y = Z_Abdomen_Width)) +
+  geom_point(color = "#2895F5") +  # Scatter plot
+  labs(title = "Abdomen width over time in habitat generalists and food plant specialists",
+       x = "Year",
+       y = "Abdomen width") +
+  theme_minimal() +  # Optional: Adjust the theme if needed
+  # Calculate linear regression
+  geom_abline(slope = coef(lm(Z_Abdomen_Width ~ Year, data = group_GS))[2],
+              intercept = coef(lm(Z_Abdomen_Width ~ Year, data = group_GS))[1],
+              color = "black") +
+  annotate(
+    "text",
+    x = max(group_GS$Year),
+    y = max(group_GS$Z_Abdomen_Width),
+    label = paste("p =", formatC(7.253e-06 , digits = 3)),
+    hjust = 1,
+    vjust = 1,
+    color = "black"
+  )
+
+# Plot the abdomen width over time
+ggplot(group_GG, aes(x = Year, y = Z_Abdomen_Width)) +
+  geom_point(color = "#2895F5") +  # Scatter plot
+  labs(title = "Abdomen width over time in habitat and food plant generalists",
+       x = "Year",
+       y = "Abdomen width") +
+  theme_minimal() +  # Optional: Adjust the theme if needed
+  # Calculate linear regression
+  geom_abline(slope = coef(lm(Z_Abdomen_Width ~ Year, data = group_GG))[2],
+              intercept = coef(lm(Z_Abdomen_Width ~ Year, data = group_GG))[1],
+              color = "black") +
+  annotate(
+    "text",
+    x = max(group_GG$Year),
+    y = max(group_GG$Z_Abdomen_Width),
+    label = paste("p =", formatC(0.0007981 , digits = 3)),
+    hjust = 1,
+    vjust = 1,
+    color = "black"
+  )
+```
+
+
+
+
+
+Look at trends within family over time
+
+```{r}
+# Plot Z_Forewing_Area over time, colored by Family with trend lines only
+ggplot(Project_data_copynew, aes(x = Year, y = Z_Forewing_Area, color = Family)) +
+  geom_smooth(method = "lm", se = FALSE) +  # Add linear trend lines
+  scale_color_manual(values = c("#F5AA0D", "#AA51DC", "#045A8A", "#0E6711", "#67070F")) +  # You can specify colors as per your preference
+  labs(x = "Year", y = "Forewing Area", title = "Forewing Area Over Time by Family")
+
+ggplot(Project_data_copynew, aes(x = Year, y = Z_Abdomen_Width, color = Family)) +
+  geom_smooth(method = "lm", se = FALSE) +  # Add linear trend lines
+  scale_color_manual(values = c("#F5AA0D", "#AA51DC", "#045A8A", "#0E6711", "#67070F")) +  # You can specify colors as per your preference
+  labs(x = "Year", y = "Abdomen Width", title = "Abdomen Width Over Time by Family")
+
+```
+
