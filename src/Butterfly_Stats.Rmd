@@ -1,0 +1,450 @@
+---
+title: "Butterfly_Stats"
+author: "Elsa Heywood"
+date: "2024-03-01"
+output: html_document
+---
+
+Load in my data
+
+```{r}
+library(readxl)
+# Read Excel data into a data frame named Project_data_copynew
+Project_data_copynew <- read_excel("/Users/elsaheywood/Desktop/Project_data_copynew.xlsx", sheet = "Sheet1") 
+library(plotly)
+```
+
+
+## Has there been significant size changes in Lepidoptera over the last 150 years?
+
+Z transform
+
+```{r}
+# Define a function for log transformation
+library(dplyr)
+
+
+# Custom function for scaling
+scale_this <- function(x){
+  (x - mean(x, na.rm=TRUE)) / sd(x, na.rm=TRUE)
+}
+
+unscale_this <- function(x, sd_z, mean_z){
+  (x - mean(x, na.rm=TRUE)) / sd(x, na.rm=TRUE)
+}
+
+# Applying custom scaling function within each group
+Project_data_copynew <- 
+  Project_data_copynew %>%
+  group_by(Species) %>%
+  mutate(Z_Forewing_Area = scale_this(Forewing_Area),
+         Z_Abdomen_Width = scale_this(Abdomen_Width))
+```
+
+Linear regression to see if there has been significant size changes over time for each measurement
+
+```{r}
+
+Project_data_copynew %>%
+  ggplot(aes( x= Z_Forewing_Area))+
+  geom_histogram()+
+  facet_wrap(~Species)
+
+area_model <- lm(Z_Forewing_Area ~ Year, data = Project_data_copynew)
+
+abwidth_model <- lm(Z_Abdomen_Width ~ Year, data = Project_data_copynew)
+
+
+
+Project_data_copynew %>%
+  ggplot(aes( y=Forewing_Area, x=Year))+
+  geom_point()+
+  facet_wrap(~Species, scales = 'free_y')
+```
+
+Summarise results of linear regression
+
+```{r}
+summary(area_model)
+summary(winglength_model)
+summary(abwidth_model)
+summary(ablength_model)
+```
+
+*so there has been significant average decreases in wing area and wing length (correlated), but non-significant increase in abdomen length and a non-sigficant decrease in abdomen width*
+
+visualise wing area 
+
+```{r}
+#load ggplot
+library(ggplot2)
+library(broom)
+
+# Extract coefficients and p-value
+area_model_summary <- tidy(area_model)
+
+# Filter the p-value for the specific coefficient you are interested in
+# Let's say you want the p-value for the coefficient of Year
+p_value <- multiple_model_summary$p.value[area_model_summary$term == "Year"]
+
+# Create the plot
+ggplot(Project_data_copynew, aes(x = Year, y = Z_Forewing_Area, color = Species)) +
+  geom_point() +  # Scatter plot
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ x, color = "black") +  # Overall regression line
+  annotate("text", x = max(Project_data_copynew$Year),
+           y = max(Project_data_copynew$Z_Forewing_Area),
+           label = paste("p-value =", formatC(p_value, digits = 2)),
+           hjust = 1, vjust = 0.1, size = 4, color = "black") +  # Add p-value text
+  labs(title = " Forewing Area Trends Over Time by Species",
+       x = "Year",
+       y = "Forewing Area",
+       color = "Species") +
+  theme_minimal() 
+
+
+
+```
+
+visualise abdomen width
+
+```{r}
+#load ggplot
+library(ggplot2)
+library(broom)
+
+# Extract coefficients and p-value
+abwidth_model_summary <- tidy(abwidth_model)
+
+# Filter the p-value for the specific coefficient you are interested in
+# Let's say you want the p-value for the coefficient of Year
+p_value <- abwidth_model_summary$p.value[abwidth_model_summary$term == "Year"]
+
+# Create the plot
+ggplot(Project_data_copynew, aes(x = Year, y = Z_Abdomen_Width, color = Species)) +
+ geom_point() +  # Scatter plot
+ geom_smooth(method = "lm", se = FALSE, formula = y ~ x, color = "black") +  # Overall regression line
+  annotate("text", x = max(Project_data_copynew$Year),
+           y = max(Project_data_copynew$Z_Abdomen_Width),
+           label = paste("p-value =", formatC(p_value, digits = 2)),
+           hjust = 1, vjust = 0.1, size = 4, color = "black") +  # Add p-value text
+  labs(title = " Z Abdomen Width Changes Over Time by Species",
+       x = "Year",
+       y = "Z Abdomen Width",
+       color = "Species") +
+  theme_minimal()
+
+
+
+
+```
+*How much has each species changed in size over the last 150 years?*
+```{r}
+
+```
+
+
+## What factors explain these size changes?
+
+*Wing area and length are highly correlated so I'm going to just use wing length and abdomen width is less likely to be affected by curvature so I am just going to use width as opposed to length.*
+
+Convert latitude to a continuous variable
+
+```{r}
+midpoints <- c(1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5)
+Project_data_copynew$Latitude_Continuous <- midpoints[Project_data_copynew$Lattitude_Group]
+```
+
+Multiple regression 
+
+```{r}
+multiple_model <- lm(Z_Forewing_Area ~Year + Temperature_Before + Ecology + Latitude_Continuous + Ecology*Year + Ecology*Temperature_Before, data = Project_data_copynew)
+
+multiple_model_ab <- lm(Z_Abdomen_Width ~Year + Temperature_Before + Ecology + Latitude_Continuous + Ecology*Year + Ecology*Temperature_Before, data = Project_data_copynew)
+
+multiple_model_species <- lm(Z_Forewing_Area ~Latitude_Continuous + 
+                     #  Ecology*Year + 
+                       Species*Year +
+                       Temperature_Before, data = mutate(Project_data_copynew, Year = Year-1850))
+
+
+
+multiple_model_ecology <- lm(Z_Forewing_Area ~Latitude_Continuous + 
+                        Ecology*Year + 
+                       #Species*Year +
+                       Temperature_Before, data = mutate(Project_data_copynew, Year = Year-1850))
+```
+
+Checking results
+
+```{r}
+summary(multiple_model)
+anova(multiple_model_ab)
+
+summary(multiple_model_species)
+anova(multiple_model_species)
+
+
+summary(multiple_model_ecology)
+anova(multiple_model_ecology)
+
+```
+
+*more things seem significant than expected, collinearity due to species nesting within ecology*
+
+
+```{r}
+##trying mixed modelling
+library(nlme)
+mixedmodel_nlme <- lme(Log_Forewing_Area ~ Year + Temperature_Before + Ecology + Latitude_Continuous
+                        + Temperature_Before*Ecology + Year*Ecology,
+                     random = ~ 1 | Species, data = Project_data_copynew)
+```
+
+check results
+
+```{r}
+#summary
+summary(mixedmodel_nlme)
+# ANOVA of the mixed model
+anova_results <- anova(mixedmodel_nlme)
+# Display the ANOVA table
+print(anova_results)
+```
+
+are these effects similar on abdomen width
+
+```{r}
+library(nlme)
+mixedmodel_ab_nlme <- lme(Log_Abdomen_Width ~ Year + Temperature_Before + Ecology + Latitude_Continuous
+                        + Temperature_Before*Ecology + Year*Ecology,
+                     random = ~ 1 | Species, data = Project_data_copynew)
+```
+
+```{r}
+summary(mixedmodel_ab_nlme)
+anova(mixedmodel_ab_nlme)
+```
+
+
+*so ecology does have significant effects, now lets look within ecological groups*
+
+subset the data by ecological group, habitat and foodplant specialist (SS), habitat and foodplant generalist (GG), habitat generalist and foodplant specialist (GS)
+
+```{r}
+# Create separate datasets for each group
+group_SS <- subset(Project_data_copynew, Species %in% c("swallowtail", "white admiral", "adonis blue", "large heath", "silver spotted skipper", "silver washed fritillary", "small blue"))
+group_GS <- subset(Project_data_copynew, Species %in% c("brimstone", "dark green fritillary", "peacock", "purple hairstreak", "small copper", "small skipper", "small tortoiseshell", "marbled white"))
+group_GG <- subset(Project_data_copynew, Species %in% c("brown argus", "common blue", "comma", "gatekeeper", "grizzled skipper", "holly blue", "large white", "meadow brown", "orange tip", "speckled wood", "wall", "wood white", "dingy skipper"))
+
+```
+
+Has there been significant abdomen width and wing area change within ecological groups?
+
+```{r}
+#linear regression to see if there's been change in forewing area
+model_SS_size <- lm(Z_Forewing_Area ~ Year , data = group_SS)
+summary(model_SS_size)
+model_GS_size <- lm(Z_Forewing_Area ~ Year, data = group_GS)
+summary(model_GS_size)
+model_GG_size <- lm(Z_Forewing_Area ~ Year, data = group_GG)
+summary(model_GG_size)
+
+#linear regression to see if there's been change in abdomen width
+model_SS_absize <- lm(Z_Abdomen_Width ~ Year , data = group_SS)
+summary(model_SS_absize)
+model_GS_absize <- lm(Z_Abdomen_Width ~ Year, data = group_GS)
+summary(model_GS_absize)
+model_GG_absize <- lm(Z_Abdomen_Width ~ Year, data = group_GG)
+summary(model_GG_absize)
+
+```
+
+*Forewing area- so GG and SS are getting significantly smaller over time whilst GS is getting bigger. Abdomen width- SS getting significantly smaller, GS getting significantly bigger and non-signifiacnt decrease in GG.*
+
+Lets's visualise forewing area changes
+
+```{r}
+library(ggplot2)
+
+#SS forewing area graph
+ggplot(group_SS, aes(x = Year, y = Z_Forewing_Area, color = Species)) +
+  geom_point() +  # Scatter plot
+  labs(title = "Z_Forewing_Area vs. Year (Colored by Species, Group: SS)",
+       x = "Year",
+       y = "Z_Forewing_Area",
+       color = "Species") +
+  theme_minimal() +  # Optional: Adjust the theme if needed
+  # Calculate linear regression
+  geom_abline(slope = coef(lm(Z_Forewing_Area ~ Year, data = group_SS))[2],
+              intercept = coef(lm(Z_Forewing_Area ~ Year, data = group_SS))[1],
+              color = "black") +
+  annotate(
+    "text",
+    x = max(group_SS$Year),
+    y = max(group_SS$Z_Forewing_Area),
+    label = paste("p =", formatC(summary(lm(Z_Forewing_Area ~ Year, data = group_SS))$coef[2, 4], digits = 2)),
+    hjust = 1,
+    vjust = 1,
+    color = "red"
+  )
+
+
+#GS forewing area graph
+ggplot(group_GS, aes(x = Year, y = Z_Forewing_Area, color = Species)) +
+  geom_point() +
+  labs(title = "Z_Forewing_Area vs. Year (Colored by Species, Group: GS)",
+       x = "Year",
+       y = "Z_Forewing_Area",
+       color = "Species") +
+  theme_minimal() +
+  geom_abline(slope = coef(lm(Z_Forewing_Area ~ Year, data = group_GS))[2],
+              intercept = coef(lm(Z_Forewing_Area ~ Year, data = group_GS))[1],
+              color = "black")+
+  annotate(
+    "text",
+    x = max(group_GS$Year),
+    y = max(group_GS$Z_Forewing_Area),
+    label = paste("p =", formatC(summary(lm(Z_Forewing_Area ~ Year, data = group_GS))$coef[2, 4], digits = 2)),
+    hjust = 1,
+    vjust = 1,
+    color = "red"
+  )
+
+#GG forewing area graph
+ggplot(group_GG, aes(x = Year, y = Z_Forewing_Area, color = Species)) +
+  geom_point() +
+  labs(title = "Z_Forewing_Area vs. Year (Colored by Species, Group: GG)",
+       x = "Year",
+       y = "Z_Forewing_Area",
+       color = "Species") +
+  theme_minimal() +
+  geom_abline(slope = coef(lm(Z_Forewing_Area ~ Year, data = group_GG))[2],
+              intercept = coef(lm(Z_Forewing_Area ~ Year, data = group_GG))[1],
+              color = "black")+
+  annotate(
+    "text",
+    x = max(group_GG$Year),
+    y = max(group_GG$Z_Forewing_Area),
+    label = paste("p =", formatC(summary(lm(Z_Forewing_Area ~ Year, data = group_GG))$coef[2, 4], digits = 2)),
+    hjust = 1,
+    vjust = 1,
+    color = "red"
+  )
+```
+
+Let's visualise abdomen width changes
+
+```{r}
+library(ggplot2)
+#SS abdomen graph
+ggplot(group_SS, aes(x = Year, y = Z_Abdomen_Width, color = Species)) +
+  geom_point() +  # Scatter plot
+  labs(title = "Z_Abdomen_Width vs. Year (Colored by Species, Group: SS)",
+       x = "Year",
+       y = "Z_Abdomen_Width",
+       color = "Species") +
+  theme_minimal() +  # Optional: Adjust the theme if needed
+  # Calculate linear regression
+  geom_abline(slope = coef(lm(Z_Abdomen_Width ~ Year, data = group_SS))[2],
+              intercept = coef(lm(Z_Abdomen_Width ~ Year, data = group_SS))[1],
+              color = "black")+
+  annotate(
+    "text",
+    x = max(group_SS$Year),
+    y = max(group_SS$Z_Abdomen_Width),
+    label = paste("p =", formatC(summary(lm(Z_Abdomen_Width ~ Year, data = group_SS))$coef[2, 4], digits = 2)),
+    hjust = 1,
+    vjust = 1,
+    color = "red"
+  )
+
+#GS abdomen graph
+ggplot(group_GS, aes(x = Year, y = Z_Abdomen_Width, color = Species)) +
+  geom_point() +
+  labs(title = "Z_Abdomen_Width vs. Year (Colored by Species, Group: GS)",
+       x = "Year",
+       y = "Z_Abdomen_Width",
+       color = "Species") +
+  theme_minimal() +
+  geom_abline(slope = coef(lm(Z_Abdomen_Width ~ Year, data = group_GS))[2],
+              intercept = coef(lm(Z_Abdomen_Width ~ Year, data = group_GS))[1],
+              color = "black")+
+  annotate(
+    "text",
+    x = max(group_GS$Year),
+    y = max(group_GS$Z_Abdomen_Width),
+    label = paste("p =", formatC(summary(lm(Z_Abdomen_Width ~ Year, data = group_GS))$coef[2, 4], digits = 2)),
+    hjust = 1,
+    vjust = 1,
+    color = "red"
+  )
+
+#GG abdomen graph
+ggplot(group_GG, aes(x = Year, y = Z_Abdomen_Width, color = Species)) +
+  geom_point() +
+  labs(title = "Z_Abdomen_Width vs. Year (Colored by Species, Group: GG)",
+       x = "Year",
+       y = "Z_Abdomen_Width",
+       color = "Species") +
+  theme_minimal() +
+  geom_abline(slope = coef(lm(Z_Abdomen_Width ~ Year, data = group_GG))[2],
+              intercept = coef(lm(Z_Abdomen_Width ~ Year, data = group_GG))[1],
+              color = "black")+
+  annotate(
+    "text",
+    x = max(group_GG$Year),
+    y = max(group_GG$Z_Abdomen_Width),
+    label = paste("p =", formatC(summary(lm(Z_Abdomen_Width ~ Year, data = group_GG))$coef[2, 4], digits = 2)),
+    hjust = 1,
+    vjust = 1,
+    color = "red"
+  )
+```
+Let's see what predictors explain changes within ecological groups using multiple regression
+
+```{r}
+#multiple regression and anova for abdomen changes within ecological group
+model_ab_SS <- lm(Z_Abdomen_Width ~ Temperature_Before + Year + Species + Year*Species+ Temperature_Before*Species + Latitude_Continuous, data = group_SS)
+anova(model_ab_SS)
+model_ab_GS <- lm(Z_Abdomen_Width ~ Temperature_Before + Year + Species + Year*Species + Temperature_Before*Species + Latitude_Continuous, data = group_GS)
+anova(model_ab_GS)
+model_ab_GG <- lm(Z_Abdomen_Width ~ Temperature_Before + Year + Species + Year*Species+ Temperature_Before*Species + Latitude_Continuous, data = group_GG)
+anova(model_ab_GG)
+```
+
+```{r}
+#multiple regression and anova for forewing changes within ecological group
+model_SS <- lm(Z_Forewing_Area ~ Temperature_Before + Year + Species + Year*Species+ Temperature_Before*Species + Latitude_Continuous, data = group_SS)
+anova(model_SS)
+model_GS <- lm(Z_Forewing_Area ~ Temperature_Before + Year + Species + Year*Species + Temperature_Before*Species + Latitude_Continuous, data = group_GS)
+anova(model_GS)
+model_GG <- lm(Z_Forewing_Area ~ Temperature_Before + Year + Species + Year*Species+ Temperature_Before*Species + Latitude_Continuous, data = group_GG)
+anova(model_GG)
+```
+
+*So temperature, year, species and year-species interactions are significant in explaining variation in all models*
+
+Check that temperature and year are not too strongly correlated
+
+```{r}
+cor_test_result <- cor.test(Project_data_copynew$Temperature_Before, Project_data_copynew$Year)
+```
+*seems reasonable*
+
+Despite ecology having effects, lets check if species explains most variation in my mixed model as it does within ecological group
+
+```{r}
+#r squared values for the mixed model
+library(MuMIn)
+# Obtain marginal and conditional R-squared values
+r_squared_values <- r.squaredGLMM(mixedmodel_nlme)
+# Display the results
+print(r_squared_values)
+# Obtain marginal and conditional R-squared values
+r_squared_values <- r.squaredGLMM(mixedmodel_ab_nlme)
+# Display the results
+print(r_squared_values)
+```
+
+*species seems to explain most variation by far in both models so likely different species individually responding in different ways is most important in explaining my results*
+## ecology has signififcant effects but individual species is the most important factor in explaining variation in my results
