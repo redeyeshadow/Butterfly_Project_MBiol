@@ -11,8 +11,6 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
-
 Using data from: Wilson et al https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13844
 
 
@@ -20,24 +18,21 @@ Sourced from:
 https://zenodo.org/records/5759759
 
 and
-
 https://zenodo.org/records/6066070
 
 
-```{r}
+```{r message =FALSE}
 library( tidyverse)
 library(readxl)
 
 Project_data_copynew <- read_excel("../data/Project_data_copynew.xlsx", sheet = "Sheet1") 
-
 ```
 
 
 ## Loading in measurments
 
 ```{r}
-
-## Different groups saved in sperate sheets
+## Different groups saved in seperate sheets
 
 # Sheets<- excel_sheets('../data/NHM/Wilson_et_al_MEE_data.xlsx')
 # 
@@ -47,16 +42,14 @@ Project_data_copynew <- read_excel("../data/Project_data_copynew.xlsx", sheet = 
 #             )
 
 WilsonSH3<- read_xlsx('../data/NHM/Wilson_et_al_MEE_data.xlsx', sheet = 3)
-
 Sizes<- read_csv('../data/NHM/iCollections_Nov_2021_butterflies.csv')
-
 ```
 
 ### Downloading locations
 
 Gordon L J Paterson; Sara Albuquerque; Vladimir Blagoderov; Stephen J Brooks et al. (2016). iCollections [Data set]. Natural History Museum. https://doi.org/10.5519/0038559
 
- *DOI has been created for this download request: https://doi.org/10.5519/qd.tqng8ri6 (this may take a few hours to become active). Please ensure you reference this DOI when citing these data.
+ *DOI has been created for this download request: https://doi.org/10.5519/qd.tqng8ri6. Please ensure you reference this DOI when citing these data.
 For more information, follow the DOI link.*
 
 
@@ -81,7 +74,6 @@ NHM_data %>%
           "scientificName",               
           "verbatimLatitude","verbatimLongitude","year" )      -> NHM_data_firstcut  
 
-
 ifelse(sapply(NHM_data_firstcut, function(x)all(is.na(x))) == TRUE, "Y","N")
 
 NHM_data_firstcut %>%
@@ -93,11 +85,12 @@ write_csv(Just_Names_Loc_and_Numbers, '../data/Just_Names_Loc_and_Numbers.csv')
 ```
 
 
-```{r}
+```{r warning=FALSE}
 Just_Names_Loc_and_Numbers <- read_csv( '../data/Just_Names_Loc_and_Numbers.csv')
 
  left_join(Sizes, Just_Names_Loc_and_Numbers) -> Joined_sizes_and_Locs
 
+## Map of spread of samples: 
 Joined_sizes_and_Locs%>%
   filter(!is.na( decimalLatitude ))%>%
   ggplot(aes( x = decimalLongitude, y = decimalLatitude, col = year))+
@@ -106,14 +99,23 @@ Joined_sizes_and_Locs%>%
 
 Joined_sizes_and_Locs%>%
   filter(!is.na( decimalLatitude ))%>%
-  count(`Taxon Name`, sort = TRUE)
+  count(Family, sort = TRUE)
 
+#  Family      n
+#Lycaenidae   70706  # Gossamer-winged butterflies
+#Nymphalidae  64543  # Brush-footed butterflies
+#Pieridae     18779
+#Hesperiidae   8036  # Skipper butteflies
+#Riodinidae    1526  # Metalmark butterflies
+#Papilionidae   730   # Swallowtail butterlfies
+
+## Many of the single observations are tropical, some are very rare vagrants (e.g. Glaucopsyche alexis) 
 Joined_sizes_and_Locs%>%
   filter(!is.na( decimalLatitude ))%>%
-  filter(  `Taxon Name`  == 'Lysandra coridon') %>%
-  ggplot(aes( x = decimalLongitude, y = decimalLatitude, col = year))+
-   geom_point()
+  count(`Taxon Name`)%>%
+  arrange( n)
 
+## Distribution of measurements
 Joined_sizes_and_Locs%>%
   filter(!is.na( decimalLatitude ))%>%
    ggplot(aes( y = `wing_span (mm)`, x = year))+
@@ -121,15 +123,77 @@ Joined_sizes_and_Locs%>%
 
 ```
 
-
 # Temperature effects
 
 ```{r}
-WilsonSH3 %>% count(Species )
+##### Check these numbers and their meaning!!
+Temps<- read_csv( '../data/NHM/temperatures_SEngland.csv') %>%
+  mutate( SummerTemp_YearBefore = lag(`Summer temperature` ))%>%
+  rename(year = Year)
+```
+
+## Cleaning up and joining
+```{r}
+
+Joined_sizes_and_Locs%>%
+  filter(!is.na( decimalLatitude ),  ## Excluding those without locations 
+         `wing_span (mm)` !=0, ## Exclude those without measurements  
+         decimalLatitude <54, ## Exclude Northerly samples
+         decimalLongitude > -5.5, ## Exclude Irish samples 
+         `wing_span (mm)` < 100) %>%   ## Exclude implausibly high measurements 
+  group_by(`Taxon Name`)%>%
+  add_count(name = 'Total_Obs') %>%
+  filter( Total_Obs>50) %>%## Exclude species with very few observations
+  ungroup %>%
+  left_join(Temps, by = 'year')-> Filt_BF
+
 
 ```
 
+## Correlation in wing measurements
 
+All are highly correlated except 'wing_shoulder'. Will just use 'wingspan'
+
+```{r}
+Filt_BF %>%
+  select(ends_with('(mm)')) %>%
+  cor
+```
+
+## Plots
+
+```{r fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
+Filt_BF %>%
+  ggplot(aes( x = year, y=  `wing_span (mm)`))+
+  geom_point()+
+  geom_smooth(method = 'lm')+
+  facet_wrap(~`Taxon Name`, scales = 'free_y')+
+  ggtitle('some trends in size of time?')
+
+
+Filt_BF %>%
+  ggplot(aes( x = SummerTemp_YearBefore, y=  `wing_span (mm)`))+
+  geom_point()+
+  geom_smooth(method = 'lm')+
+  facet_wrap(~`Taxon Name`, scales = 'free_y')+
+  ggtitle('not a lot of impact of year-before temperature?')
+
+
+Filt_BF %>%
+  ggplot(aes( x = `Spring temperature`, y=  `wing_span (mm)`))+
+  geom_point()+
+  geom_smooth(method = 'lm')+
+  facet_wrap(~`Taxon Name`, scales = 'free_y')+
+  ggtitle('some trends in size?')
+
+
+```
+
+# Session info
+
+```{r}
+sessionInfo()
+```
 
 
 
