@@ -38,11 +38,7 @@ Project_data_copynew <-
          Year_norm = (Year - 1875)/10, 
          Family = ifelse( Species == 'silver spotted skipper',  ## fixing blank
                           'Hesperiidae',Family )) 
-         
-
-
-
-
+        
 ```
 
 ### Within-Species correlation in body measurements
@@ -50,7 +46,10 @@ Project_data_copynew <-
 ```{R}
 
 Project_data_copynew %>%
-  ggplot( aes( x = Abdomen_Width, y =  Abdomen_Length, col =Year>1950 ))+
+  ggplot( aes( x = Abdomen_Width,
+               col = Sex ,
+              # col =Year>1950,
+               y =  Abdomen_Length ))+
   geom_point(alpha = 0.5)+
   geom_smooth(method = 'lm')+
   facet_wrap(~Species, scales = 'free')
@@ -95,7 +94,17 @@ Project_data_copynew%>%
 
 Project_data_copynew %>%
   ggplot( aes( x =  Year, y= Temperature_Of, col = Temperature_District))+
-  geom_point()
+  geom_point()+
+  geom_smooth(method = 'lm')+
+  ggtitle('rogue outliers')
+
+
+Project_data_copynew %>%
+  filter(Temperature_Of > 5) %>%
+  ggplot( aes( x =  Year, y= Temperature_Of, col = Temperature_District))+
+  geom_point()+
+  geom_smooth(method = 'lm')+
+  ggtitle('with rogue outliers removed')
 
 Project_data_copynew %>%
   ggplot( aes( x =  Temperature_Of, y= Temperature_Before, col = Temperature_District))+
@@ -115,6 +124,9 @@ Project_data_copynew %>% ungroup %>% count(Location, Lattitude_Group, sort = TRU
 
 #### Maybe best to exclude more northely collections?
 
+Project_data_copynew %>% ungroup %>% count(Family, Lattitude_Group, sort = TRUE) %>% as.data.frame()
+
+
 
 Project_data_copynew %>% ungroup %>% count(Collector , sort = TRUE)
 
@@ -129,6 +141,14 @@ Project_data_copynew %>%
   geom_point(aes(col = Ecology ))+
   geom_smooth(method = 'lm', col = 'black', aes( group = Species), se = FALSE)+
   facet_wrap(~Ecology)
+
+
+Project_data_copynew %>%
+  ggplot(aes(x= Temperature_Before, y = Z_Forewing_Area))+
+  geom_point(aes(col = Ecology ))+
+  geom_smooth(method = 'lm', col = 'black', aes( group = Species), se = FALSE)+
+  facet_wrap(~Ecology)
+
 
 
 x<- lm(Z_Forewing_Area ~Year*Species, data = Project_data_copynew)
