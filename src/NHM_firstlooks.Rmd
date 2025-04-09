@@ -24,6 +24,8 @@ https://zenodo.org/records/6066070
 ```{r message =FALSE}
 library( tidyverse)
 library(readxl)
+library(brms)
+library(posterior)
 
 Project_data_copynew <- read_excel("../data/Project_data_copynew.xlsx", sheet = "Sheet1") 
 ```
@@ -56,7 +58,7 @@ For more information, follow the DOI link.*
 ```{r eval = FALSE}
 Sizes<- read_csv('../data/NHM/iCollections_Nov_2021_butterflies.csv')
 
-NHM_data <- read_csv("C:/Users/pemb4504/Downloads/7ba5ee8575924a906078531b9212aec880045725/resource.csv")
+NHM_data <- read_csv("C:/Users/pemb4504/Documents/7ba5ee8575924a906078531b9212aec880045725/resource.csv")
 
 colnames(NHM_data)
 
@@ -79,7 +81,7 @@ ifelse(sapply(NHM_data_firstcut, function(x)all(is.na(x))) == TRUE, "Y","N")
 NHM_data_firstcut %>%
   mutate( `specimen number` = parse_number(catalogNumber))  %>%
   select( catalogNumber,  `specimen number`,determinationNames ,
-          decimalLatitude,decimalLongitude, year )-> Just_Names_Loc_and_Numbers
+          decimalLatitude,decimalLongitude, year, month )-> Just_Names_Loc_and_Numbers
 
 write_csv(Just_Names_Loc_and_Numbers, '../data/Just_Names_Loc_and_Numbers.csv')
 ```
@@ -136,19 +138,79 @@ Temps<- read_csv( '../data/NHM/temperatures_SEngland.csv') %>%
 ```{r}
 
 Joined_sizes_and_Locs%>%
+  rename(wingspan_mm =`wing_span (mm)` ) %>%
   filter(!is.na( decimalLatitude ),  ## Excluding those without locations 
-         `wing_span (mm)` !=0, ## Exclude those without measurements  
+         wingspan_mm !=0, ## Exclude those without measurements  
          decimalLatitude <54, ## Exclude Northerly samples
          decimalLongitude > -5.5, ## Exclude Irish samples 
-         `wing_span (mm)` < 100) %>%   ## Exclude implausibly high measurements 
+         wingspan_mm < 100) %>%   ## Exclude implausibly high measurements 
   group_by(`Taxon Name`)%>%
   add_count(name = 'Total_Obs') %>%
   filter( Total_Obs>50) %>%## Exclude species with very few observations
   ungroup %>%
-  left_join(Temps, by = 'year')-> Filt_BF
+  left_join(Temps, by = 'year')-> Filt_BF_step1
 
 
 ```
+
+
+### Excluding post-July
+
+Recording Months are coded in a messy way:
+
+ month     n
+ 3 - 4     1
+ 5 - 9     1
+ 8 - 7     1
+ 6 - 8     2
+11 - 12     4
+ 4 - 5     7
+ 8 - 9     9
+ 3 - 6    12
+ 6 - 9    21
+    12    31
+     1    38
+     2    62
+    11    75
+ 6 - 7   141
+ 5 - 6   158
+     3   176
+ 7 - 8   262
+    10  1194
+     4  1570
+     9  9052
+     5 15160
+     6 24982
+  <NA> 33704
+     8 36839
+     7 40818
+
+```{r}
+Filt_BF_step1 %>%
+  mutate( Month_av = case_when(month == '3 - 4'   ~ 3.5  ,
+                               month == '5 - 9'   ~ 7  ,
+                               month == '8 - 7'   ~ 7.5  ,
+                               month == '6 - 8'   ~ 7  ,
+                               month == '11 - 12' ~ 11.5  ,
+                               month == '4 - 5'   ~ 4.5  ,
+                               month == '8 - 9'   ~ 8.5  ,
+                               month == '3 - 6'   ~ 4.5  ,
+                               month == '6 - 9'   ~ 7.5   ,
+                               month == '6 - 7'   ~ 6.5,
+                               month == '5 - 6'   ~ 5.5  ,
+                               month == '7 - 8'   ~ 7.5   , 
+                              .default = as.numeric(month)),
+            FirstFlight = Month_av < 7 )->  Filt_BF
+
+
+
+### majority of observations from later half of year
+### -> probably need to only filer our bivoltine species, which will need collation
+Filt_BF%>%
+count(FirstFlight) 
+```
+
+
 
 ## Correlation in wing measurements
 
@@ -164,7 +226,7 @@ Filt_BF %>%
 
 ```{r fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
 Filt_BF %>%
-  ggplot(aes( x = year, y=  `wing_span (mm)`))+
+  ggplot(aes( x = year, y=  wingspan_mm))+
   geom_point()+
   geom_smooth(method = 'lm')+
   facet_wrap(~`Taxon Name`, scales = 'free_y')+
@@ -172,7 +234,7 @@ Filt_BF %>%
 
 
 Filt_BF %>%
-  ggplot(aes( x = SummerTemp_YearBefore, y=  `wing_span (mm)`))+
+  ggplot(aes( x = SummerTemp_YearBefore, y=  wingspan_mm))+
   geom_point()+
   geom_smooth(method = 'lm')+
   facet_wrap(~`Taxon Name`, scales = 'free_y')+
@@ -180,14 +242,89 @@ Filt_BF %>%
 
 
 Filt_BF %>%
-  ggplot(aes( x = `Spring temperature`, y=  `wing_span (mm)`))+
+  ggplot(aes( x = `Spring temperature`, y=  wingspan_mm))+
   geom_point()+
   geom_smooth(method = 'lm')+
   facet_wrap(~`Taxon Name`, scales = 'free_y')+
   ggtitle('some trends in size?')
 
+```
+
+# Step 1 - What is the trend of each species with temperature?
+
+## Further cleaning
+
+Excluding:
+ - observations from second generations in bivoltine species (After July (?))
+ - migratory and extinct species
+ - observations outside core area
+
+```{r}
+
+MigratorySpecies_To_Exclude  <- c('Vanessa cardui')  ### TODO EXTEND!
+ExtinctSpecies_To_Exclude  <- c()  ### TODO EXTEND!
+
+
+Species_list<- c('Aglais urticae', 'Inachis io')   ## Trial species
+  ### Sp = 'Aglais urticae'
 
 ```
+
+### Fitting models
+
+```{r}
+## Cycle through each species to fit models (could go faser by not compiling each time)
+
+for( Sp in Species_list){
+  print(Sp)
+  Filt_BF %>%
+    filter(`Taxon Name` ==Sp ) %>%
+    brm( wingspan_mm ~  year +  SummerTemp_YearBefore ,
+         data = ., refresh = 0) -> MODEL_FIT
+  save(MODEL_FIT, file = paste('../NHM_modelfits1/',Sp  ))
+}
+
+## Map over each  each species to fit models
+
+
+
+```
+
+### Collating model outputs into a df
+
+```{r}
+map_df(Species_list, function(Sp){
+  
+  load(file = paste('../NHM_modelfits1/',Sp  )) 
+  MODEL_FIT %>%
+    as_draws_array %>%
+    summarise_draws -> Fit_df
+  Fit_df$Sp = Sp
+  return(Fit_df)
+  })-> Posterior_Summaries
+
+
+
+```
+
+
+## Step 2 - Does ecologucal specificity predict the trends?
+
+Does ecological specificity determine trends?
+
+
+```{r}
+Posterior_Summaries %>%
+  filter( variable == 'b_SummerTemp_YearBefore')
+   
+## Join to species predictors
+
+## fit including uncertainty in coefficent. 
+
+ 
+```
+
+
 
 # Session info
 
