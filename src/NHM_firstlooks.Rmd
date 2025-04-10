@@ -208,6 +208,14 @@ Filt_BF_step1 %>%
 ### -> probably need to only filer our bivoltine species, which will need collation
 Filt_BF%>%
 count(FirstFlight) 
+
+Filt_BF %>%
+  ggplot(aes( x = Month_av))+
+  geom_histogram()+
+  facet_wrap(~`Taxon Name`, scales = 'free_y')+
+  geom_vline(xintercept = 7, col = 'red')
+
+
 ```
 
 
@@ -267,6 +275,10 @@ ExtinctSpecies_To_Exclude  <- c()  ### TODO EXTEND!
 
 Species_list<- c('Aglais urticae', 'Inachis io')   ## Trial species
   ### Sp = 'Aglais urticae'
+
+Filt_BF %>%
+  count(`Taxon Name`) %>% 
+  as.data.frame()
 
 ```
 
