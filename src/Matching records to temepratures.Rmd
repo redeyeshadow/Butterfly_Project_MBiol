@@ -1,0 +1,203 @@
+---
+title: "Matching Records to Temperatures"
+author: "Chris Terry"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r}
+
+library(tidyverse)
+library(sf) # for polygons
+library(tidyverse) # for general manipulation
+library(terra) # for rasters
+library(tidyterra) # for plotting rasters 
+library(exactextractr)  ## for faster avaerging of raster polygon intersections
+
+```
+
+# Purpose
+
+This file matches the temperature record data to the NHM and OUNHM butterfly records by location
+
+# Targets
+
+
+## NHM 
+
+```{r}
+NHM_records <- read_csv('../data/Just_Names_Loc_and_Numbers.csv')
+```
+
+### Cleaning up years
+
+A fair few of the NHM records are listed as having dates into the future. Seems optimistic.
+
+Checking a random subset of these confirms mistake:
+
+https://data.nhm.ac.uk/dataset/56e711e6-c847-4f99-915a-6894bb5c5dea/resource/05ff2255-c38a-40c9-b657-4ccb55ab2feb/record/6989349
+
+https://data.nhm.ac.uk/dataset/56e711e6-c847-4f99-915a-6894bb5c5dea/resource/05ff2255-c38a-40c9-b657-4ccb55ab2feb/record/6769801
+
+https://data.nhm.ac.uk/dataset/56e711e6-c847-4f99-915a-6894bb5c5dea/resource/05ff2255-c38a-40c9-b657-4ccb55ab2feb/record/6930208
+
+Where to draw cutoff??
+
+This example from 2024: 
+https://data.nhm.ac.uk/dataset/56e711e6-c847-4f99-915a-6894bb5c5dea/resource/05ff2255-c38a-40c9-b657-4ccb55ab2feb/record/6781405
+
+is clearly meant to be 1924 (just '24 n the label, but in a very old pin)
+
+
+https://data.nhm.ac.uk/dataset/56e711e6-c847-4f99-915a-6894bb5c5dea/resource/05ff2255-c38a-40c9-b657-4ccb55ab2feb/record/7055394
+
+Problem goes back as far as 2011
+
+https://data.nhm.ac.uk/dataset/56e711e6-c847-4f99-915a-6894bb5c5dea/resource/05ff2255-c38a-40c9-b657-4ccb55ab2feb/record/7012818
+
+
+----
+
+https://data.nhm.ac.uk/dataset/icollections
+
+says the database extends *from 1819 until the 1980s*. https://bdj.pensoft.net/article/9559/ includes a histogram of dates that seems plausible https://doi.org/10.3897/BDJ.4.e9559.figure12 but doesn't match:
+
+How dd Wilson et al deal with this? Seems that they didn't run their AI over the future measurements? OR has some other method
+```{r}
+#  NHM_records%>% 
+#   filter(year>2016) %>%
+#   mutate(catalogNumber= parse_number(catalogNumber)) %>%
+#   pluck('catalogNumber'  ) -> dodgeyCatNums
+# 
+#   WilsonSH3<- read_xlsx('../data/NHM/Wilson_et_al_MEE_data.xlsx', sheet = 3)
+#   Sizes<- read_csv('../data/NHM/iCollections_Nov_2021_butterflies.csv')
+# 
+# Sizes %>%
+#   filter(`specimen number` %in% dodgeyCatNums)     #### Seems like the filter them out?
+```
+
+```{r}
+NHM_records$year %>% hist ; abline(v=2025)
+```
+
+```{R}
+FilteredSizeAndLoc<-read_csv('../data/FilteredSizeAndLoc.csv') 
+FilteredSizeAndLoc$year %>% hist ; abline(v=2025)
+```
+
+Locations are given by decimal lats and longs not names
+
+```{r}
+### Loading Temps 
+FilePathTo.nc<- "../data/dap.ceda.ac.uk/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.0.ceda/25km/tas/seas/v20240514/"
+Files<- list.files(FilePathTo.nc,full.names = TRUE)[-1] ## dropping 'index'
+List_Rasters<- map(Files, rast)
+## ChangeNamesToTimes
+List_Rasters2<- map(List_Rasters, function(RS){names(RS)<-  paste0('SEASON_', time(RS));return(RS)})
+## Collapse the list
+Collated_SeasonalTemps<- rast(List_Rasters2)
+```
+
+```{r }
+## Just pulling out Temp 
+
+FilteredSizeAndLoc %>%
+  filter(!is.na(year)) %>%
+  filter(year > 1884) %>%
+  mutate( T_Spring =  paste0('SEASON_', year, '-04-16'))-> FilteredSizeAndLoc_Seasons
+
+
+UKGRID_COORDS<-sf_project(pts=  select(FilteredSizeAndLoc_Seasons,decimalLongitude,decimalLatitude ),
+           from ='epsg:4326', 
+           to ='+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +a=6377563.396 +rf=299.324961266495 +units=m +no_defs')
+
+### Checking matches are all possible
+Seasons_ToMatch<- sort(unique(FilteredSizeAndLoc_Seasons$T_Spring))
+Seasons_ToMatch %in% names(Collated_SeasonalTemps)
+
+## Extractimg all years out
+RecordTemps<- terra::extract(x = Collated_SeasonalTemps,
+                             y=UKGRID_COORDS)
+## Checking alignment is good
+plot(Collated_SeasonalTemps[[1]] )
+points( UKGRID_COORDS) 
+## There will be some points that just miss a box. For them can setsearch_radius = 100, but not with multuilayers
+
+## Need to pulll out RecordTemps
+
+SeasonTT<- c(NA, nrow( RecordTemps))
+
+for( i in 1:nrow(RecordTemps)){
+  ## dumb but not that slow way
+  SeasonTT[i] <- RecordTemps[i ,FilteredSizeAndLoc_Seasons$T_Spring[i]  ]
+}
+
+FilteredSizeAndLoc_Seasons$SeasonTT_Temp <- SeasonTT
+
+```
+
+
+```{R}
+FilteredSizeAndLoc_Seasons %>%
+  #filter( is.na(SeasonTT_Temp)) %>% ## 5000 failures
+   ggplot()+
+   geom_point(aes( x = decimalLongitude, y = decimalLatitude,
+                   col = is.na(SeasonTT_Temp)))  ## Just weird coastal ones.
+  
+## Fixing these up:Can use nearest neagbour
+ 
+ which(is.na(FilteredSizeAndLoc_Seasons$SeasonTT_Temp)) -> WeirdCoastal_Numbs
+ 
+ for(i in WeirdCoastal_Numbs){   ## takes a little while to run (5-10 minutes)
+   SeasonLayer = FilteredSizeAndLoc_Seasons$T_Spring[i] 
+   yyy<- terra::extract(x = subset(Collated_SeasonalTemps,SeasonLayer) ,
+                        y=vect(UKGRID_COORDS)[i],
+                        search_radius=100000) ## up to 100km to nearest box
+   SeasonTT[i] <- yyy[1,2]
+ }
+ 
+
+### Checking all good now
+
+  FilteredSizeAndLoc_Seasons$SeasonTT_Temp <- SeasonTT
+
+FilteredSizeAndLoc_Seasons %>%
+   ggplot()+
+   geom_point(aes( x = decimalLongitude, y = decimalLatitude,
+                   col = is.na(SeasonTT_Temp)))  ## Just weird coastal ones. Also Channel islands?
+
+
+## Pick some seasons with problems 
+
+SeasonsWithEdges<- FilteredSizeAndLoc_Seasons$T_Spring[WeirdCoastal_Numbs][3000:3005]
+
+FilteredSizeAndLoc_Seasons %>%
+  filter(T_Spring %in% SeasonsWithEdges) %>% 
+   ggplot()+
+   geom_point(aes( x = decimalLongitude, y = decimalLatitude,
+                   col = SeasonTT_Temp))+
+  facet_wrap(~T_Spring)
+
+##...  seems to be ok now
+
+
+write_csv(FilteredSizeAndLoc_Seasons, 
+          '../data/FilteredSizeAndLoc_Seasons_DRYRUN.csv')
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
