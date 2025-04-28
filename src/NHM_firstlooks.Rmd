@@ -90,14 +90,36 @@ write_csv(Just_Names_Loc_and_Numbers, '../data/Just_Names_Loc_and_Numbers.csv')
 ```{r warning=FALSE}
 Just_Names_Loc_and_Numbers <- read_csv( '../data/Just_Names_Loc_and_Numbers.csv')
 
- left_join(Sizes, Just_Names_Loc_and_Numbers) -> Joined_sizes_and_Locs
+left_join(Sizes, Just_Names_Loc_and_Numbers) -> Joined_sizes_and_Locs
+
+ 
+ Joined_sizes_and_Locs%>%
+  rename(wingspan_mm =`wing_span (mm)` ) %>%
+  filter(!is.na( decimalLatitude ),  ## Excluding those without locations 
+         wingspan_mm !=0, ## Exclude those without measurements  
+         decimalLatitude <54, ## Exclude Northerly samples
+         decimalLongitude > -5.5, ## Exclude Irish samples 
+         wingspan_mm < 100) %>%   ## Exclude implausibly high measurements 
+  group_by(`Taxon Name`)%>%
+  add_count(name = 'Total_Obs') %>%
+  filter( Total_Obs>50) %>%## Exclude species with very few observations
+  ungroup -> FilteredSizeAndLoc
+ 
+### Add Species filterring here 
+ 
+write_csv(FilteredSizeAndLoc,  '../data/FilteredSizeAndLoc.csv') 
+ 
+```
+ 
+ 
+```{r}
+ 
 
 ## Map of spread of samples: 
 Joined_sizes_and_Locs%>%
   filter(!is.na( decimalLatitude ))%>%
   ggplot(aes( x = decimalLongitude, y = decimalLatitude, col = year))+
    geom_point()
-
 
 Joined_sizes_and_Locs%>%
   filter(!is.na( decimalLatitude ))%>%
@@ -137,17 +159,11 @@ Temps<- read_csv( '../data/NHM/temperatures_SEngland.csv') %>%
 ## Cleaning up and joining
 ```{r}
 
-Joined_sizes_and_Locs%>%
-  rename(wingspan_mm =`wing_span (mm)` ) %>%
-  filter(!is.na( decimalLatitude ),  ## Excluding those without locations 
-         wingspan_mm !=0, ## Exclude those without measurements  
-         decimalLatitude <54, ## Exclude Northerly samples
-         decimalLongitude > -5.5, ## Exclude Irish samples 
-         wingspan_mm < 100) %>%   ## Exclude implausibly high measurements 
-  group_by(`Taxon Name`)%>%
-  add_count(name = 'Total_Obs') %>%
-  filter( Total_Obs>50) %>%## Exclude species with very few observations
-  ungroup %>%
+
+
+FilteredSizeAndLoc$year %>% hist
+
+FilteredSizeAndLoc%>%
   left_join(Temps, by = 'year')-> Filt_BF_step1
 
 
