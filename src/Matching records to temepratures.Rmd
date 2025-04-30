@@ -79,6 +79,11 @@ How dd Wilson et al deal with this? Seems that they didn't run their AI over the
 #   filter(`specimen number` %in% dodgeyCatNums)     #### Seems like the filter them out?
 ```
 
+
+
+
+
+
 ```{r}
 NHM_records$year %>% hist ; abline(v=2025)
 ```
@@ -90,8 +95,111 @@ FilteredSizeAndLoc$year %>% hist ; abline(v=2025)
 
 Locations are given by decimal lats and longs not names
 
+
+### Aligning species names
+
 ```{r}
+BroodTable<-readxl::read_excel( '../data/butterfly brood table.xlsx')
+NHM_SpeciesNames <- unique(FilteredSizeAndLoc_Seasons$`Taxon Name`)
+all(NHM_SpeciesNames %in% BroodTable$`Taxonomic species`) ## check all species in table
+```
+
+
+### Splitting broods and 
+
+```{R}
+
+
+
+```
+
+### defining seasons to use
+
+
+```{r}
+
+BroodTable %>%
+  filter( Include == 'TRUE', Univoltine) %>%
+  select(`Taxonomic species`,
+         TempDEVELOP=Brood1_TempDEVELOP,
+         TempLAY= Brood1_TempLAY) %>%
+  mutate( Brood = 'Univoltine') -> UNIVOLT_sp
+
+BroodTable %>%
+  filter( Include == 'TRUE', !Univoltine) %>%
+  select(`Taxonomic species`,Brood1_TempDEVELOP:Brood2_TempLAY)%>%
+  pivot_longer(cols =  -`Taxonomic species`,
+               names_to = 'Brood',
+               values_to = 'Season') %>%
+  separate(Brood , into = c('Brood', 'Batch')) %>%
+  pivot_wider(id_cols =  c(`Taxonomic species`,Brood   ),
+              names_from = 'Batch'  , values_from =  'Season'  )    -> BIVOLT_sp     
+
+AllBroodTable_Seasons <- bind_rows( UNIVOLT_sp, BIVOLT_sp) %>%
+  rename( `Taxon Name` = `Taxonomic species`) 
+```
+
+
+```{r }
+## Filterring and simplfying
+
+FilteredSizeAndLoc %>%
+  filter(!is.na(year)) %>%
+  filter(year > 1885) %>%
+  select(`Taxon Name` ,month,  year, decimalLatitude, decimalLongitude ,
+         `specimen number`,gender, wingspan_mm ) -> NHM_filterred
+
+### Dealing with weird months
+
+NHM_filterred %>%
+ mutate( month = case_when(month == '3 - 4'   ~ 3.5  ,
+                               month == '5 - 9'   ~ 7  ,
+                               month == '8 - 7'   ~ 7.5  ,
+                               month == '6 - 8'   ~ 7  ,
+                               month == '11 - 12' ~ 11.5  ,
+                               month == '4 - 5'   ~ 4.5  ,
+                               month == '8 - 9'   ~ 8.5  ,
+                               month == '3 - 6'   ~ 4.5  ,
+                               month == '6 - 9'   ~ 7.5   ,
+                               month == '6 - 7'   ~ 6.5,
+                               month == '5 - 6'   ~ 5.5  ,
+                               month == '7 - 8'   ~ 7.5   , 
+                              .default = as.numeric(month))) -> NHM_filterred2
+
+### Identifying Broods
+NHM_filterred2 %>%
+  left_join( select(BroodTable, Include ,
+                    `Taxon Name`= `Taxonomic species` ,
+                    Univoltine, FirstMonthOf2ndBrood),
+             by = 'Taxon Name')%>%
+    filter( !(!Univoltine&is.na(month ) )) %>% # remove bivoltine with no month info
+  mutate(Brood = ifelse( Univoltine ,'Univoltine',
+                         ifelse( month < FirstMonthOf2ndBrood,
+                                 'Brood1',
+                                 'Brood2'))) -> NHM_filterred_Broods
+
+### For each sample, identifying season of temp records to use
+
+###
+NHM_filterred_Broods%>%
+  left_join(AllBroodTable_Seasons, 
+            by = c('Taxon Name','Brood')) %>%
+  mutate( T_DEVELOP= case_match( TempDEVELOP ,
+                                 'SPRING'        ~  paste0('SEASON_', year, '-04-16'),
+                                 'SUMMER'        ~  paste0('SEASON_', year, '-07-16'),
+                                 'SUMMER_before' ~  paste0('SEASON_', year-1, '-07-16')),
+          T_LAY= case_match( TempLAY,
+                             'SPRING'        ~  paste0('SEASON_', year, '-04-16'),
+                             'SUMMER'        ~  paste0('SEASON_', year, '-07-16'),
+                             'SUMMER_before' ~  paste0('SEASON_', year-1, '-07-16')))%>%
+  filter( Include == 'TRUE')%>%
+  filter( decimalLatitude> 49.5)-> FilteredSizeAndLoc_Seasons
+```
+
+
 ### Loading Temps 
+
+```{r}
 FilePathTo.nc<- "../data/dap.ceda.ac.uk/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.0.ceda/25km/tas/seas/v20240514/"
 Files<- list.files(FilePathTo.nc,full.names = TRUE)[-1] ## dropping 'index'
 List_Rasters<- map(Files, rast)
@@ -101,87 +209,81 @@ List_Rasters2<- map(List_Rasters, function(RS){names(RS)<-  paste0('SEASON_', ti
 Collated_SeasonalTemps<- rast(List_Rasters2)
 ```
 
-```{r }
-## Just pulling out Temp 
-
-FilteredSizeAndLoc %>%
-  filter(!is.na(year)) %>%
-  filter(year > 1884) %>%
-  mutate( T_Spring =  paste0('SEASON_', year, '-04-16'))-> FilteredSizeAndLoc_Seasons
-
+```{r}
 
 UKGRID_COORDS<-sf_project(pts=  select(FilteredSizeAndLoc_Seasons,decimalLongitude,decimalLatitude ),
            from ='epsg:4326', 
            to ='+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +a=6377563.396 +rf=299.324961266495 +units=m +no_defs')
 
 ### Checking matches are all possible
-Seasons_ToMatch<- sort(unique(FilteredSizeAndLoc_Seasons$T_Spring))
-Seasons_ToMatch %in% names(Collated_SeasonalTemps)
+Seasons_ToMatch<- sort(unique(c(FilteredSizeAndLoc_Seasons$T_DEVELOP,
+                                FilteredSizeAndLoc_Seasons$T_LAY )))
+all(Seasons_ToMatch %in% names(Collated_SeasonalTemps))
 
-## Extractimg all years out
+## Extracting all years out into a table of specimen x seasons
 RecordTemps<- terra::extract(x = Collated_SeasonalTemps,
                              y=UKGRID_COORDS)
 ## Checking alignment is good
 plot(Collated_SeasonalTemps[[1]] )
 points( UKGRID_COORDS) 
-## There will be some points that just miss a box. For them can setsearch_radius = 100, but not with multuilayers
 
-## Need to pulll out RecordTemps
+## There will be some points that just miss a box. For them can setsearch_radius = 100, but not with multilayers
+## Need to pull out RecordTemps
 
-SeasonTT<- c(NA, nrow( RecordTemps))
+SeasonTemp_Dev<- c(NA, nrow( RecordTemps))
+SeasonTemp_Lay<- c(NA, nrow( RecordTemps))
+
 
 for( i in 1:nrow(RecordTemps)){
-  ## dumb but not that slow way
-  SeasonTT[i] <- RecordTemps[i ,FilteredSizeAndLoc_Seasons$T_Spring[i]  ]
+  ## dumb but not that slow way to get numbers out of matrix
+  SeasonTemp_Dev[i] <- RecordTemps[i ,FilteredSizeAndLoc_Seasons$T_DEVELOP[i] ]
+  SeasonTemp_Lay[i] <- RecordTemps[i ,FilteredSizeAndLoc_Seasons$T_LAY[i]     ]
 }
 
-FilteredSizeAndLoc_Seasons$SeasonTT_Temp <- SeasonTT
-
+FilteredSizeAndLoc_Seasons$SeasonTT_Develop <- SeasonTemp_Dev
+FilteredSizeAndLoc_Seasons$SeasonTT_Lay <- SeasonTemp_Lay
 ```
 
 
-```{R}
+```{R eval = FALSE}
 FilteredSizeAndLoc_Seasons %>%
-  #filter( is.na(SeasonTT_Temp)) %>% ## 5000 failures
    ggplot()+
    geom_point(aes( x = decimalLongitude, y = decimalLatitude,
-                   col = is.na(SeasonTT_Temp)))  ## Just weird coastal ones.
+                   col = is.na(SeasonTT_Lay)))  ## Just weird coastal ones.
   
 ## Fixing these up:Can use nearest neagbour
- 
- which(is.na(FilteredSizeAndLoc_Seasons$SeasonTT_Temp)) -> WeirdCoastal_Numbs
- 
- for(i in WeirdCoastal_Numbs){   ## takes a little while to run (5-10 minutes)
-   SeasonLayer = FilteredSizeAndLoc_Seasons$T_Spring[i] 
-   yyy<- terra::extract(x = subset(Collated_SeasonalTemps,SeasonLayer) ,
-                        y=vect(UKGRID_COORDS)[i],
-                        search_radius=100000) ## up to 100km to nearest box
-   SeasonTT[i] <- yyy[1,2]
- }
+
+which(is.na(FilteredSizeAndLoc_Seasons$SeasonTT_Develop)) -> WeirdCoastal_Numbs
+
+for(i in WeirdCoastal_Numbs){   ## takes a little while to run (~5 minutes)
+  print(i)
+  ## Development Period
+  SeasonLayer = FilteredSizeAndLoc_Seasons$T_DEVELOP[i] 
+  yyy<- terra::extract(x = subset(Collated_SeasonalTemps,SeasonLayer) ,
+                       y=vect(UKGRID_COORDS)[i],
+                       search_radius=100000) ## up to 100km to nearest box
+  SeasonTemp_Dev[i] <- yyy[1,2]
+  
+  ## Laying Period
+  SeasonLayer = FilteredSizeAndLoc_Seasons$T_LAY[i] 
+  zzz<- terra::extract(x = subset(Collated_SeasonalTemps,SeasonLayer) ,
+                       y=vect(UKGRID_COORDS)[i],
+                       search_radius=100000) ## up to 100km to nearest box
+  SeasonTemp_Lay[i] <- zzz[1,2]
+}
  
 
-### Checking all good now
 
-  FilteredSizeAndLoc_Seasons$SeasonTT_Temp <- SeasonTT
+## Replacing
+FilteredSizeAndLoc_Seasons$SeasonTT_Develop <- SeasonTemp_Dev
+FilteredSizeAndLoc_Seasons$SeasonTT_Lay <- SeasonTemp_Lay
 
+  
+### Checking all good now:
 FilteredSizeAndLoc_Seasons %>%
    ggplot()+
    geom_point(aes( x = decimalLongitude, y = decimalLatitude,
-                   col = is.na(SeasonTT_Temp)))  ## Just weird coastal ones. Also Channel islands?
-
-
-## Pick some seasons with problems 
-
-SeasonsWithEdges<- FilteredSizeAndLoc_Seasons$T_Spring[WeirdCoastal_Numbs][3000:3005]
-
-FilteredSizeAndLoc_Seasons %>%
-  filter(T_Spring %in% SeasonsWithEdges) %>% 
-   ggplot()+
-   geom_point(aes( x = decimalLongitude, y = decimalLatitude,
-                   col = SeasonTT_Temp))+
-  facet_wrap(~T_Spring)
-
-##...  seems to be ok now
+                   col = is.na(SeasonTT_Develop)))  ## Just weird coastal ones. Also Channel islands?
 
 
 write_csv(FilteredSizeAndLoc_Seasons, 
@@ -189,12 +291,39 @@ write_csv(FilteredSizeAndLoc_Seasons,
 
 ```
 
+```{r}
+FilteredSizeAndLoc_Seasons <- read_csv(  '../data/FilteredSizeAndLoc_Seasons_DRYRUN.csv')
+```
 
 
+# Oxford Measurements
+
+## Which have matching names?
+
+```{r}
+OUNHM_orig <- readxl::read_excel("../data/Project_data_copynew.xlsx", sheet = "Sheet1") 
+UA_temps <- read_csv( '../data/UA_Seasonal_Temps_Long.csv') #  
+VC_temps <- read_csv('../data/VC_Seasonal_Temps_Long.csv')
+
+Ox_Locs_To_Match <- unique(OUNHM_orig$Location)  
+
+VC_names <- sort(unique(VC_temps$VCNAME))
+
+NotInUA<- Ox_Locs_To_Match[!(Ox_Locs_To_Match %in% unique(UA_temps$CTYUA23NM))]
+
+NotInUA
+
+NotInUA[NotInUA %in% VC_names]
+
+NameNotInEither <- NotInUA[!(NotInUA %in% VC_names)]
 
 
+NameNotInEither
 
+OUNHM_orig %>%
+  filter( Location %in% NameNotInEither)
 
+```
 
 
 
