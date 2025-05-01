@@ -1,0 +1,212 @@
+---
+title: "First Looks"
+author: "Chris Terry"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(readxl)
+library(tidyverse)
+Project_data_copynew <- read_excel("../data/Project_data_copynew.xlsx", sheet = "Sheet1") 
+library(brms)
+```
+
+## Z-Scaling within species of body sizes
+
+(may need to first exclude a few outliers - brimstone, gatekeeper and peacock all have a few rogues
+
+```{r}
+
+scale_this <- function(x){
+  (x - mean(x, na.rm=TRUE)) / sd(x, na.rm=TRUE)
+}
+unscale_this <- function(x, sd_z, mean_z){
+  (x - mean(x, na.rm=TRUE)) / sd(x, na.rm=TRUE)
+}
+
+# Applying custom scaling function within each group
+Project_data_copynew <- 
+  Project_data_copynew %>%
+  group_by(Species) %>%
+  mutate(Z_Forewing_Area = scale_this(Forewing_Area),
+         Z_Wing_Length = scale_this(Wing_Length),
+         Z_Abdomen_Length = scale_this(Abdomen_Length),
+         Z_Abdomen_Width = scale_this(Abdomen_Width),
+         Year_norm = (Year - 1875)/10, 
+         Family = ifelse( Species == 'silver spotted skipper',  ## fixing blank
+                          'Hesperiidae',Family )) 
+        
+```
+
+### Within-Species correlation in body measurements
+
+```{R}
+
+Project_data_copynew %>%
+  ggplot( aes( x = Abdomen_Width,
+               col = Sex ,
+              # col =Year>1950,
+               y =  Abdomen_Length ))+
+  geom_point(alpha = 0.5)+
+  geom_smooth(method = 'lm')+
+  facet_wrap(~Species, scales = 'free')
+
+## Quite a few of these body measurements seem to show negative correlations?
+
+### Wing area / length show a strong positive trends
+
+Project_data_copynew %>%
+  ggplot( aes( x = Forewing_Area, y =  Wing_Length ))+
+  geom_point(alpha = 0.5)+
+  facet_wrap(~Species, scales = 'free')
+
+## Area and width are somewhat positively correlated across all species
+Project_data_copynew %>%
+  ggplot( aes( x = Forewing_Area, y =  Abdomen_Width ))+
+  geom_point(alpha = 0.5)+
+  facet_wrap(~Species, scales = 'free')
+
+```
+
+## Data distribtuon across categories
+
+```{R}
+Project_data_copynew%>%
+  ungroup()%>%
+  distinct( Species,Family,Ecology ) %>%
+  count(Ecology, Family)
+
+Project_data_copynew%>%
+  ungroup()%>%
+  distinct( Species,Family,Ecology ) %>%
+  count(Family)
+```
+
+
+## Temperature trends
+
+```{r}
+
+### Two very odd outliers of cold temperatures?
+
+Project_data_copynew %>%
+  ggplot( aes( x =  Year, y= Temperature_Of, col = Temperature_District))+
+  geom_point()+
+  geom_smooth(method = 'lm')+
+  ggtitle('rogue outliers')
+
+
+Project_data_copynew %>%
+  filter(Temperature_Of > 5) %>%
+  ggplot( aes( x =  Year, y= Temperature_Of, col = Temperature_District))+
+  geom_point()+
+  geom_smooth(method = 'lm')+
+  ggtitle('with rogue outliers removed')
+
+Project_data_copynew %>%
+  ggplot( aes( x =  Temperature_Of, y= Temperature_Before, col = Temperature_District))+
+  geom_point()
+
+
+```
+
+
+### Spatial Distributuon
+
+```{r}
+## Data is absoultely dominated by South England counties measures
+Project_data_copynew %>% ungroup %>% count(Location, sort = TRUE)
+Project_data_copynew %>% ungroup %>% count( Lattitude_Group, sort = TRUE)
+Project_data_copynew %>% ungroup %>% count(Location, Lattitude_Group, sort = TRUE)
+
+#### Maybe best to exclude more northely collections?
+
+Project_data_copynew %>% ungroup %>% count(Family, Lattitude_Group, sort = TRUE) %>% as.data.frame()
+
+
+
+Project_data_copynew %>% ungroup %>% count(Collector , sort = TRUE)
+
+```
+
+
+```{r}
+
+
+Project_data_copynew %>%
+  ggplot(aes(x= Year, y = Z_Forewing_Area))+
+  geom_point(aes(col = Ecology ))+
+  geom_smooth(method = 'lm', col = 'black', aes( group = Species), se = FALSE)+
+  facet_wrap(~Ecology)
+
+
+Project_data_copynew %>%
+  ggplot(aes(x= Temperature_Before, y = Z_Forewing_Area))+
+  geom_point(aes(col = Ecology ))+
+  geom_smooth(method = 'lm', col = 'black', aes( group = Species), se = FALSE)+
+  facet_wrap(~Ecology)
+
+
+
+x<- lm(Z_Forewing_Area ~Year*Species, data = Project_data_copynew)
+
+plot(Project_data_copynew$Year, x$residuals)
+
+
+
+### NB no species level elements to this?
+
+multiple_model <- lm(Z_Forewing_Area ~Year + Temperature_Before + Ecology + Lattitude_Group  + Family + Family*Year + Ecology*Year + Ecology*Temperature_Before, data = Project_data_copynew)
+
+plot(multiple_model)
+
+```
+
+```{r}
+
+Project_data_copynew %>% View
+
+
+## Because z- standardised, really just want to estimate random slopes from family
+## 
+
+brm_AREA_fullall <- brm(Z_Forewing_Area ~ Lattitude_Group  +Temperature_Before + Year_norm+ Family*Year_norm + Ecology:Year_norm + Ecology:Temperature_Before,
+                     data = Project_data_copynew)
+
+brm_AREA_full <- brm(Z_Forewing_Area ~ Lattitude_Group  +Temperature_Before + Year_norm+ Family:Year_norm + Ecology:Year_norm + Ecology:Temperature_Before,
+                     data = Project_data_copynew)
+
+brm_AREA_Wofamily <- brm(Z_Forewing_Area ~ Lattitude_Group  +Temperature_Before + Year_norm + Ecology:Year_norm + Ecology:Temperature_Before,
+                     data = Project_data_copynew)
+
+brm_AREA_fullall<-add_criterion(brm_AREA_fullall, criterion = 'loo')
+brm_AREA_full<-add_criterion(brm_AREA_full, criterion = 'loo')
+brm_AREA_Wofamily<-add_criterion(brm_AREA_Wofamily, criterion = 'loo')
+
+loo_compare(brm_AREA_fullall,brm_AREA_full,brm_AREA_Wofamily )  # Not really clear evidence in favour of supporting including family
+
+
+pairs(brm_AREA_full)
+
+
+```
+
+```{r}
+brm_AREA_Wofamily
+
+
+brm_AREA <- brm(Z_Forewing_Area ~ Lattitude_Group  +Temperature_Before + Temperature_Of + Year_norm + Ecology:Year_norm + Ecology:Temperature_Before + (1|Collector),
+                     data = Project_data_copynew)
+
+
+
+```
+
+
+
+
+
+

@@ -1,0 +1,168 @@
+---
+title: "First Trends Dry Run"
+author: "Chris Terry"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r message = FALSE}
+library(tidyverse)
+library(brms)
+library(posterior)
+```
+
+
+```{r}
+NHM_ForFitting <- read_csv(  '../data/FilteredSizeAndLoc_Seasons_DRYRUN.csv')%>%
+  select(Species= `Taxon Name` , 
+         Year = year, 
+         Sex = gender, 
+         wingspan_mm, 
+         Brood, 
+         decimalLatitude ,
+         Develop_Season =TempDEVELOP ,
+         Develop_Temp= SeasonTT_Develop, 
+         Laying_Temp = SeasonTT_Lay) %>%
+  mutate( Sex = ifelse( Sex == 'N/A', 'Both', Sex))
+```
+
+### Correlations between year and temperature
+
+
+Looks like there is a trend, but it is not the explanatory
+However note there are  trends in location wrapped up in all of this. Over time, more records from more southerly locations. 
+
+```{r}
+NHM_ForFitting %>%
+  ggplot( aes( x = Year, y = Develop_Temp))+
+  geom_point( aes(col =decimalLatitude))+
+  geom_smooth(method = 'lm')+
+  facet_wrap(~Develop_Season)
+
+NHM_ForFitting %>%
+  ggplot( aes( x = Year, y = decimalLatitude))+
+  geom_point( aes(col =Develop_Temp))+
+  geom_smooth(method = 'lm')+
+  facet_wrap(~Develop_Season)
+
+NHM_ForFitting %>%
+  filter(Develop_Season == 'SPRING') %>%
+  lm(data =., Develop_Temp ~ decimalLatitude +Year)%>%
+  summary()
+
+```
+
+### Fitting models
+
+```{r}
+## Cycle through each species to fit models 
+
+Batches<- count(NHM_ForFitting,
+                Species, Brood ,Sex)%>%
+  arrange( n)
+
+## 200 potential models to fit:
+
+Batches$n %>% log10 %>% plot # almost perfect log-normal plot
+
+sum(Batches$n >100) # 155 have over 100, 
+
+Batches %>%
+  filter( n >100 ) -> TableOfModels
+
+
+Set = paste0('Sp.', TableOfModels$Species,
+             '_Bro.',TableOfModels$Brood,
+             '_Sex.',TableOfModels$Sex)
+
+
+```
+
+```{r eval = FALSE}
+### Define and compile model
+CoreModel <-   NHM_ForFitting %>%
+    filter(Species == TableOfModels$Species[1],
+           Brood   == TableOfModels$Brood[1]  ,
+           Sex     == TableOfModels$Sex[1]) %>%
+    brm( wingspan_mm ~ Year + Develop_Temp  + decimalLatitude,
+         data = ., refresh = 0)
+
+## Refit model to each set of data, saving each time
+for( i in 1:nrow( TableOfModels)){
+  print(Set[i])
+  NHM_ForFitting %>%
+    filter(Species == TableOfModels$Species[i],
+           Brood   == TableOfModels$Brood[i]  ,
+           Sex     == TableOfModels$Sex[i]) -> batchDATA
+  update( CoreModel, newdata = batchDATA, refresh = 0) -> MODEL_FIT
+  save(MODEL_FIT, file = paste('../NHM_modelfits2/',Set[i]  ))
+}
+
+```
+
+### Collating model outputs into a df
+
+```{r eval = FALSE}
+map_df(1:nrow( TableOfModels), function(i){
+  load(file = paste('../NHM_modelfits2/',Set[i]  )) 
+  MODEL_FIT %>%
+    as_draws_array %>%
+    summarise_draws -> Fit_df
+  Fit_df$Species = TableOfModels$Species[i]
+  Fit_df$Brood = TableOfModels$Brood[i] 
+  Fit_df$Sex = TableOfModels$Sex[i] 
+  
+  return(Fit_df)
+})-> Posterior_Summaries
+
+write_csv(Posterior_Summaries, 'Posterior_Summaries_dryrun2.csv')
+
+```
+
+
+## Step 2 - Does ecologucal specificity predict the trends?
+
+Does ecological specificity determine trends?
+
+
+```{r}
+Posterior_Summaries<- read_csv('Posterior_Summaries_dryrun2.csv')
+
+
+Posterior_Summaries %>%
+  filter( variable %in% c( 'b_Develop_Temp',
+                           'b_Year',
+                           'b_decimalLatitude' ) )%>%
+  ggplot( aes( y =  paste( Species,Brood,Sex ), 
+               x = mean))+
+  geom_point()+
+  geom_errorbarh(aes( xmin = q5, xmax = q95))+
+  geom_vline(xintercept = 0)+
+    facet_wrap(~variable, scales = 'free_x')
+
+## Join to species predictors
+
+## fit including uncertainty in coefficent. 
+
+
+ggsave(filename = 'AllCombos_Trends_DryRun.pdf', width = 8, height =20)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+```{R}
+#sessionInfo()
+
+```

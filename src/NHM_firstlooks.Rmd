@@ -298,59 +298,8 @@ Filt_BF %>%
 
 ```
 
-### Fitting models
 
-```{r}
-## Cycle through each species to fit models (could go faser by not compiling each time)
-
-for( Sp in Species_list){
-  print(Sp)
-  Filt_BF %>%
-    filter(`Taxon Name` ==Sp ) %>%
-    brm( wingspan_mm ~  year +  SummerTemp_YearBefore ,
-         data = ., refresh = 0) -> MODEL_FIT
-  save(MODEL_FIT, file = paste('../NHM_modelfits1/',Sp  ))
-}
-
-## Map over each  each species to fit models
-
-
-
-```
-
-### Collating model outputs into a df
-
-```{r}
-map_df(Species_list, function(Sp){
-  
-  load(file = paste('../NHM_modelfits1/',Sp  )) 
-  MODEL_FIT %>%
-    as_draws_array %>%
-    summarise_draws -> Fit_df
-  Fit_df$Sp = Sp
-  return(Fit_df)
-  })-> Posterior_Summaries
-
-
-
-```
-
-
-## Step 2 - Does ecologucal specificity predict the trends?
-
-Does ecological specificity determine trends?
-
-
-```{r}
-Posterior_Summaries %>%
-  filter( variable == 'b_SummerTemp_YearBefore')
-   
-## Join to species predictors
-
-## fit including uncertainty in coefficent. 
-
- 
-```
+[[This now moved to First Trends Dry Run doc]]
 
 
 
