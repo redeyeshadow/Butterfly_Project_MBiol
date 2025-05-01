@@ -80,10 +80,6 @@ How dd Wilson et al deal with this? Seems that they didn't run their AI over the
 ```
 
 
-
-
-
-
 ```{r}
 NHM_records$year %>% hist ; abline(v=2025)
 ```
@@ -100,24 +96,14 @@ Locations are given by decimal lats and longs not names
 
 ```{r}
 BroodTable<-readxl::read_excel( '../data/butterfly brood table.xlsx')
-NHM_SpeciesNames <- unique(FilteredSizeAndLoc_Seasons$`Taxon Name`)
+NHM_SpeciesNames <- unique(FilteredSizeAndLoc$`Taxon Name`)
 all(NHM_SpeciesNames %in% BroodTable$`Taxonomic species`) ## check all species in table
 ```
 
 
-### Splitting broods and 
-
-```{R}
-
-
-
-```
-
-### defining seasons to use
-
+### Splitting broods and defining seasons to use
 
 ```{r}
-
 BroodTable %>%
   filter( Include == 'TRUE', Univoltine) %>%
   select(`Taxonomic species`,
@@ -139,7 +125,6 @@ AllBroodTable_Seasons <- bind_rows( UNIVOLT_sp, BIVOLT_sp) %>%
   rename( `Taxon Name` = `Taxonomic species`) 
 ```
 
-
 ```{r }
 ## Filterring and simplfying
 
@@ -152,19 +137,19 @@ FilteredSizeAndLoc %>%
 ### Dealing with weird months
 
 NHM_filterred %>%
- mutate( month = case_when(month == '3 - 4'   ~ 3.5  ,
-                               month == '5 - 9'   ~ 7  ,
-                               month == '8 - 7'   ~ 7.5  ,
-                               month == '6 - 8'   ~ 7  ,
-                               month == '11 - 12' ~ 11.5  ,
-                               month == '4 - 5'   ~ 4.5  ,
-                               month == '8 - 9'   ~ 8.5  ,
-                               month == '3 - 6'   ~ 4.5  ,
-                               month == '6 - 9'   ~ 7.5   ,
-                               month == '6 - 7'   ~ 6.5,
-                               month == '5 - 6'   ~ 5.5  ,
-                               month == '7 - 8'   ~ 7.5   , 
-                              .default = as.numeric(month))) -> NHM_filterred2
+  mutate( month = case_when(month == '3 - 4'   ~ 3.5  ,
+                            month == '5 - 9'   ~ 7  ,
+                            month == '8 - 7'   ~ 7.5  ,
+                            month == '6 - 8'   ~ 7  ,
+                            month == '11 - 12' ~ 11.5  ,
+                            month == '4 - 5'   ~ 4.5  ,
+                            month == '8 - 9'   ~ 8.5  ,
+                            month == '3 - 6'   ~ 4.5  ,
+                            month == '6 - 9'   ~ 7.5   ,
+                            month == '6 - 7'   ~ 6.5,
+                            month == '5 - 6'   ~ 5.5  ,
+                            month == '7 - 8'   ~ 7.5   , 
+                            .default = as.numeric(month))) -> NHM_filterred2
 
 ### Identifying Broods
 NHM_filterred2 %>%
@@ -172,7 +157,7 @@ NHM_filterred2 %>%
                     `Taxon Name`= `Taxonomic species` ,
                     Univoltine, FirstMonthOf2ndBrood),
              by = 'Taxon Name')%>%
-    filter( !(!Univoltine&is.na(month ) )) %>% # remove bivoltine with no month info
+  filter( !(!Univoltine&is.na(month ) )) %>% # remove bivoltine with no month info
   mutate(Brood = ifelse( Univoltine ,'Univoltine',
                          ifelse( month < FirstMonthOf2ndBrood,
                                  'Brood1',
@@ -180,7 +165,6 @@ NHM_filterred2 %>%
 
 ### For each sample, identifying season of temp records to use
 
-###
 NHM_filterred_Broods%>%
   left_join(AllBroodTable_Seasons, 
             by = c('Taxon Name','Brood')) %>%
@@ -210,10 +194,9 @@ Collated_SeasonalTemps<- rast(List_Rasters2)
 ```
 
 ```{r}
-
 UKGRID_COORDS<-sf_project(pts=  select(FilteredSizeAndLoc_Seasons,decimalLongitude,decimalLatitude ),
-           from ='epsg:4326', 
-           to ='+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +a=6377563.396 +rf=299.324961266495 +units=m +no_defs')
+                          from ='epsg:4326', 
+                          to ='+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +a=6377563.396 +rf=299.324961266495 +units=m +no_defs')
 
 ### Checking matches are all possible
 Seasons_ToMatch<- sort(unique(c(FilteredSizeAndLoc_Seasons$T_DEVELOP,
@@ -247,10 +230,10 @@ FilteredSizeAndLoc_Seasons$SeasonTT_Lay <- SeasonTemp_Lay
 
 ```{R eval = FALSE}
 FilteredSizeAndLoc_Seasons %>%
-   ggplot()+
-   geom_point(aes( x = decimalLongitude, y = decimalLatitude,
-                   col = is.na(SeasonTT_Lay)))  ## Just weird coastal ones.
-  
+  ggplot()+
+  geom_point(aes( x = decimalLongitude, y = decimalLatitude,
+                  col = is.na(SeasonTT_Lay)))  ## Just weird coastal ones.
+
 ## Fixing these up:Can use nearest neagbour
 
 which(is.na(FilteredSizeAndLoc_Seasons$SeasonTT_Develop)) -> WeirdCoastal_Numbs
@@ -271,20 +254,16 @@ for(i in WeirdCoastal_Numbs){   ## takes a little while to run (~5 minutes)
                        search_radius=100000) ## up to 100km to nearest box
   SeasonTemp_Lay[i] <- zzz[1,2]
 }
- 
-
 
 ## Replacing
 FilteredSizeAndLoc_Seasons$SeasonTT_Develop <- SeasonTemp_Dev
 FilteredSizeAndLoc_Seasons$SeasonTT_Lay <- SeasonTemp_Lay
 
-  
 ### Checking all good now:
 FilteredSizeAndLoc_Seasons %>%
-   ggplot()+
-   geom_point(aes( x = decimalLongitude, y = decimalLatitude,
-                   col = is.na(SeasonTT_Develop)))  ## Just weird coastal ones. Also Channel islands?
-
+  ggplot()+
+  geom_point(aes( x = decimalLongitude, y = decimalLatitude,
+                  col = is.na(SeasonTT_Develop)))  ## Just weird coastal ones. Also Channel islands?
 
 write_csv(FilteredSizeAndLoc_Seasons, 
           '../data/FilteredSizeAndLoc_Seasons_DRYRUN.csv')
@@ -308,22 +287,91 @@ VC_temps <- read_csv('../data/VC_Seasonal_Temps_Long.csv')
 Ox_Locs_To_Match <- unique(OUNHM_orig$Location)  
 
 VC_names <- sort(unique(VC_temps$VCNAME))
-
 NotInUA<- Ox_Locs_To_Match[!(Ox_Locs_To_Match %in% unique(UA_temps$CTYUA23NM))]
 
 NotInUA
-
 NotInUA[NotInUA %in% VC_names]
-
 NameNotInEither <- NotInUA[!(NotInUA %in% VC_names)]
-
 
 NameNotInEither
 
 OUNHM_orig %>%
   filter( Location %in% NameNotInEither)
+```
+
+## Which locations in both?
+
+```{r}
+
+NamesInBoth<-VC_names[VC_names %in% unique(UA_temps$CTYUA23NM)]
+### If in both, will use VC names as probably better match to older records
+
+
+VC_temps %>%
+  mutate(LocationType = 'VC') %>%
+  select( Location= VCNAME, LocationType,
+          MeanTemp , 
+          Date = MidDate) -> VC_Temps_simple
+  
+UA_temps %>%
+  mutate(LocationType = 'VC') %>%
+  select( Location= CTYUA23NM, LocationType,
+          MeanTemp , 
+          Date = MidDate) %>% 
+  filter(!(Location %in% NamesInBoth)) -> UA_Temps_simple
+
+  
+  bind_rows(VC_Temps_simple, UA_Temps_simple)-> All_Loc_Temps
+
 
 ```
+
+
+## Joining
+
+```{R}
+OUNHM_orig
+
+
+
+OUNHM_orig %>% 
+  mutate(  Month_num = match(str_to_sentence(Month),# reading mess of different capitalisations
+                             month.name)) %>%
+  filter(Year > 1885) %>%
+  select(Species, Sex,
+         month = Month_num,
+         year =Year, 
+         Location ,
+         Wing_Length,
+         Abdomen_Width,
+         Abdomen_Length, 
+         Indiv_Num = Individual) -> OxNHM_Simp
+
+### Identifying Broods
+
+##################  Needs names to do joining!!!
+
+# OxNHM_Simp %>%
+# ### For each sample, identifying season of temp records to use
+#   left_join(AllBroodTable_Seasons, 
+#             by = c('Taxon Name','Brood')) %>%
+#   mutate( T_DEVELOP= case_match( TempDEVELOP ,
+#                                  'SPRING'        ~  paste0('SEASON_', year, '-04-16'),
+#                                  'SUMMER'        ~  paste0('SEASON_', year, '-07-16'),
+#                                  'SUMMER_before' ~  paste0('SEASON_', year-1, '-07-16')),
+#           T_LAY= case_match( TempLAY,
+#                              'SPRING'        ~  paste0('SEASON_', year, '-04-16'),
+#                              'SUMMER'        ~  paste0('SEASON_', year, '-07-16'),
+#                              'SUMMER_before' ~  paste0('SEASON_', year-1, '-07-16')))%>%
+#   filter( Include == 'TRUE')%>%
+#   left_join()
+
+
+
+
+```
+
+
 
 
 
