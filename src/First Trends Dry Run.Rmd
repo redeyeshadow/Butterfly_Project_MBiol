@@ -73,6 +73,47 @@ Batches %>%
   filter( n >100 ) -> TableOfModels
 
 
+
+Batches %>%
+  pivot_wider(values_from = 'n',  names_from = 'Sex', values_fill = 0) %>%
+  mutate( Perc_Undetermined = 100* Both / ( male+Both+female)  ) -> PercentageUndetermined
+
+PercentageUndetermined %>%
+  ggplot( aes( x =Perc_Undetermined, fill = Brood))+
+  geom_histogram()
+
+## percentage undtermined is pretty consistence between broods 
+PercentageUndetermined%>%
+  ggplot( aes( y =Perc_Undetermined, x = Species,col = Brood))+
+  geom_point()
+
+NHM_ForFitting%>%
+  group_by(Year) %>%
+  summarise(FracUndetermined = mean(Sex=='Both')) %>%
+  ggplot(aes(y= FracUndetermined, x = Year ))+
+  geom_point()
+
+### For spotting weirdnesses
+NHM_ForFitting %>%
+  group_by(Species, Brood) %>%
+  summarise( signif(mean(Year),1), 
+             min(Year), 
+             quantile(Year, 0.1), 
+             quantile(Year, 0.9),
+             max(Year), 
+             n = n())%>%
+  mutate(EightyQuantileRange = `quantile(Year, 0.9)`-`quantile(Year, 0.1)` ) %>%
+  arrange( EightyQuantileRange)%>%
+  arrange(Species            ) -> NHM_Brood_data_spread
+
+NHM_Brood_data_spread %>%
+  left_join(PercentageUndetermined) %>%
+write_csv('../data/NHM_Brood_data_spread.csv')
+
+```
+
+
+```{r}
 Set = paste0('Sp.', TableOfModels$Species,
              '_Bro.',TableOfModels$Brood,
              '_Sex.',TableOfModels$Sex)
