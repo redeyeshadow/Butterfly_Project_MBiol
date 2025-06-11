@@ -438,6 +438,7 @@ OUNHM_measurements3 %&gt;%
   mutate(  Month_num = match(str_to_sentence(Month),# reading mess of different capitalisations
                              month.name)) %&gt;%
   filter( Year &gt;= 1885) %&gt;%
+  filter( Month_num &gt;= 3 | is.na(Month_num)) %&gt;% ########### FILTER OUT ALL from Jan and Feb
   select(Individual ,  `Taxon name`,
          Location,LocationType ,
          Month = Month_num, Year,

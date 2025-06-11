@@ -459,7 +459,8 @@ write_csv(Just_Names_Loc_and_Numbers, &#39;../data/Just_Names_Loc_and_Numbers.cs
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>NHM_filter1 %&gt;%
   rename(  `NHM name` = `Taxon Name` ) %&gt;%
-  left_join(Names_table, by = &#39;NHM name&#39;) -&gt; NHM_filter2</code></pre>
+  left_join(Names_table, by = &#39;NHM name&#39;)%&gt;%
+  filter( !is.na(`Taxon name`))-&gt; NHM_filter2  ## filter out those vagrants etc that are not in the name table because they are not going to be anaylsed</code></pre>
 </div>
 <div id="dealing-with-month-windows-by-picking-middle" class="section level2">
 <h2>Dealing with month windows by picking middle</h2>
@@ -476,7 +477,8 @@ write_csv(Just_Names_Loc_and_Numbers, &#39;../data/Just_Names_Loc_and_Numbers.cs
                             month == &#39;6 - 7&#39;   ~ 6.5,
                             month == &#39;5 - 6&#39;   ~ 5.5  ,
                             month == &#39;7 - 8&#39;   ~ 7.5   , 
-                            .default = as.numeric(month))) -&gt; NHM_filter3</code></pre>
+                            .default = as.numeric(month)))%&gt;%
+  filter( month &gt;= 3) -&gt; NHM_filter3       ########### FILTER OUT ALL from Jan and Feb</code></pre>
 <pre><code>## Warning: There was 1 warning in `mutate()`.
 ## ℹ In argument: `month = case_when(...)`.
 ## Caused by warning in `vec_case_when()`:
@@ -495,7 +497,7 @@ write_csv(Just_Names_Loc_and_Numbers, &#39;../data/Just_Names_Loc_and_Numbers.cs
           `left_wing (mm)`:`wing_shoulder (mm)` ) -&gt; NHM_tidy
 
 NHM_tidy</code></pre>
-<pre><code>## # A tibble: 115,934 × 14
+<pre><code>## # A tibble: 105,928 × 14
 ##    Individual   `Taxon name` decimalLatitude decimalLongitude LocationType Month
 ##    &lt;chr&gt;        &lt;chr&gt;                  &lt;dbl&gt;            &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;
 ##  1 BMNHE_10585… Aglais urti…            51.5           -0.455 LatLong          8
@@ -508,7 +510,7 @@ NHM_tidy</code></pre>
 ##  8 BMNHE_10585… Aglais urti…            51.1           -2.32  LatLong          8
 ##  9 BMNHE_10585… Aglais urti…            51.1           -2.27  LatLong          8
 ## 10 BMNHE_10586… Aglais urti…            51.1           -2.13  LatLong          8
-## # ℹ 115,924 more rows
+## # ℹ 105,918 more rows
 ## # ℹ 8 more variables: Year &lt;dbl&gt;, Sex &lt;chr&gt;, `left_wing (mm)` &lt;dbl&gt;,
 ## #   `right_wing (mm)` &lt;dbl&gt;, `left_wing_center (mm)` &lt;dbl&gt;,
 ## #   `right_wing_center (mm)` &lt;dbl&gt;, wingspan_mm &lt;dbl&gt;,

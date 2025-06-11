@@ -1,0 +1,67 @@
+---
+title: "Cleaning4_Broods"
+author: "Chris Terry"
+date: '`r Sys.Date()`'
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{R}
+library(tidyverse)
+library(readxl)
+
+OUNHM_data_temps<- read_csv('../data/OUNHM_data_temps.csv')
+NHM_data_temps <- read_csv('../data/NHM_w_temps.csv')
+
+BroodTable <- read_xlsx('../data/butterfly brood table.xlsx')
+```
+
+# Tidying Brood Table
+
+```{r}
+Names_table<- read_csv('../data/names_table.csv')
+
+BroodTable %>%
+  left_join(Names_table, by = 'NHM name')%>% 
+  mutate(FirstMonthBrood2 = as.numeric(FirstMonthBrood2) ) %>%
+  filter(Include == 'TRUE' )%>%
+  select(`Taxon name` ,  Brood1Use, Brood2Use, FirstMonthBrood2, Univoltine )-> Brood_table2
+
+Brood_table2 %>%
+  select(-FirstMonthBrood2, - Univoltine  ) %>%
+  pivot_longer(names_to = 'Brood', values_to = 'TempToUse', cols =  Brood1Use:Brood2Use  ) %>%
+  filter( TempToUse!='NA') %>%
+  mutate(Brood = parse_number(Brood)) -> Brood_table_long
+
+```
+
+# Adding Brood Tables to NHM
+
+```{r}
+
+## Which brood is each record
+NHM_data_temps%>%
+  left_join(select(Brood_table2,
+                   `Taxon name`, FirstMonthBrood2, Univoltine ), 
+            by = 'Taxon name') %>%
+  mutate(Brood = ifelse(Univoltine, 1, 
+                        ifelse(Month <  FirstMonthBrood2, 1, 2   ))) %>% 
+  ## Now add temperature to use column from   Brood_table_long
+  left_join(Brood_table_long ,by = c('Taxon name', 'Brood')) %>%
+  select(`Taxon name`, decimalLatitude ,Year , 
+         Right_wing=`right_wing (mm)` , Brood, TempToUse  ,
+         SPRING_temp,SUMMER_temp,SUMMER_before_temp  ) %>%
+  mutate( Temp = ifelse( TempToUse == 'Spring', SPRING_temp  ,
+                         ifelse(TempToUse == 'Summer' , SUMMER_temp ,
+                                ifelse(TempToUse == 'Summer_before',  SUMMER_before_temp,
+                                       NA)))) %>%
+  select(-ends_with('_temp')) -> NHM_for_models
+
+write_csv(NHM_for_models, '../data/NHM_for_models.csv')
+
+```
+
+# OUNHM
+
+todo....

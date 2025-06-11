@@ -68,8 +68,8 @@ UKGRID_COORDS<-sf_project(pts=  select(Long_Lats_Years,decimalLongitude,decimalL
 RecordTemps<- terra::extract(x = Collated_SeasonalTemps,
                              y=UKGRID_COORDS)
 ## Checking alignment is good
-plot(Collated_SeasonalTemps[[1]] )
-points( UKGRID_COORDS) 
+# plot(Collated_SeasonalTemps[[1]] )
+# points( UKGRID_COORDS) 
 
 ## There will be some points that just miss a box. For them can setsearch_radius = 100, but not with multilayers
 ## Need to pull out RecordTemps
@@ -147,6 +147,18 @@ which(is.na(Long_Lats_Years$SPRING_temp))
 ```{r eval = FALSE}
 write_csv(Long_Lats_Years, 
           '../data/NHM_Long_Lats_Years.csv')
+```
+
+
+```{r}
+
+Long_Lats_Years <- read_csv( '../data/NHM_Long_Lats_Years.csv')
+
+NHM_records %>%
+  left_join(Long_Lats_Years,
+            by = c('decimalLatitude', 'decimalLongitude', 'Year')) %>%
+    select(- SPRING, -SUMMER, -SUMMER_before )%>%
+  write_csv('../data/NHM_w_temps.csv')
 
 ```
 
@@ -317,17 +329,26 @@ SpringSummerTemps %>%
 SpringSummerTemps %>% 
   left_join(Summer_Before,
             by = c('Location', 'LocationType', 'Year')) %>%
-  filter( !is.na(Summer_before)) -> ThreeTemps_perLocYear
+  filter( !is.na(Summer_before))%>%
+  rename( SPRING_temp= Spring,
+          SUMMER_temp= Summer,
+          SUMMER_before_temp = Summer_before)-> ThreeTemps_perLocYear
 
 
 OUNHM_data %>%
   left_join(ThreeTemps_perLocYear,
-            by = c('Location', 'LocationType', 'Year'))
+            by = c('Location', 'LocationType', 'Year'))-> OUNHM_data_temps
 
 ```
 
 
+### Saving
 
+```{r}
+
+write_csv(OUNHM_data_temps, '../data/OUNHM_data_temps.csv')
+
+```
 
 
 
