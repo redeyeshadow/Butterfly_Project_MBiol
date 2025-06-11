@@ -1,0 +1,121 @@
+---
+title: "Cleaning1_NHM"
+author: "Chris Terry"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r message = FALSE}
+library(tidyverse)
+library(brms)
+library(posterior)
+library(readxl)
+```
+
+# Loading Data
+
+## Measurements 
+
+Using data from: Wilson et al https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13844
+
+Sourced from: 
+https://zenodo.org/records/5759759
+and
+https://zenodo.org/records/6066070
+
+```{r}
+WilsonSH3<- read_xlsx('../data/NHM/Wilson_et_al_MEE_data.xlsx', sheet = 3)
+Sizes<- read_csv('../data/NHM/iCollections_Nov_2021_butterflies.csv')
+```
+
+# Locations
+
+Gordon L J Paterson; Sara Albuquerque; Vladimir Blagoderov; Stephen J Brooks et al. (2016). iCollections [Data set]. Natural History Museum. https://doi.org/10.5519/0038559
+
+ *DOI has been created for this download request: https://doi.org/10.5519/qd.tqng8ri6. Please ensure you reference this DOI when citing these data*
+
+```{r eval = FALSE}
+### Large files, so pre-wrangling data: 
+
+Sizes<- read_csv('../data/NHM/iCollections_Nov_2021_butterflies.csv')
+
+NHM_data <- read_csv("C:/Users/pemb4504/Documents/7ba5ee8575924a906078531b9212aec880045725/resource.csv")
+
+colnames(NHM_data)
+
+NHM_data %>%
+  select( "_id","basisOfRecord","catalogNumber",
+          "class","collectionCode",
+          "continent","coordinateUncertaintyInMeters", "country",                 
+          "created","day","decimalLatitude","decimalLongitude" ,            
+          "determinationFiledAs","determinationNames",  
+          "family", "gbifID"    ,                   
+          "gbifIssue", "genus",
+          "higherClassification","month",      
+          "order","project" ,                     
+          "recordedBy" ,                 
+          "scientificName",               
+          "verbatimLatitude","verbatimLongitude","year" )-> NHM_data_firstcut  
+
+ifelse(sapply(NHM_data_firstcut, function(x)all(is.na(x))) == TRUE, "Y","N")
+
+NHM_data_firstcut %>%
+  mutate( `specimen number` = parse_number(catalogNumber))  %>%
+  filter(!is.na( decimalLatitude ))  %>%                            ## Excluding those without locations 
+  select( catalogNumber,  `specimen number`,determinationNames ,
+          decimalLatitude,decimalLongitude, year, month )  -> Just_Names_Loc_and_Numbers
+
+write_csv(Just_Names_Loc_and_Numbers, '../data/Just_Names_Loc_and_Numbers.csv')
+```
+
+```{r warning=FALSE}
+Sizes %>% 
+  left_join(read_csv( '../data/Just_Names_Loc_and_Numbers.csv'), 
+            by = join_by(`specimen number`)) -> Joined_sizes_and_Locs
+
+```
+
+
+# Processing
+
+## Aligning species names
+
+```{r}
+Names_table<- read_csv('../data/names_table.csv')
+
+```
+
+```{r}
+Joined_sizes_and_Locs%>%
+  rename(wingspan_mm =`wing_span (mm)` ) %>%
+  filter(!is.na( decimalLatitude ),  ## Excluding those without locations 
+         wingspan_mm !=0, ## Exclude those without measurements  
+         decimalLatitude <54, ## Exclude Northerly samples
+         decimalLongitude > -5.5, ## Exclude Irish samples 
+         wingspan_mm < 100) %>%   ## Exclude implausibly high measurements 
+  group_by(`Taxon Name`)%>%
+  add_count(name = 'Total_Obs') %>%
+  filter( Total_Obs>50) %>%## Exclude species with very few observations
+  ungroup -> FilteredSizeAndLoc
+ 
+
+write_csv(FilteredSizeAndLoc,  '../data/FilteredSizeAndLoc.csv') 
+
+
+BroodTable<-readxl::read_excel( '../data/butterfly brood table.xlsx')
+NHM_SpeciesNames <- unique(FilteredSizeAndLoc$`Taxon Name`)
+all(NHM_SpeciesNames %in% BroodTable$`Taxonomic species`) ## check all species in table
+ 
+```
+ 
+
+
+
+
+
+
+
+
+

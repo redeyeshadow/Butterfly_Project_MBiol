@@ -1,0 +1,98 @@
+---
+title: "Cleaning2_OUNHM"
+author: "Chris Terry"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+OUNHM_measurements <- read_csv('../data/OUNHM_Measurements.csv' )
+```
+
+
+## Consolidating names
+
+```{r}
+NameTable <- read_csv('../data/names_table.csv')
+
+OUNHM_measurements %>%
+  filter( !is.na(Species)) %>%
+  left_join(NameTable, by = c('Species' = 'Elsa name'))-> OUNHM_measurements2
+```
+
+## Consolidating Locations
+
+```{r}
+### Temperature files (just for names)
+UA_temps <- read_csv( '../data/UA_Seasonal_Temps_Long.csv') #  
+VC_temps <- read_csv('../data/VC_Seasonal_Temps_Long.csv')
+```
+
+### Which names need manual fixing?
+```{r}
+Ox_Locs_To_Match <- unique(OUNHM_measurements2$Location)  
+
+VC_names <- sort(unique(VC_temps$VCNAME))
+UA_names <- unique(UA_temps$CTYUA23NM)
+
+NotInUA<- Ox_Locs_To_Match[!(Ox_Locs_To_Match %in% unique(UA_temps$CTYUA23NM))]
+NameNotInEither <- NotInUA[!(NotInUA %in% VC_names)]
+NameNotInEither
+```
+
+## Which type of location?
+
+```{R}
+OUNHM_measurements2 %>%
+  mutate( LocationType = ifelse(Location%in%VC_names, 'VC',
+                                ifelse( Location %in% UA_names, 
+                                        'UA', 'NeedsFixing' ))) -> OUNHM_measurements3
+```
+
+### Fixing unresolved locations
+
+```{r message=FALSE}
+## Swap in Best fit VC location for the iffy names
+
+NameResolver<- read_csv('../data/NameNotInEither_ResolverToVC.csv')
+
+OUNHM_measurements3 %>% 
+  left_join(NameResolver, by = 'Location') %>%
+  mutate(Location =  ifelse(is.na(VC_To_Use), Location, VC_To_Use), 
+         LocationType =  ifelse(is.na(VC_To_Use), LocationType, 'VC')) -> OUNHM_measurements4
+
+```
+
+
+## Other Tidying
+
+```{r}
+
+OUNHM_measurements4 %>%
+  mutate(  Month_num = match(str_to_sentence(Month),# reading mess of different capitalisations
+                             month.name)) %>%
+  select(Individual ,  `Taxon name`,
+         Location,LocationType ,
+         Month = Month_num, Year,
+         Sex,
+         Wing_Length:Abdomen_Length ) -> OUNHM_measurements5
+
+
+```
+
+# Saving
+
+```{r}
+write_csv(OUNHM_measurements5, '../data/OUNHM_measurements_clean.csv')
+```
+
+# Session info
+
+```{r}
+sessionInfo()
+```
+
+
