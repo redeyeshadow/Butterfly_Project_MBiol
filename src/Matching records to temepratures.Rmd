@@ -293,7 +293,11 @@ NotInUA
 NotInUA[NotInUA %in% VC_names]
 NameNotInEither <- NotInUA[!(NotInUA %in% VC_names)]
 
-NameNotInEither
+# write_csv(data.frame(Name =NameNotInEither), file = '../data/NameNotInEither.csv')
+
+
+
+
 
 OUNHM_orig %>%
   filter( Location %in% NameNotInEither)
@@ -332,9 +336,11 @@ UA_temps %>%
 ```{R}
 OUNHM_orig
 
-
+NameResolver<- read_csv('../data/NameNotInEither_ResolverToVC.csv')
 
 OUNHM_orig %>% 
+  left_join(NameResolver) %>%
+  mutate(Location =  ifelse(is.na(VC_To_Use), Location, VC_To_Use)) %>% ## Swap in Best fit VC location for the iffy names
   mutate(  Month_num = match(str_to_sentence(Month),# reading mess of different capitalisations
                              month.name)) %>%
   filter(Year > 1885) %>%
