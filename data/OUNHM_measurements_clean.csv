@@ -1,6 +1,4 @@
 Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_Area,Abdomen_Width,Abdomen_Length
-72,Thymelicus sylvestris,Oxfordshire,VC,7,1883,male,12.264,54.576,1.97,6.202
-73,Thymelicus sylvestris,Oxfordshire,VC,7,1883,male,12.163,53.63,2.054,5.343
 37,Erynnis tages,Berkshire,VC,6,1885,NA,11.436,51.236,2.392,4.647
 40,Erynnis tages,Berkshire,VC,6,1885,NA,12.047,54.872,1.876,4.836
 38,Erynnis tages,Oxfordshire,VC,5,1886,NA,11.85,50.917,2.234,4.699
@@ -413,16 +411,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 73,Erynnis tages,Dorset,VC,5,2003,NA,12.224,56.314,2.461,5.147
 84,Erynnis tages,Dorset,VC,5,2003,NA,12.394,56.767,2.375,5.284
 32,Pyrgus malvae,East Sussex,VC,5,2003,NA,11.557,51.833,1.982,5.291
-58,Favonius quercus,Suffolk,UA,8,1876,female,16.064,118.095,2.707,4.459
-31,Polyommatus bellargus,Dorset,VC,7,1882,male,14.288,82.679,1.893,5.703
-32,Polyommatus bellargus,Isle of Wight,VC,5,1882,female,15.113,88.203,2.164,5.251
-40,Polyommatus bellargus,Dorset,VC,7,1882,male,15.75,97.602,1.466,5.929
-42,Polyommatus icarus,Hampshire,UA,NA,1882,female,14.86,82.506,2.158,6.265
-57,Polyommatus icarus,Middlesex,VC,6,1882,female,15.896,98.865,1.697,5.239
-1,Aricia agestis,Dorset,VC,8,1884,NA,12.867,64.244,1.27,5.081
-6,Aricia agestis,Dorset,VC,8,1884,NA,13.405,66.907,1.25,5.237
-9,Aricia agestis,Dorset,VC,8,1884,NA,12.037,56.198,1.309,5.258
-10,Aricia agestis,Dorset,VC,8,1884,NA,12.518,55.036,1.123,4.51
 12,Aricia agestis,Dorset,VC,8,1885,NA,11.067,45.742,1.032,4.405
 35,Aricia agestis,Middlesex,VC,6,1885,NA,13.003,61.715,1.192,5.614
 42,Aricia agestis,Middlesex,VC,6,1887,NA,13.565,69.868,1.666,5.377
@@ -1143,29 +1131,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 96,Polyommatus icarus,North Ebudes,VC,7,2012,male,15.729,90.785,1.891,5.528
 97,Polyommatus icarus,Outer Hebrides,VC,7,2012,female,15.805,95.673,2.055,6.146
 99,Polyommatus icarus,Outer Hebrides,VC,7,2012,female,15.228,84.486,1.747,5.857
-93,Pyronia tithonus,Middlesex,VC,7,1878,female,19.224,150.833,2.38,6.834
-68,Maniola jurtina,Middlesex,VC,7,1878,female,24.523,243.207,2.16,7.925
-69,Maniola jurtina,Kent,UA,7,1878,male,22.604,210.159,1.727,7.537
-46,Aglais io,Oxfordshire,VC,NA,1878,NA,29.349,367.856,3.702,11.773
-9,Aglais urticae,Berkshire,VC,NA,1878,NA,26.058,255.25,2.902,7.411
-95,Pyronia tithonus,Middlesex,VC,7,1879,male,17.771,131.331,1.53,6.431
-70,Maniola jurtina,Middlesex,VC,7,1879,female,21.947,192.988,2.332,7.363
-97,Aglais io,Middlesex,VC,9,1879,NA,25.023,276.225,2.534,7.851
-46,Argynnis paphia,Hampshire,UA,8,1879,female,32.893,374.141,3.201,9.941
-16,Aglais urticae,Surrey,VC,8,1880,NA,22.06,179.721,2.328,6.775
-70,Lasiommata megera,Middlesex,VC,5,1880,male,23.929,218.828,1.271,8.941
-72,Lasiommata megera,Middlesex,VC,5,1880,female,22.035,198.841,2.577,6.75
-100,Aglais io,Middlesex,VC,10,1882,NA,28.799,333.734,2.839,7.303
-64,Limenitis camilla,Middlesex,VC,7,1882,NA,27.554,284.288,2.229,9.042
-65,Limenitis camilla,Middlesex,VC,7,1882,NA,26.989,273.583,2.289,8.307
-92,Pyronia tithonus,Cumberland,VC,8,1883,male,16.665,112.153,1.532,5.864
-62,Melanargia galathea,Dorset,VC,7,1883,male,23.863,233.547,2.007,10.849
-105,Melanargia galathea,Dorset,VC,7,1883,male,22.856,200.813,2.101,10.918
-106,Melanargia galathea,Dorset,VC,7,1883,female,24.737,235.695,2.706,8.437
-29,Lasiommata megera,Glamorganshire,VC,8,1883,male,20.826,173.642,1.456,8.199
-17,Maniola jurtina,Berkshire,VC,NA,1884,male,21.384,195.263,1.965,8.101
-63,Pararge aegeria,Oxfordshire,VC,5,1884,NA,22.074,180.838,1.883,7.87
-64,Pararge aegeria,Berkshire,VC,7,1884,NA,21.877,179.515,2.032,7.745
 90,Pyronia tithonus,Essex,UA,7,1885,male,17.437,129.88,1.417,5.694
 98,Aglais io,Middlesex,VC,4,1885,NA,26.306,274.057,2.442,8.761
 9,Argynnis paphia,Kent,UA,NA,1885,female,35.517,448.604,3.033,12.433
@@ -2494,8 +2459,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 61,Papilio machaon,Norfolk,UA,8,1982,female,40.48,565.437,4.152,13.204
 63,Papilio machaon,Norfolk,UA,6,1982,female,40.678,560.792,5.372,13.067
 69,Papilio machaon,Norfolk,UA,8,1990,female,39.188,551.155,4.152,11.418
-12,Gonepteryx rhamni,Suffolk,UA,8,1876,male,27.896,309.689,3.239,11.352
-6,Gonepteryx rhamni,Hertfordshire,VC,NA,1884,female,28.694,334.389,2.796,9.669
 45,Gonepteryx rhamni,Kent,UA,8,1886,male,29.688,334.326,2.503,9.921
 46,Gonepteryx rhamni,Middlesex,VC,10,1887,male,27.982,309.692,3.266,11.691
 12,Pieris brassicae,Dorset,VC,5,1887,male,30.338,349.505,2.233,12.608

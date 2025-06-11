@@ -1,0 +1,353 @@
+---
+title: "Cleaning3_Broods_and_Temps"
+author: "Chris Terry"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+This doc links each record with a temperature for that year's spring, summer and summer of the year before. 
+
+The NHM data has lat-longs, the OUNHM data is at vice-county or unitary authority level. 
+
+
+```{r}
+
+library(tidyverse)
+library(sf) # for polygons
+library(tidyverse) # for general manipulation
+library(terra) # for rasters
+library(tidyterra) # for plotting rasters 
+library(exactextractr)  ## for faster averaging of raster polygon intersections
+```
+
+# NHM Data
+
+```{r}
+NHM_records <- read_csv('../data/NHM_measurements_clean.csv')
+```
+
+Identify dates and locations that need to be crossreferenced:
+
+```{r }
+NHM_records %>%
+  distinct(decimalLatitude, decimalLongitude, Year  ) %>%
+mutate( 'SPRING'        =  paste0('SEASON_', Year, '-04-16'),
+        'SUMMER'        =  paste0('SEASON_', Year, '-07-16'),
+        'SUMMER_before' =  paste0('SEASON_', Year-1, '-07-16')) -> Long_Lats_Years
+```
+
+### Loading Temps 
+
+Login through CEDA
+
+https://catalogue.ceda.ac.uk/uuid/18ddbb686be549bfadfecbe0c673f405/
+
+Citable as:  Met Office; Hollis, D.; Carlisle, E.; Kendon, M.; Packman, S.; Doherty, A. (2024): HadUK-Grid Gridded Climate Observations on a 25km grid over the UK, v1.3.0.ceda (1836-2023). NERC EDS Centre for Environmental Data Analysis, 18 July 2024. doi:10.5285/18ddbb686be549bfadfecbe0c673f405. https://dx.doi.org/10.5285/18ddbb686be549bfadfecbe0c673f405
+
+
+```{r eval = FALSE}
+FilePathTo.nc<- "../data/dap.ceda.ac.uk/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.0.ceda/25km/tas/seas/v20240514/"
+Files<- list.files(FilePathTo.nc,full.names = TRUE)[-1] ## dropping 'index'
+List_Rasters<- map(Files, rast)
+## ChangeNamesToTimes
+List_Rasters2<- map(List_Rasters, function(RS){names(RS)<-  paste0('SEASON_', time(RS));return(RS)})
+## Collapse the list
+Collated_SeasonalTemps<- rast(List_Rasters2)
+```
+
+## Matching Locations to Temperatures
+
+```{r eval = FALSE}
+UKGRID_COORDS<-sf_project(pts=  select(Long_Lats_Years,decimalLongitude,decimalLatitude ),
+                          from ='epsg:4326', 
+                          to ='+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +a=6377563.396 +rf=299.324961266495 +units=m +no_defs')
+
+## Extracting all years out into a table of specimen x seasons
+RecordTemps<- terra::extract(x = Collated_SeasonalTemps,
+                             y=UKGRID_COORDS)
+## Checking alignment is good
+plot(Collated_SeasonalTemps[[1]] )
+points( UKGRID_COORDS) 
+
+## There will be some points that just miss a box. For them can setsearch_radius = 100, but not with multilayers
+## Need to pull out RecordTemps
+
+Spring<- rep(NA, nrow( RecordTemps))
+Summer<- rep(NA, nrow( RecordTemps))
+SummerBefore<- rep(NA, nrow( RecordTemps))
+
+for( i in 1:nrow(RecordTemps)){
+  ## dumb but not that slow way to get numbers out of matrix
+  Spring[i] <- RecordTemps[i ,Long_Lats_Years$SPRING[i] ]
+  Summer[i] <- RecordTemps[i ,Long_Lats_Years$SUMMER[i] ]
+ SummerBefore[i] <- RecordTemps[i ,Long_Lats_Years$SUMMER_before[i] ]
+}
+
+Long_Lats_Years$SPRING_temp <- Spring
+Long_Lats_Years$SUMMER_temp <- Summer
+Long_Lats_Years$SUMMER_before_temp <- SummerBefore
+
+```
+
+### Identifying missed areas:
+```{R eval = FALSE}
+Long_Lats_Years %>%
+  ggplot()+
+  geom_point(aes( x = decimalLongitude, y = decimalLatitude,
+                  col = is.na(Spring)))  ## Just weird coastal ones.
+```
+
+Fixing these using nearest neighbour temperatures
+
+```{r eval = FALSE}
+which(is.na(Long_Lats_Years$SPRING_temp)) -> WeirdCoastal_Numbs
+
+for(i in WeirdCoastal_Numbs){   ## takes a little while to run (~1 minute)
+  print(i)
+  
+  ## Spring
+  SeasonLayer = Long_Lats_Years$SPRING[i] 
+  yyy<- terra::extract(x = subset(Collated_SeasonalTemps,SeasonLayer) ,
+                       y=vect(UKGRID_COORDS)[i],
+                       search_radius=100000) ## up to 100km to nearest box
+  Spring[i] <- yyy[1,2]
+  
+  ## Summer
+  SeasonLayer = Long_Lats_Years$SUMMER[i] 
+  xxx<- terra::extract(x = subset(Collated_SeasonalTemps,SeasonLayer) ,
+                       y=vect(UKGRID_COORDS)[i],
+                       search_radius=100000) ## up to 100km to nearest box
+  Summer[i] <- xxx[1,2]
+  
+  ## Summer Before
+    SeasonLayer = Long_Lats_Years$SUMMER_before[i] 
+  zzz<- terra::extract(x = subset(Collated_SeasonalTemps,SeasonLayer) ,
+                       y=vect(UKGRID_COORDS)[i],
+                       search_radius=100000) ## up to 100km to nearest box
+  SummerBefore[i] <- zzz[1,2]
+  
+
+}
+
+## Replacing
+Long_Lats_Years$SPRING_temp <- Spring
+Long_Lats_Years$SUMMER_temp <- Summer
+Long_Lats_Years$SUMMER_before_temp <- SummerBefore
+
+
+### Checking all good now:
+which(is.na(Long_Lats_Years$SPRING_temp))
+
+```
+
+### Saving
+
+```{r eval = FALSE}
+write_csv(Long_Lats_Years, 
+          '../data/NHM_Long_Lats_Years.csv')
+
+```
+
+
+# OUNHM
+
+
+## Formatting Climate Data
+
+### Read in County shape files
+
+Unitary Authorities:
+
+https://www.data.gov.uk/dataset/85228aec-fe0e-49bf-9455-df000d61e731/counties-and-unitary-authorities-may-2023-boundaries-uk-bgc
+
+Vice Counties 
+
+From https://www.brc.ac.uk/article/british-vice-counties / https://github.com/BiologicalRecordsCentre/vice-counties/tree/master
+
+```{r message=FALSE}
+LegalCounties<- st_read('../data/Counties_and_Unitary_Authorities_May_2023_UK_BGC_9070630924157476989/CTYUA_MAY_2023_UK_BGC.shp')
+
+LegalCounties %>%
+  ggplot()+
+  geom_sf(aes(fill = CTYUA23NM ))+
+  guides( fill = 'none')
+
+ViceCounties <- st_read('../data/vice-counties-master/vice-counties-master/MLWM/County_Coastal_Terrestrial_region.shp')
+
+ViceCounties %>%
+  ggplot()+
+  geom_sf(aes(fill = VCNAME  ))+
+  guides( fill = 'none')
+```
+
+## Vice Counties
+
+```{r echo=TRUE, include=FALSE}
+VC_Seasonal_Temps<- exactextractr::exact_extract(Collated_SeasonalTemps,
+                                                ViceCounties, fun = 'mean', weights ='area',
+                                                append_cols = c( 'VCNUMBER','VCNAME' ))
+```
+
+```{r}
+VC_Seasonal_Temps %>% 
+  pivot_longer(cols = starts_with('mean'), 
+               names_to = 'MidDate',
+               values_to = 'MeanTemp',
+               names_prefix = 'mean.SEASON_') %>%
+  separate(MidDate     ,
+           into = c( 'Year', 'Month', 'Mid' ),
+           convert = TRUE, remove = FALSE)%>%
+  mutate( Season = case_when(Month ==1 ~'Winter',
+                             Month ==4 ~'Spring',
+                             Month ==7 ~'Summer',
+                             Month ==10 ~'Autumn')) -> VC_Seasonal_Temps_Long
+
+write_csv(VC_Seasonal_Temps_Long, 
+          '../data/VC_Seasonal_Temps_Long.csv')
+
+## Visual checks
+
+VC_Seasonal_Temps_Long %>%
+  filter(VCNAME %in% ViceCounties$VCNAME[1:10])%>%
+  ggplot(aes(col = VCNAME,  x= ymd(MidDate), y = MeanTemp ))+
+  geom_line()+
+  guides( col = 'none')
+
+
+## mapping out a random year summer temps and comparing to raw data
+ViceCounties %>%
+  left_join( filter(VC_Seasonal_Temps_Long,
+                    Year == 1992,
+                    Season == 'Summer'),
+             by = join_by(VCNUMBER, VCNAME)) %>%
+  ggplot()+
+  geom_sf(aes ( fill =MeanTemp  ))
+
+ggplot()+
+  geom_spatraster(data = List_Rasters[[109]], aes(fill = tas_3) )
+
+
+```
+
+## Unitary authoriries 
+
+```{r echo=TRUE, include=FALSE}
+UA_Seasonal_Temps<- exactextractr::exact_extract(Collated_SeasonalTemps,
+                                                LegalCounties, fun = 'mean', weights ='area',
+                                                append_cols = 'CTYUA23NM')
+```
+
+```{r}
+
+UA_Seasonal_Temps %>% 
+  pivot_longer(cols = starts_with('mean'), 
+               names_to = 'MidDate',
+               values_to = 'MeanTemp',
+               names_prefix = 'mean.SEASON_') %>%
+  separate(MidDate     ,
+           into = c( 'Year', 'Month', 'Mid' ),
+           convert = TRUE, remove = FALSE)%>%
+  mutate( Season = case_when(Month ==1 ~'Winter',
+                             Month ==4 ~'Spring',
+                             Month ==7 ~'Summer',
+                             Month ==10 ~'Autumn')) -> UA_Seasonal_Temps_Long
+
+write_csv(UA_Seasonal_Temps_Long, 
+          '../data/UA_Seasonal_Temps_Long.csv')
+
+## Visual checks
+
+UA_Seasonal_Temps_Long %>%
+  filter(CTYUA23NM  %in% sample(LegalCounties$CTYUA23NM,10))%>%
+  ggplot(aes(col = CTYUA23NM ,  x= ymd(MidDate), y = MeanTemp ))+
+  geom_line()
+
+
+## mapping out a random year summer temps and comparing to raw data
+LegalCounties %>%
+  left_join( filter(UA_Seasonal_Temps_Long,
+                    Year == 1992,
+                    Season == 'Summer'),
+             by = 'CTYUA23NM') %>%
+  ggplot()+
+  geom_sf(aes ( fill =MeanTemp  ))
+
+ggplot()+
+  geom_spatraster(data = List_Rasters[[109]], aes(fill = tas_3) )
+
+```
+
+# Oxford Measurements
+
+```{r}
+OUNHM_data <- read_csv('../data/OUNHM_measurements_clean.csv')
+UA_temps <- read_csv( '../data/UA_Seasonal_Temps_Long.csv') 
+VC_temps <- read_csv('../data/VC_Seasonal_Temps_Long.csv')
+```
+
+```{r}
+
+UA_temps %>%
+  select(Location =  CTYUA23NM  , Year, Season, MeanTemp ) %>%
+    mutate(LocationType= 'UA') -> UA_tidy
+
+
+VC_temps %>%
+  select(Location =  VCNAME         , Year, Season, MeanTemp ) %>%
+    mutate(LocationType= 'VC') -> VC_tidy
+
+bind_rows(UA_tidy, VC_tidy) -> Both_Temps
+
+
+Both_Temps %>%
+  filter( Season %in% c( 'Spring', 'Summer')) %>%
+  group_by(Location, LocationType, Year) %>%
+  pivot_wider(id_cols = c('Location', 'LocationType', 'Year'),
+              names_from = 'Season', values_from = 'MeanTemp') -> SpringSummerTemps
+
+## Calculating YearBefore
+
+SpringSummerTemps %>%
+  select(Summer_before = Summer)%>%
+  mutate(Year = Year+1) -> Summer_Before
+
+
+SpringSummerTemps %>% 
+  left_join(Summer_Before,
+            by = c('Location', 'LocationType', 'Year')) %>%
+  filter( !is.na(Summer_before)) -> ThreeTemps_perLocYear
+
+
+OUNHM_data %>%
+  left_join(ThreeTemps_perLocYear,
+            by = c('Location', 'LocationType', 'Year'))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
