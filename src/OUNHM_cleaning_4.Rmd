@@ -1,0 +1,184 @@
+---
+title: "OUNHM cleaning 4"
+author: "Elsa Heywood"
+date: "2025-06-20"
+output: html_document
+---
+## Adding the shapefiles to get midpoint data for each location and then combining that with temperature, brood, and name data.
+# Load libraries
+```{r}
+library(sf)
+library(dplyr)
+library(tidyverse)
+library(readxl)
+```
+
+# Read in shapefile data for vice counties and unitary authorities
+```{r}
+counties <- st_read("/Users/elsaheywood/Documents/Butterfly_Project_MBiol-main/data/vice-counties-master/vice-counties-master/12-mile/County_12mile_region.shp")
+print(counties)
+
+unitary <- st_read("/Users/elsaheywood/Documents/Butterfly_Project_MBiol-main/data/Counties_and_Unitary_Authorities_May_2023_UK_BGC_9070630924157476989/CTYUA_MAY_2023_UK_BGC.shp")
+print(unitary)
+
+```
+
+# First extract midpoints, convert to LatLong for unitary authorities and clean
+```{r}
+# Get centroids of each unitary authority polygon
+unitary_centroids <- st_centroid(unitary)
+
+# Transform the centroids to WGS84 coordinate system (EPSG:4326, which is lat/lon)
+unitary_centroids <- st_transform(unitary_centroids, crs = 4326)
+
+# Extract coordinates into a data frame
+centroid_coords <- st_coordinates(unitary_centroids)
+
+# Combine coordinates with attribute data (like the name of each unitary authority)
+unitary_midpoints <- unitary_centroids %>%
+  st_drop_geometry() %>%
+  bind_cols(as.data.frame(centroid_coords)) %>%
+  rename(longitude = X, latitude = Y)
+
+#clean columns
+unitary_midpoints_clean <- unitary_midpoints %>%
+  select(CTYUA23CD, CTYUA23NM, longitude, latitude)
+```
+
+# View and save
+```{r}
+# View the result
+head(unitary_midpoints_clean)
+
+write.csv(unitary_midpoints_clean, "unitary_authority_midpoints.csv", row.names = FALSE)
+
+```
+
+# Same for vice counties
+```{r}
+##midpoints for counties
+st_crs(counties)
+
+# Get centroids
+county_centroids <- st_centroid(counties)
+
+# Transform to WGS84 (lat/lon)
+county_centroids <- st_transform(county_centroids, crs = 4326)
+
+# Extract coordinates
+coords <- st_coordinates(county_centroids)
+
+# Combine with attribute data
+county_midpoints <- county_centroids %>%
+  st_drop_geometry() %>%
+  bind_cols(as.data.frame(coords)) %>%
+  rename(longitude = X, latitude = Y)
+
+#clean columns
+county_midpoints_clean <- county_midpoints %>%
+  select(VCNUMBER, VCNAME, longitude, latitude)
+```
+
+# View and save 
+```{r}
+# View result
+head(county_midpoints_clean)
+
+write.csv(county_midpoints_clean, "county_midpoints.csv", row.names = FALSE)
+
+```
+
+# Combine the unitary authority and vice county midpoint data, to do this I have to add their LocationType
+```{r}
+# Add type to unitary authorities
+unitary_midpoints_clean <- unitary_midpoints_clean %>%
+  mutate(Name = CTYUA23NM,
+         LocationType = "UA") %>%
+  select(Name, LocationType, latitude, longitude)
+
+# Add type to counties
+county_midpoints_clean <- county_midpoints_clean %>%
+  mutate(Name = VCNAME,
+         LocationType = "VC") %>%
+  select(Name, LocationType, latitude, longitude)
+# Combine
+combined_locations <- bind_rows(unitary_midpoints_clean, county_midpoints_clean)
+head(combined_locations)
+combined_locations %>% filter(LocationType == "VC") %>% head()
+
+write_csv(combined_locations, "combined_midpoints.csv")
+```
+
+## Now combine this with OUNHM_data_temps and that with BroodTable and Names_table
+# Read in data
+```{r}
+OUNHM_data_temps <- read_csv("OUNHM_data_temps.csv")
+BroodTable <- read_xlsx("/Users/elsaheywood/Downloads/butterfly brood table.xlsx")
+Names_table <- read_xlsx("/Users/elsaheywood/Desktop/names_table.xlsx")
+
+```
+
+# Clean and combine brood tables
+```{r}
+Brood_table2 <- BroodTable %>%
+  left_join(Names_table, by = 'NHM name') %>%
+  mutate(FirstMonthBrood2 = as.numeric(FirstMonthBrood2)) %>%
+  filter(Include == 'TRUE') %>%
+  select(`Taxon name`, Brood1Use, Brood2Use, FirstMonthBrood2, Univoltine)
+
+# Remove duplicate rows from Brood_table2
+Brood_table2_unique <- Brood_table2 %>%
+  distinct()
+
+Brood_table_long <- Brood_table2_unique %>%
+  select(-FirstMonthBrood2, -Univoltine) %>%
+  pivot_longer(
+    names_to = 'Brood',
+    values_to = 'TempToUse',
+    cols = Brood1Use:Brood2Use
+  ) %>%
+  filter(TempToUse != 'NA') %>%
+  mutate(Brood = parse_number(Brood))
+
+Brood_table_long_unique <- Brood_table_long %>%
+  group_by(`Taxon name`, Brood) %>%
+  slice(1) %>%
+  ungroup()
+```
+
+# Add all tables including location_midpoints
+```{r}
+OUNHM_for_models <- OUNHM_data_temps %>%
+  left_join(
+    combined_locations %>%
+      select(Name, LocationType, midpointLongitude = longitude, midpointLatitude = latitude),
+    by = c("Location" = "Name", "LocationType" = "LocationType")
+  ) %>%
+  # Join Brood_table2 for FirstMonthBrood2 and Univoltine
+  left_join(
+    select(Brood_table2_unique, `Taxon name`, FirstMonthBrood2, Univoltine),
+    by = 'Taxon name'
+  ) %>%
+  mutate(Brood = ifelse(Univoltine, 1,
+                        ifelse(Month < FirstMonthBrood2, 1, 2))) %>%
+  # Join brood temp table
+  left_join(Brood_table_long_unique, by = c('Taxon name', 'Brood')) %>%
+  select(`Taxon name`, midpointLatitude, midpointLongitude, Year,
+         Wing_Length, Brood, TempToUse,
+         SPRING_temp, SUMMER_temp, SUMMER_before_temp) %>%
+  mutate(Temp = case_when(
+    TempToUse == 'Spring' ~ SPRING_temp,
+    TempToUse == 'Summer' ~ SUMMER_temp,
+    TempToUse == 'Summer_before' ~ SUMMER_before_temp,
+    TRUE ~ NA_real_
+  )) %>%
+  select(-ends_with('_temp')) %>%
+  distinct()  # Remove duplicates
+```
+
+# View and save
+```{r}
+OUNHM_for_models
+write_csv(OUNHM_for_models, "OUNHM_for_models.csv")
+```
+
