@@ -15,10 +15,10 @@ library(readxl)
 
 # Read in shapefile data for vice counties and unitary authorities
 ```{r}
-counties <- st_read("/Users/elsaheywood/Documents/Butterfly_Project_MBiol-main/data/vice-counties-master/vice-counties-master/12-mile/County_12mile_region.shp")
+counties <- st_read("../data/vice-counties-master/vice-counties-master/12-mile/County_12mile_region.shp")
 print(counties)
 
-unitary <- st_read("/Users/elsaheywood/Documents/Butterfly_Project_MBiol-main/data/Counties_and_Unitary_Authorities_May_2023_UK_BGC_9070630924157476989/CTYUA_MAY_2023_UK_BGC.shp")
+unitary <- st_read("../data/Counties_and_Unitary_Authorities_May_2023_UK_BGC_9070630924157476989/CTYUA_MAY_2023_UK_BGC.shp")
 print(unitary)
 
 ```
@@ -50,7 +50,7 @@ unitary_midpoints_clean <- unitary_midpoints %>%
 # View the result
 head(unitary_midpoints_clean)
 
-write.csv(unitary_midpoints_clean, "unitary_authority_midpoints.csv", row.names = FALSE)
+write_csv(unitary_midpoints_clean, "../data/unitary_authority_midpoints.csv")
 
 ```
 
@@ -84,7 +84,7 @@ county_midpoints_clean <- county_midpoints %>%
 # View result
 head(county_midpoints_clean)
 
-write.csv(county_midpoints_clean, "county_midpoints.csv", row.names = FALSE)
+write_csv(county_midpoints_clean, "../data/county_midpoints.csv")
 
 ```
 
@@ -106,15 +106,15 @@ combined_locations <- bind_rows(unitary_midpoints_clean, county_midpoints_clean)
 head(combined_locations)
 combined_locations %>% filter(LocationType == "VC") %>% head()
 
-write_csv(combined_locations, "combined_midpoints.csv")
+write_csv(combined_locations, "../data/combined_midpoints.csv")
 ```
 
 ## Now combine this with OUNHM_data_temps and that with BroodTable and Names_table
 # Read in data
 ```{r}
-OUNHM_data_temps <- read_csv("OUNHM_data_temps.csv")
-BroodTable <- read_xlsx("/Users/elsaheywood/Downloads/butterfly brood table.xlsx")
-Names_table <- read_xlsx("/Users/elsaheywood/Desktop/names_table.xlsx")
+OUNHM_data_temps <- read_csv("../data/OUNHM_data_temps.csv")
+BroodTable <- read_xlsx("../data/butterfly brood table.xlsx")
+Names_table <- read_xlsx("../data/names_table.xlsx")
 
 ```
 
@@ -179,6 +179,6 @@ OUNHM_for_models <- OUNHM_data_temps %>%
 # View and save
 ```{r}
 OUNHM_for_models
-write_csv(OUNHM_for_models, "OUNHM_for_models.csv")
+write_csv(OUNHM_for_models, "../data/OUNHM_for_models.csv")
 ```
 
