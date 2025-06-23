@@ -1,0 +1,137 @@
+---
+title: "Cleaning4_OUNHM_Lats"
+author: "Chris Terry & Elsa Heywood"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+## Adding the shapefiles to get midpoint data for each location and then combining that with temperature, brood, and name data.
+# Load libraries
+```{r message=FALSE}
+library(sf)
+library(tidyverse)
+library(readxl)
+```
+
+# Read in shapefile data for vice counties and unitary authorities
+```{r}
+counties <- st_read("../data/vice-counties-master/vice-counties-master/12-mile/County_12mile_region.shp")
+print(counties)
+
+unitary <- st_read("../data/Counties_and_Unitary_Authorities_May_2023_UK_BGC_9070630924157476989/CTYUA_MAY_2023_UK_BGC.shp")
+print(unitary)
+```
+
+# First extract midpoints, convert to LatLong for unitary authorities and clean
+```{r}
+# Get centroids of each unitary authority polygon
+unitary_centroids <- st_centroid(unitary)
+
+# Transform the centroids to WGS84 coordinate system (EPSG:4326, which is lat/lon)
+unitary_centroids <- st_transform(unitary_centroids, crs = 4326)
+
+# Extract coordinates into a data frame
+centroid_coords <- st_coordinates(unitary_centroids)
+
+# Combine coordinates with attribute data (like the name of each unitary authority)
+unitary_midpoints <- unitary_centroids %>%
+  st_drop_geometry() %>%
+  bind_cols(as.data.frame(centroid_coords)) %>%
+  rename(longitude = X, latitude = Y)
+
+#clean columns
+unitary_midpoints_clean <- unitary_midpoints %>%
+  select(CTYUA23CD, CTYUA23NM, longitude, latitude)
+
+
+#### this is all that is needed! 
+unitary_midpoints_clean2 <- unitary %>%
+  st_transform(crs = 4326)%>%
+  st_centroid %>%
+  mutate(LONG=st_coordinates(.)[,1],
+         LAT =st_coordinates(.)[,2])%>%
+  select(CTYUA23NM,LONG,LAT)%>%
+  st_drop_geometry
+
+unitary_midpoints_clean[1:5,]
+unitary_midpoints_clean2[1:5,]
+
+```
+
+# View and save
+```{r}
+# View the result
+#head(unitary_midpoints_clean)
+#write_csv(unitary_midpoints_clean, "../data/unitary_authority_midpoints.csv")
+
+```
+
+# Same for vice counties
+```{r}
+##midpoints for counties
+st_crs(counties)
+
+# Get centroids
+county_centroids <- st_centroid(counties)
+
+# Transform to WGS84 (lat/lon)
+county_centroids <- st_transform(county_centroids, crs = 4326)
+
+# Extract coordinates
+coords <- st_coordinates(county_centroids)
+
+# Combine with attribute data
+county_midpoints <- county_centroids %>%
+  st_drop_geometry() %>%
+  bind_cols(as.data.frame(coords)) %>%
+  rename(longitude = X, latitude = Y)
+
+#clean columns
+county_midpoints_clean <- county_midpoints %>%
+  select(VCNUMBER, VCNAME, longitude, latitude)
+
+county_midpoints_clean2<- counties%>%
+  st_centroid %>% 
+  st_transform(crs = 4326)%>%
+  mutate(LONG=st_coordinates(.)[,1],
+         LAT =st_coordinates(.)[,2])%>%
+  select(VCNAME,LONG,LAT)%>%
+  st_drop_geometry
+```
+
+# View and save 
+```{r}
+# View result
+#head(county_midpoints_clean)
+#write_csv(county_midpoints_clean, "../data/county_midpoints.csv")
+
+```
+
+# Combine the unitary authority and vice county midpoint data
+```{r}
+# Add type to unitary authorities
+unitary_midpoints_clean <- unitary_midpoints_clean %>%
+  mutate(Location = CTYUA23NM,
+         LocationType = "UA") %>%
+  select(Location, LocationType, latitude, longitude)
+
+# Add type to counties
+county_midpoints_clean <- county_midpoints_clean %>%
+  mutate(Location = VCNAME,
+         LocationType = "VC") %>%
+  select(Location, LocationType, latitude, longitude)
+# Combine
+combined_locations <- bind_rows(unitary_midpoints_clean, county_midpoints_clean)
+head(combined_locations)
+combined_locations %>% filter(LocationType == "VC") %>% head()
+
+
+##round values to something sensible
+
+combined_locations %>%
+  mutate(latitude = round(latitude, digits = 6),
+         longitude = round(longitude, digits = 6)) %>%
+  write_csv("../data/combined_midpoints.csv")
+```
