@@ -55,7 +55,8 @@ NHM_data_temps%>%
                          ifelse(TempToUse == 'Summer' , SUMMER_temp ,
                                 ifelse(TempToUse == 'Summer_before',  SUMMER_before_temp,
                                        NA))),
-          Temp = round(Temp, digits = 3)) %>%
+          Temp = round(Temp, digits = 3),
+          Sex = ifelse( Sex =='N/A', 'undetermined', Sex)   ) %>%
   select(-ends_with('_temp')) -> NHM_for_models
 
 write_csv(NHM_for_models, '../data/NHM_for_models.csv')
@@ -84,14 +85,13 @@ OUNHM_for_models <- OUNHM_data_temps %>%
   select(Sp = `Taxon name`,Latitude= latitude, Year,Sex  , 
          Wing_Length, Brood, TempToUse,
          SPRING_temp, SUMMER_temp, SUMMER_before_temp) %>%
-  mutate(Temp = case_when(
-    TempToUse == 'Spring' ~ SPRING_temp,
-    TempToUse == 'Summer' ~ SUMMER_temp,
-    TempToUse == 'Summer_before' ~ SUMMER_before_temp,
-    TRUE ~ NA_real_
-  ), Temp = round(Temp, digits = 3)) %>%
-  select(-ends_with('_temp')) %>%
-  distinct()  # Remove duplicates
+  mutate(Temp = case_when( TempToUse == 'Spring' ~ SPRING_temp,
+                           TempToUse == 'Summer' ~ SUMMER_temp,
+                           TempToUse == 'Summer_before' ~ SUMMER_before_temp,
+                           TRUE ~ NA_real_),
+         Temp = round(Temp, digits = 3),
+        Sex = ifelse( is.na(Sex), 'undetermined', Sex)  ) %>%
+  select(-ends_with('_temp')) 
 ```
 
 # View and save

@@ -406,7 +406,8 @@ NHM_data_temps%&gt;%
                          ifelse(TempToUse == &#39;Summer&#39; , SUMMER_temp ,
                                 ifelse(TempToUse == &#39;Summer_before&#39;,  SUMMER_before_temp,
                                        NA))),
-          Temp = round(Temp, digits = 3)) %&gt;%
+          Temp = round(Temp, digits = 3),
+          Sex = ifelse( Sex ==&#39;N/A&#39;, &#39;undetermined&#39;, Sex)   ) %&gt;%
   select(-ends_with(&#39;_temp&#39;)) -&gt; NHM_for_models
 
 write_csv(NHM_for_models, &#39;../data/NHM_for_models.csv&#39;)</code></pre>
@@ -439,14 +440,13 @@ write_csv(NHM_for_models, &#39;../data/NHM_for_models.csv&#39;)</code></pre>
   select(Sp = `Taxon name`,Latitude= latitude, Year,Sex  , 
          Wing_Length, Brood, TempToUse,
          SPRING_temp, SUMMER_temp, SUMMER_before_temp) %&gt;%
-  mutate(Temp = case_when(
-    TempToUse == &#39;Spring&#39; ~ SPRING_temp,
-    TempToUse == &#39;Summer&#39; ~ SUMMER_temp,
-    TempToUse == &#39;Summer_before&#39; ~ SUMMER_before_temp,
-    TRUE ~ NA_real_
-  ), Temp = round(Temp, digits = 3)) %&gt;%
-  select(-ends_with(&#39;_temp&#39;)) %&gt;%
-  distinct()  # Remove duplicates</code></pre>
+  mutate(Temp = case_when( TempToUse == &#39;Spring&#39; ~ SPRING_temp,
+                           TempToUse == &#39;Summer&#39; ~ SUMMER_temp,
+                           TempToUse == &#39;Summer_before&#39; ~ SUMMER_before_temp,
+                           TRUE ~ NA_real_),
+         Temp = round(Temp, digits = 3),
+        Sex = ifelse( is.na(Sex), &#39;undetermined&#39;, Sex)  ) %&gt;%
+  select(-ends_with(&#39;_temp&#39;)) </code></pre>
 </div>
 </div>
 <div id="view-and-save" class="section level1">
@@ -455,15 +455,15 @@ write_csv(NHM_for_models, &#39;../data/NHM_for_models.csv&#39;)</code></pre>
 <pre><code>## # A tibble: 2,619 × 8
 ##    Sp                    Latitude  Year Sex    Wing_Length Brood TempToUse  Temp
 ##    &lt;chr&gt;                    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
-##  1 Erynnis tages             51.5  1885 &lt;NA&gt;          11.4     1 Spring     6.99
-##  2 Erynnis tages             51.5  1885 &lt;NA&gt;          12.0     1 Spring     6.99
-##  3 Erynnis tages             51.8  1886 &lt;NA&gt;          11.8     1 Spring     7.27
-##  4 Erynnis tages             51.8  1886 &lt;NA&gt;          12.5     1 Spring     7.27
+##  1 Erynnis tages             51.5  1885 undet…        11.4     1 Spring     6.99
+##  2 Erynnis tages             51.5  1885 undet…        12.0     1 Spring     6.99
+##  3 Erynnis tages             51.8  1886 undet…        11.8     1 Spring     7.27
+##  4 Erynnis tages             51.8  1886 undet…        12.5     1 Spring     7.27
 ##  5 Thymelicus sylvestris     51.3  1887 male          13.0     1 Spring     6.49
 ##  6 Thymelicus sylvestris     50.7  1887 female        13.5     1 Spring     6.69
 ##  7 Thymelicus sylvestris     50.7  1887 male          12.7     1 Spring     6.69
-##  8 Erynnis tages             51.3  1888 &lt;NA&gt;          11.7     1 Spring     6.61
-##  9 Pyrgus malvae             51.1  1888 &lt;NA&gt;          11.6     1 Spring     6.73
+##  8 Erynnis tages             51.3  1888 undet…        11.7     1 Spring     6.61
+##  9 Pyrgus malvae             51.1  1888 undet…        11.6     1 Spring     6.73
 ## 10 Thymelicus sylvestris     52.7  1888 male          12.9     1 Spring     6.36
 ## # ℹ 2,609 more rows</code></pre>
 <pre class="r"><code>write_csv(OUNHM_for_models, &quot;../data/OUNHM_for_models.csv&quot;)</code></pre>
