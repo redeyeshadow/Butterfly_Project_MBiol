@@ -6,9 +6,8 @@ output: html_document
 ---
 ## Adding the shapefiles to get midpoint data for each location and then combining that with temperature, brood, and name data.
 # Load libraries
-```{r}
+```{r message=FALSE}
 library(sf)
-library(dplyr)
 library(tidyverse)
 library(readxl)
 ```
@@ -20,7 +19,6 @@ print(counties)
 
 unitary <- st_read("../data/Counties_and_Unitary_Authorities_May_2023_UK_BGC_9070630924157476989/CTYUA_MAY_2023_UK_BGC.shp")
 print(unitary)
-
 ```
 
 # First extract midpoints, convert to LatLong for unitary authorities and clean
@@ -43,14 +41,27 @@ unitary_midpoints <- unitary_centroids %>%
 #clean columns
 unitary_midpoints_clean <- unitary_midpoints %>%
   select(CTYUA23CD, CTYUA23NM, longitude, latitude)
+
+
+#### this is all that is needed! 
+unitary_midpoints_clean2 <- unitary %>%
+  st_transform(crs = 4326)%>%
+  st_centroid %>%
+  mutate(LONG=st_coordinates(.)[,1],
+         LAT =st_coordinates(.)[,2])%>%
+  select(CTYUA23NM,LONG,LAT)%>%
+  st_drop_geometry
+
+unitary_midpoints_clean[1:5,]
+unitary_midpoints_clean2[1:5,]
+
 ```
 
 # View and save
 ```{r}
 # View the result
-head(unitary_midpoints_clean)
-
-write_csv(unitary_midpoints_clean, "../data/unitary_authority_midpoints.csv")
+#head(unitary_midpoints_clean)
+#write_csv(unitary_midpoints_clean, "../data/unitary_authority_midpoints.csv")
 
 ```
 
@@ -77,14 +88,21 @@ county_midpoints <- county_centroids %>%
 #clean columns
 county_midpoints_clean <- county_midpoints %>%
   select(VCNUMBER, VCNAME, longitude, latitude)
+
+county_midpoints_clean2<- counties%>%
+  st_centroid %>% 
+  st_transform(crs = 4326)%>%
+  mutate(LONG=st_coordinates(.)[,1],
+         LAT =st_coordinates(.)[,2])%>%
+  select(VCNAME,LONG,LAT)%>%
+  st_drop_geometry
 ```
 
 # View and save 
 ```{r}
 # View result
-head(county_midpoints_clean)
-
-write_csv(county_midpoints_clean, "../data/county_midpoints.csv")
+#head(county_midpoints_clean)
+#write_csv(county_midpoints_clean, "../data/county_midpoints.csv")
 
 ```
 
