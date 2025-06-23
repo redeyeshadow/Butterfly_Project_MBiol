@@ -17,89 +17,46 @@ library(brms)
 library(posterior)
 ```
 
-
 ```{r}
-NHM_ForFitting <- read_csv(  '../data/FilteredSizeAndLoc_Seasons_DRYRUN.csv')%>%
-  select(Species= `Taxon Name` , 
-         Year = year, 
-         Sex = gender, 
-         wingspan_mm, 
-         Brood, 
-         decimalLatitude ,
-         Develop_Season =TempDEVELOP ,
-         Develop_Temp= SeasonTT_Develop, 
-         Laying_Temp = SeasonTT_Lay) %>%
-  mutate( Sex = ifelse( Sex == 'N/A', 'Both', Sex))
+NHM_ForFitting <- read_csv(  '../data/NHM_for_models.csv')
+OUM_ForFitting <- read_csv(  '../data/OUNHM_for_models.csv')
 ```
 
-### Correlations between year and temperature
+# NHM
 
+## How much data per species/sex/brood?
 
-Looks like there is a trend, but it is not the explanatory
-However note there are  trends in location wrapped up in all of this. Over time, more records from more southerly locations. 
-
-```{r}
-NHM_ForFitting %>%
-  ggplot( aes( x = Year, y = Develop_Temp))+
-  geom_point( aes(col =decimalLatitude))+
-  geom_smooth(method = 'lm')+
-  facet_wrap(~Develop_Season)
-
-NHM_ForFitting %>%
-  ggplot( aes( x = Year, y = decimalLatitude))+
-  geom_point( aes(col =Develop_Temp))+
-  geom_smooth(method = 'lm')+
-  facet_wrap(~Develop_Season)
-
-NHM_ForFitting %>%
-  filter(Develop_Season == 'SPRING') %>%
-  lm(data =., Develop_Temp ~ decimalLatitude +Year)%>%
-  summary()
-
-```
-
-### Fitting models
-
+For now just taking those with at least 100 measurememts. 
 ```{r}
 ## Cycle through each species to fit models 
 
 Batches<- count(NHM_ForFitting,
-                Species, Brood ,Sex)%>%
+                Sp, Brood ,Sex)%>%
   arrange( n)
 
 ## 200 potential models to fit:
-
-Batches$n %>% log10 %>% plot # almost perfect log-normal plot
-
-sum(Batches$n >100) # 155 have over 100, 
-
-Batches %>%
-  filter( n >100 ) -> TableOfModels
+Batches$n %>% log10 %>% plot; abline(h = 2) # almost perfect log-normal plot
+sum(Batches$n >100) # 154 have over 100, 
 
 
-
+### 
 Batches %>%
   pivot_wider(values_from = 'n',  names_from = 'Sex', values_fill = 0) %>%
-  mutate( Perc_Undetermined = 100* Both / ( male+Both+female)  ) -> PercentageUndetermined
+  mutate( Perc_Undetermined = 100* undetermined / ( male+undetermined+female)  ) -> PercentageUndetermined
 
 PercentageUndetermined %>%
   ggplot( aes( x =Perc_Undetermined, fill = Brood))+
   geom_histogram()
 
-## percentage undtermined is pretty consistence between broods 
-PercentageUndetermined%>%
-  ggplot( aes( y =Perc_Undetermined, x = Species,col = Brood))+
-  geom_point()
-
 NHM_ForFitting%>%
   group_by(Year) %>%
-  summarise(FracUndetermined = mean(Sex=='Both')) %>%
+  summarise(FracUndetermined = mean(Sex=='undetermined')) %>%
   ggplot(aes(y= FracUndetermined, x = Year ))+
   geom_point()
 
 ### For spotting weirdnesses
 NHM_ForFitting %>%
-  group_by(Species, Brood) %>%
+  group_by(Sp, Brood) %>%
   summarise( signif(mean(Year),1), 
              min(Year), 
              quantile(Year, 0.1), 
@@ -108,41 +65,41 @@ NHM_ForFitting %>%
              n = n())%>%
   mutate(EightyQuantileRange = `quantile(Year, 0.9)`-`quantile(Year, 0.1)` ) %>%
   arrange( EightyQuantileRange)%>%
-  arrange(Species            ) -> NHM_Brood_data_spread
+  arrange(Sp) -> NHM_Brood_data_spread
 
-NHM_Brood_data_spread %>%
-  left_join(PercentageUndetermined) %>%
-write_csv('../data/NHM_Brood_data_spread.csv')
+# NHM_Brood_data_spread %>%
+#   left_join(PercentageUndetermined) %>%
+# write_csv('../data/NHM_Brood_data_spread.csv')
 
 ```
 
-
+## Build unique Name for each brood
 ```{r}
-Set = paste0('Sp.', TableOfModels$Species,
-             '_Bro.',TableOfModels$Brood,
-             '_Sex.',TableOfModels$Sex)
+## Exclude all of brood 2:
+Batches %>%
+  filter(Brood ==1,
+         n >100 ) -> TableOfModels_NHM
 
-
+Set = paste0('Sp.', TableOfModels_NHM$Sp,
+             '_Sex.',TableOfModels_NHM$Sex)
 ```
 
 ```{r eval = FALSE}
 ### Define and compile model
 CoreModel <-   NHM_ForFitting %>%
-    filter(Species == TableOfModels$Species[1],
-           Brood   == TableOfModels$Brood[1]  ,
-           Sex     == TableOfModels$Sex[1]) %>%
-    brm( wingspan_mm ~ Year + Develop_Temp  + decimalLatitude,
+    filter(Sp == TableOfModels_NHM$Sp[1],
+           Sex     == TableOfModels_NHM$Sex[1]) %>%
+    brm( Right_wing  ~ Year + Temp  + Latitude,
          data = ., refresh = 0)
 
 ## Refit model to each set of data, saving each time
-for( i in 1:nrow( TableOfModels)){
+for( i in 1:nrow( TableOfModels_NHM)){
   print(Set[i])
   NHM_ForFitting %>%
-    filter(Species == TableOfModels$Species[i],
-           Brood   == TableOfModels$Brood[i]  ,
-           Sex     == TableOfModels$Sex[i]) -> batchDATA
+    filter(Sp == TableOfModels_NHM$Sp[i],
+           Sex     == TableOfModels_NHM$Sex[i]) -> batchDATA
   update( CoreModel, newdata = batchDATA, refresh = 0) -> MODEL_FIT
-  save(MODEL_FIT, file = paste('../NHM_modelfits2/',Set[i]  ))
+  save(MODEL_FIT, file = paste('../NHM_modelfits3/',Set[i]  ))
 }
 
 ```
@@ -150,64 +107,111 @@ for( i in 1:nrow( TableOfModels)){
 ### Collating model outputs into a df
 
 ```{r eval = FALSE}
-map_df(1:nrow( TableOfModels), function(i){
-  load(file = paste('../NHM_modelfits2/',Set[i]  )) 
+map_df(1:nrow( TableOfModels_NHM), function(i){
+  load(file = paste('../NHM_modelfits3/',Set[i]  )) 
   MODEL_FIT %>%
     as_draws_array %>%
     summarise_draws -> Fit_df
-  Fit_df$Species = TableOfModels$Species[i]
-  Fit_df$Brood = TableOfModels$Brood[i] 
-  Fit_df$Sex = TableOfModels$Sex[i] 
-  
+  Fit_df$Sp = TableOfModels_NHM$Sp[i]
+  Fit_df$Sex = TableOfModels_NHM$Sex[i] 
   return(Fit_df)
-})-> Posterior_Summaries
+})-> Posterior_Summaries_NHM
 
-write_csv(Posterior_Summaries, 'Posterior_Summaries_dryrun2.csv')
+write_csv(Posterior_Summaries_NHM, '../statsresults/NHM_Posterior_Summaries_dryrun3.csv')
 
 ```
 
+# OUNHM
 
-## Step 2 - Does ecologucal specificity predict the trends?
+## How much data per species/sex/brood?
 
-Does ecological specificity determine trends?
-
-
+For now just taking those with at least 100 measurememts. 
 ```{r}
-Posterior_Summaries<- read_csv('Posterior_Summaries_dryrun2.csv')
+## Cycle through each species to fit models 
 
+Batches<- count(OUM_ForFitting,
+                Sp, Brood ,Sex)%>%
+  arrange( desc(n))
 
-Posterior_Summaries %>%
-  filter( variable %in% c( 'b_Develop_Temp',
-                           'b_Year',
-                           'b_decimalLatitude' ) )%>%
-  ggplot( aes( y =  paste( Species,Brood,Sex ), 
-               x = mean))+
-  geom_point()+
-  geom_errorbarh(aes( xmin = q5, xmax = q95))+
-  geom_vline(xintercept = 0)+
-    facet_wrap(~variable, scales = 'free_x')
+## 200 potential models to fit:
+Batches$n  %>% plot; abline(h = 40) # almost perfect log-normal plot
+sum(Batches$n  >=40) # 154 have over 40, 
 
-## Join to species predictors
+OUM_ForFitting%>%
+  group_by(Year) %>%
+  summarise(FracUndetermined = mean(Sex=='undetermined')) %>%
+  ggplot(aes(y= FracUndetermined, x = Year ))+
+  geom_point()
 
-## fit including uncertainty in coefficent. 
+### For spotting weirdnesses
+OUM_ForFitting %>%
+  group_by(Sp, Brood) %>%
+  summarise( signif(mean(Year),1), 
+             min(Year), 
+             quantile(Year, 0.1), 
+             quantile(Year, 0.9),
+             max(Year), 
+             n = n())%>%
+  mutate(EightyQuantileRange = `quantile(Year, 0.9)`-`quantile(Year, 0.1)` ) %>%
+  arrange( EightyQuantileRange)%>%
+  arrange(Sp) -> OUM_Brood_data_spread
 
-
-ggsave(filename = 'AllCombos_Trends_DryRun.pdf', width = 8, height =20)
+# NHM_Brood_data_spread %>%
+#   left_join(PercentageUndetermined) %>%
+# write_csv('../data/NHM_Brood_data_spread.csv')
 
 ```
 
+## Build unique Name for each brood
+```{r}
+## Exclude all of brood 2:
+Batches %>%
+  filter(Brood ==1,
+         n >=40 ) -> TableOfModels_OUNHM
 
+Set = paste0('Sp.', TableOfModels_OUNHM$Sp,
+             '_Sex.',TableOfModels_OUNHM$Sex)
+```
 
+```{r eval = FALSE}
+### Define and compile model
+CoreModel_OU <-   OUM_ForFitting %>%
+    filter(Sp == TableOfModels_OUNHM$Sp[1],
+           Sex     == TableOfModels_OUNHM$Sex[1]) %>%
+    brm( Wing_Length   ~ Year + Temp  + Latitude,
+         data = ., refresh = 0)
 
+## Refit model to each set of data, saving each time
+for( i in 1:nrow( TableOfModels_OUNHM)){
+  print(Set[i])
+  OUM_ForFitting %>%
+    filter(Sp == TableOfModels_OUNHM$Sp[i],
+           Sex     == TableOfModels_OUNHM$Sex[i]) -> batchDATA
+  update( CoreModel_OU, newdata = batchDATA, refresh = 0) -> MODEL_FIT
+  save(MODEL_FIT, file = paste('../OUM_modelfits3/',Set[i]  ))
+}
 
+```
 
+### Collating model outputs into a df
 
+```{r eval = FALSE}
+map_df(1:nrow( TableOfModels_OUNHM), function(i){
+  load(file = paste('../OUM_modelfits3/',Set[i]  )) 
+  MODEL_FIT %>%
+    as_draws_array %>%
+    summarise_draws -> Fit_df
+  Fit_df$Sp = TableOfModels_OUNHM$Sp[i]
+  Fit_df$Sex = TableOfModels_OUNHM$Sex[i] 
+  return(Fit_df)
+})-> Posterior_Summaries_OUM
 
+write_csv(Posterior_Summaries_OUM, '../statsresults/OUM_Posterior_Summaries_dryrun3.csv')
 
-
+```
 
 
 ```{R}
-#sessionInfo()
+sessionInfo()
 
 ```
