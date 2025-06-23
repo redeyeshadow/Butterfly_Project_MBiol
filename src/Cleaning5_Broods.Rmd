@@ -48,7 +48,7 @@ NHM_data_temps%>%
                         ifelse(Month <  FirstMonthBrood2, 1, 2   ))) %>% 
   ## Now add temperature to use column from   Brood_table_long
   left_join(Brood_table_long ,by = c('Taxon name', 'Brood')) %>%
-  select(`Taxon name`, Latitude= decimalLatitude ,Year , 
+  select(Sp = `Taxon name`, Latitude= decimalLatitude ,Year , 
          Right_wing=`right_wing (mm)` , Brood, TempToUse  ,
          SPRING_temp,SUMMER_temp,SUMMER_before_temp  ) %>%
   mutate( Temp = ifelse( TempToUse == 'Spring', SPRING_temp  ,
@@ -81,7 +81,7 @@ OUNHM_for_models <- OUNHM_data_temps %>%
                         ifelse(Month < FirstMonthBrood2, 1, 2))) %>%
   # Join brood temp table
   left_join(Brood_table_long, by = c('Taxon name', 'Brood')) %>%
-  select(`Taxon name`,Latitude= latitude, Year,
+  select(Sp = `Taxon name`,Latitude= latitude, Year,
          Wing_Length, Brood, TempToUse,
          SPRING_temp, SUMMER_temp, SUMMER_before_temp) %>%
   mutate(Temp = case_when(

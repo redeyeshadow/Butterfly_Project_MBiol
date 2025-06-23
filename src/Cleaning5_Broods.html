@@ -399,7 +399,7 @@ NHM_data_temps%&gt;%
                         ifelse(Month &lt;  FirstMonthBrood2, 1, 2   ))) %&gt;% 
   ## Now add temperature to use column from   Brood_table_long
   left_join(Brood_table_long ,by = c(&#39;Taxon name&#39;, &#39;Brood&#39;)) %&gt;%
-  select(`Taxon name`, Latitude= decimalLatitude ,Year , 
+  select(Sp = `Taxon name`, Latitude= decimalLatitude ,Year , 
          Right_wing=`right_wing (mm)` , Brood, TempToUse  ,
          SPRING_temp,SUMMER_temp,SUMMER_before_temp  ) %&gt;%
   mutate( Temp = ifelse( TempToUse == &#39;Spring&#39;, SPRING_temp  ,
@@ -436,7 +436,7 @@ write_csv(NHM_for_models, &#39;../data/NHM_for_models.csv&#39;)</code></pre>
                         ifelse(Month &lt; FirstMonthBrood2, 1, 2))) %&gt;%
   # Join brood temp table
   left_join(Brood_table_long, by = c(&#39;Taxon name&#39;, &#39;Brood&#39;)) %&gt;%
-  select(`Taxon name`,Latitude= latitude, Year,
+  select(Sp = `Taxon name`,Latitude= latitude, Year,
          Wing_Length, Brood, TempToUse,
          SPRING_temp, SUMMER_temp, SUMMER_before_temp) %&gt;%
   mutate(Temp = case_when(
@@ -453,7 +453,7 @@ write_csv(NHM_for_models, &#39;../data/NHM_for_models.csv&#39;)</code></pre>
 <h1>View and save</h1>
 <pre class="r"><code>OUNHM_for_models</code></pre>
 <pre><code>## # A tibble: 2,619 × 7
-##    `Taxon name`          Latitude  Year Wing_Length Brood TempToUse  Temp
+##    Sp                    Latitude  Year Wing_Length Brood TempToUse  Temp
 ##    &lt;chr&gt;                    &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
 ##  1 Erynnis tages             51.5  1885        11.4     1 Spring     6.99
 ##  2 Erynnis tages             51.5  1885        12.0     1 Spring     6.99
