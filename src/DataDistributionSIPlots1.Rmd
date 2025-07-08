@@ -28,11 +28,10 @@ SouthBritishIsles<- map_data('worldHires')
 
 ```
 
-
 # Plotting Function
 
 ```{r}
-Plot_Summary<- function(species, data, dataset){
+Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
   data %>%
     filter(Sp == species,
            Brood==1)-> XX  ### Only plot out brood 1
@@ -52,7 +51,25 @@ Plot_Summary<- function(species, data, dataset){
                 aes(y = Size, x = Temp, group=Sex))+
     scale_color_viridis_c(limits = c( 1886,2006) ) -> TempvsSize1
   
-  XX%>%
+
+  if(Jitter){
+      XX%>%
+    ggplot()+
+    geom_polygon(data= SouthBritishIsles,
+                 aes(x = long,   y = lat,  group = group, ),
+                 fill = 'gray90',  color = 'black')+
+    geom_jitter(aes(y = Latitude,  x = Longitude,   col = Year),
+                height = 0.1, width = 0.1, 
+                size = 0.3)+
+    scale_color_viridis_c(limits = c( 1886,2006) )+
+    coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
+    theme_minimal()+
+    theme(axis.title = element_blank())+
+    ggtitle(paste(species, dataset),
+            subtitle = 'NB Locations jittered to reduce overlap' )-> Map2
+  
+  }else{
+      XX%>%
     ggplot()+
     geom_polygon(data= SouthBritishIsles,
                  aes(x = long,   y = lat,  group = group, ),
@@ -63,6 +80,11 @@ Plot_Summary<- function(species, data, dataset){
     theme_minimal()+
     theme(axis.title = element_blank())+
     ggtitle(paste(species, dataset))-> Map2
+  
+    
+  }
+  
+  
   
   XX%>%
     ggplot()+
@@ -158,10 +180,28 @@ NHM_filter1%>%
 ```
 
 
-# NHM
+# OUNHM
 
 ```{r}
+OUM_Species<-sort(unique(OUM_ForFitting$Sp))
+
+plotlist_OUM<-purrr::map(OUM_Species,
+                         Plot_Summary,
+                         data=OUM_ForFitting, 
+                         dataset='OUM', Jitter = TRUE )
 
 
+## 8 per page:
+for(i in 1:4){
+  plotlist_OUM2<- plotlist_OUM[ ((i*8)-7):(i*8)]
+  EightPlots<- plot_grid( plotlist = plotlist_OUM2,
+                          ncol = 1)
+  WithScales<-plot_grid( EightPlots,
+                         Scales, ## add scales to the bottom of each
+                         rel_heights = c(10,1), ncol = 1)
+
+  ggsave(paste0('../figs/SI_OUNHM_dataspread_', i ,'.png'), 
+         WithScales, width = 8, height = 20, bg = 'white')
+}
 
 ```
