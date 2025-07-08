@@ -3,6 +3,8 @@ title: "StatsFitting2_AcrossSpecies"
 author: "Chris Terry"
 date: "`r Sys.Date()`"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r message=FALSE, warning=FALSE}
@@ -18,11 +20,17 @@ library(posterior)
 specialism <- read_csv( '../data/specialism_with_nhm.csv')
 ```
 
-## NHM
+
+
+# NHM
 
 ```{r}
 PS_NHM<- read_csv('../statsresults/NHM_Posterior_Summaries_dryrun3.csv')
+```
 
+## Overall Plots
+
+```{r}
 PS_NHM %>%
   left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
   filter( variable %in% c( 'b_Temp',
@@ -40,7 +48,35 @@ ggsave(filename = '../figs/NHM_AllCombos_Trends_DryRun.pdf', width = 8, height =
 
 ```
 
-## OUNHM
+
+## 'meta-analysis' stats
+
+### Predictors of b_Temp 
+
+```{r}
+PS_NHM %>%
+  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
+  filter( variable =='b_Temp' )-> bTemp_pred_NHM
+
+bTemp_pred_NHM %>%
+  brm( median|mi(sd)  ~  Sex+Specialism + (1|Sp),data = .)%>%
+  add_criterion( criterion = c("loo")) -> bTemp_model_NHM
+
+bTemp_pred_NHM %>%
+  brm( median|mi(sd)  ~  Sex+ (1|Sp), data = .)%>%
+  add_criterion(criterion = c("loo")) -> bTemp_model_NHM_NoSpec
+
+loo_compare(bTemp_model_NHM,bTemp_model_NHM_NoSpec ) ### It is worth including specialism
+
+mcmc_plot(bTemp_model_NHM, combo  = 'hist')
+
+plot(conditional_effects(bTemp_model_NHM, resp = "median", rug = TRUE), ask = FALSE)
+
+```
+
+# OUNHM
+
+## Overall Plots
 
 ```{r}
 PS_OUM<- read_csv('../statsresults/OUM_Posterior_Summaries_dryrun3.csv')
@@ -61,3 +97,35 @@ PS_OUM %>%
 ggsave(filename = '../figs/OUM_AllCombos_Trends_DryRun.pdf', width = 8, height =8)
 
 ```
+
+
+## 'meta-analysis' stats
+
+### Predictors of b_Temp 
+
+
+```{r}
+PS_OUM %>%
+  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
+  filter( variable =='b_Temp' )-> bTemp_pred_OUM
+
+bTemp_pred_OUM %>%
+  brm( median|mi(sd)  ~  Sex+Specialism+ (1|Sp),  data = .)%>%
+  add_criterion(criterion = c("loo"))-> bTemp_model_OUM
+
+bTemp_pred_OUM %>%
+  brm( median|mi(sd)  ~  Sex+ (1|Sp),  data = .)%>%
+  add_criterion(criterion = c("loo")) -> bTemp_model_OUM_NoSpec
+
+loo_compare(bTemp_model_OUM,bTemp_model_OUM_NoSpec ) ### It is worth including specialism
+
+bTemp_model_OUM
+mcmc_plot(bTemp_model_OUM , combo  = 'hist')
+
+plot(conditional_effects(bTemp_model_OUM , resp = "median", rug = TRUE), ask = FALSE)
+
+```
+
+
+
+
