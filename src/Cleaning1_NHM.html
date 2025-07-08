@@ -11,7 +11,7 @@
 
 <meta name="author" content="Chris Terry" />
 
-<meta name="date" content="2025-06-11" />
+<meta name="date" content="2025-07-08" />
 
 <title>Cleaning1_NHM</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Cleaning1_NHM</h1>
 <h4 class="author">Chris Terry</h4>
-<h4 class="date">2025-06-11</h4>
+<h4 class="date">2025-07-08</h4>
 
 </div>
 
@@ -433,10 +433,13 @@ write_csv(Just_Names_Loc_and_Numbers, &#39;../data/Just_Names_Loc_and_Numbers.cs
 <h1>Processing</h1>
 <div id="first-cut-of-filterring" class="section level2">
 <h2>First cut of filterring</h2>
+<p>Where wings differ by more than 2mm, assume either damage or AI
+errors and remove:</p>
 <pre class="r"><code>Joined_sizes_and_Locs%&gt;%
   rename(wingspan_mm =`wing_span (mm)` ) %&gt;%
   filter(!is.na( decimalLatitude ),  ## Excluding those without locations 
          wingspan_mm !=0, ## Exclude those without measurements  
+         abs(`left_wing (mm)`-`right_wing (mm)`)&lt;2, ## keep only those where the wing measurements are quite similiar  
          decimalLatitude &lt;54, ## Exclude Northerly samples
          decimalLatitude&gt; 49.5,  ### Exclude very southerly
          decimalLongitude &gt; -5.5, ## Exclude Irish samples 
@@ -497,7 +500,7 @@ write_csv(Just_Names_Loc_and_Numbers, &#39;../data/Just_Names_Loc_and_Numbers.cs
           `left_wing (mm)`:`wing_shoulder (mm)` ) -&gt; NHM_tidy
 
 NHM_tidy</code></pre>
-<pre><code>## # A tibble: 105,928 × 14
+<pre><code>## # A tibble: 103,974 × 14
 ##    Individual   `Taxon name` decimalLatitude decimalLongitude LocationType Month
 ##    &lt;chr&gt;        &lt;chr&gt;                  &lt;dbl&gt;            &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;
 ##  1 BMNHE_10585… Aglais urti…            51.5           -0.455 LatLong          8
@@ -510,7 +513,7 @@ NHM_tidy</code></pre>
 ##  8 BMNHE_10585… Aglais urti…            51.1           -2.32  LatLong          8
 ##  9 BMNHE_10585… Aglais urti…            51.1           -2.27  LatLong          8
 ## 10 BMNHE_10586… Aglais urti…            51.1           -2.13  LatLong          8
-## # ℹ 105,918 more rows
+## # ℹ 103,964 more rows
 ## # ℹ 8 more variables: Year &lt;dbl&gt;, Sex &lt;chr&gt;, `left_wing (mm)` &lt;dbl&gt;,
 ## #   `right_wing (mm)` &lt;dbl&gt;, `left_wing_center (mm)` &lt;dbl&gt;,
 ## #   `right_wing_center (mm)` &lt;dbl&gt;, wingspan_mm &lt;dbl&gt;,

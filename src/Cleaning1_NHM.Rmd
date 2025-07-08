@@ -79,11 +79,14 @@ Sizes %>%
 
 ## First cut of filterring
 
+Where wings differ by more than 2mm, assume either damage or AI errors and remove: 
+
 ```{r}
 Joined_sizes_and_Locs%>%
   rename(wingspan_mm =`wing_span (mm)` ) %>%
   filter(!is.na( decimalLatitude ),  ## Excluding those without locations 
          wingspan_mm !=0, ## Exclude those without measurements  
+         abs(`left_wing (mm)`-`right_wing (mm)`)<2, ## keep only those where the wing measurements are quite similiar  
          decimalLatitude <54, ## Exclude Northerly samples
          decimalLatitude> 49.5,  ### Exclude very southerly
          decimalLongitude > -5.5, ## Exclude Irish samples 

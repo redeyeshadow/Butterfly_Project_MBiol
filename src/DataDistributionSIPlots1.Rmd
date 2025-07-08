@@ -1,0 +1,167 @@
+---
+title: "Data Distribution"
+author: "Chris Terry"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{R}
+
+library(tidyverse)
+library(maps)
+library(mapdata)    
+library(cowplot)
+
+
+NHM_ForFitting <- read_csv(  '../data/NHM_for_models.csv')
+OUM_ForFitting <- read_csv(  '../data/OUNHM_for_models.csv')
+
+SouthBritishIsles<- map_data('worldHires') 
+
+```
+
+
+# Plotting Function
+
+```{r}
+Plot_Summary<- function(species, data, dataset){
+  data %>%
+    filter(Sp == species,
+           Brood==1)-> XX  ### Only plot out brood 1
+  ### 
+  if(dataset == 'NHM'){
+    XX$Size <- XX$Right_wing
+  }else{
+        XX$Size <- XX$Wing_Length 
+  }
+  
+  
+  XX%>%
+    ggplot()+
+    geom_point(aes(y = Size, x = Temp, 
+                   col = Year, shape = Sex))+
+    geom_smooth(method = 'lm', 
+                aes(y = Size, x = Temp, group=Sex))+
+    scale_color_viridis_c(limits = c( 1886,2006) ) -> TempvsSize1
+  
+  XX%>%
+    ggplot()+
+    geom_polygon(data= SouthBritishIsles,
+                 aes(x = long,   y = lat,  group = group, ),
+                 fill = 'gray90',  color = 'black')+
+    geom_point(aes(y = Latitude,  x = Longitude,   col = Year))+
+    scale_color_viridis_c(limits = c( 1886,2006) )+
+    coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
+    theme_minimal()+
+    theme(axis.title = element_blank())+
+    ggtitle(paste(species, dataset))-> Map2
+  
+  XX%>%
+    ggplot()+
+    geom_point(aes(y = Size,x = Latitude, 
+                   col = Temp, shape = Sex))+
+    #  scale_color_manual(values = c('blue', 'red', 'black')) 
+        geom_smooth(method = 'lm', 
+                aes(y = Size, x = Latitude))+
+    scale_color_viridis_c(limits = c( 4,20), option = 'C' ) -> LatvsSize3
+  
+  
+  plot_grid(Map2+guides(col = 'none', shape = 'none' ),
+            TempvsSize1+guides(col = 'none', shape = 'none' ),
+            LatvsSize3+guides(col = 'none', shape = 'none' ),
+            nrow=1)-> GroupedFigure
+  return(GroupedFigure)
+}
+
+###########################################################
+## Getting scales
+ggplot(NHM_ForFitting)+
+  geom_point(aes(y = Right_wing, x = Temp, 
+                 col = Year, shape = Sex))+
+  scale_color_viridis_c(limits = c( 1886,2006) ) -> TempvsSize1
+
+ggplot(NHM_ForFitting)+
+  geom_point(aes(y = Right_wing,x = Latitude,  col = Temp, shape = Sex))+
+  scale_color_viridis_c(limits = c( 4,20), option = 'C' ) -> LatvsSize3
+
+Scales <- plot_grid(get_legend(TempvsSize1+guides(col = 'none')),
+                    get_legend(TempvsSize1+guides(shape = 'none')),
+                    get_legend(LatvsSize3+guides(shape = 'none')),
+                    nrow=1)
+############################################################
+
+
+NHM_Species<-sort(unique(NHM_ForFitting$Sp))
+
+plotlist_NHM<-purrr::map(NHM_Species,
+                         Plot_Summary,
+                         data=NHM_ForFitting, 
+                         dataset='NHM' )
+
+
+## 52 species, 8 per page:
+for(i in 1:7){
+  plotlist<- plotlist_NHM[ ((i*8)-7):(i*8)]
+  EightPlots<- plot_grid( plotlist = plotlist,
+                          ncol = 1)
+  WithScales<-plot_grid( EightPlots, Scales,
+                         rel_heights = c(10,1),
+                         ncol = 1)
+
+      ## add scales to the bottom of each
+  ggsave(paste0('../figs/SI_dataspread_', i ,'.png'), 
+         WithScales, width = 8, height = 20, bg = 'white')
+}
+
+
+
+
+########
+### Weird low temperatures - where are they?
+
+####### 
+### Weirdly low values 
+
+
+
+
+ NHM_ForFitting %>%
+    filter(Sp == 'Hipparchia semele',
+           Brood==1)%>%
+    ggplot()+
+    geom_polygon(data= SouthBritishIsles,
+                 aes(x = long,   y = lat,  group = group, ),
+                 fill = 'gray90',  color = 'black')+
+    geom_point(aes(y = Latitude,  x = Longitude,   col = Right_wing>15 ))+
+    scale_color_viridis_d( )+
+    coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
+    theme_minimal()+
+    theme(axis.title = element_blank())
+
+NHM_filter1%>%
+    filter(`Taxon Name`  == 'Hipparchia semele',
+           `right_wing (mm)` < 15) %>%
+  arrange( `right_wing (mm)` ) %>%
+  select(`Taxon Name`,`specimen number`,
+           `right_wing (mm)`, year )
+
+## https://data.nhm.ac.uk/object/29e42629-d0c4-45b1-b61a-5a4cf3a3fab5/1748251284062  # Nothing weird about the image. 
+
+```
+
+
+# NHM
+
+```{r}
+
+
+
+```
