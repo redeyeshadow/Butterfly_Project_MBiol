@@ -13,7 +13,7 @@ library(readxl)
 
 OUNHM_data_temps<- read_csv('../data/OUNHM_data_temps.csv')
 NHM_data_temps <- read_csv('../data/NHM_w_temps.csv')
-BroodTable <- read_xlsx('../data/butterfly brood table.xlsx')
+BroodTable <- read_csv('../data/brood_table.csv')
 ```
 
 # Tidying Brood Table

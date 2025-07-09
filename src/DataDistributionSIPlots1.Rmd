@@ -20,9 +20,23 @@ library(maps)
 library(mapdata)    
 library(cowplot)
 
+Species_info <- left_join(read_csv('../data/brood_table.csv')
+                          read_csv('../data/names_table.csv'))%>%
+  select( Sp = `Taxon name`,
+          maximum_plausible,
+          minimum_plausible)
 
-NHM_ForFitting <- read_csv(  '../data/NHM_for_models.csv')
+
+NHM_ForFitting <- read_csv(  '../data/NHM_for_models.csv')%>%
+  left_join(Species_info)
 OUM_ForFitting <- read_csv(  '../data/OUNHM_for_models.csv')
+
+
+
+
+NHM_ForFitting
+
+
 
 SouthBritishIsles<- map_data('worldHires') 
 
@@ -38,17 +52,25 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
   ### 
   if(dataset == 'NHM'){
     XX$Size <- XX$Right_wing
+    
+    maximum_plausible <- XX$maximum_plausible[1]
+    minimum_plausible <- XX$minimum_plausible[1]
   }else{
-        XX$Size <- XX$Wing_Length 
+    XX$Size <- XX$Wing_Length 
+     maximum_plausible <- NA
+    minimum_plausible <- NA
   }
   
   
   XX%>%
     ggplot()+
+    geom_hline( yintercept= maximum_plausible)+
+    geom_hline( yintercept= minimum_plausible)+
     geom_point(aes(y = Size, x = Temp, 
                    col = Year, shape = Sex))+
     geom_smooth(method = 'lm', 
                 aes(y = Size, x = Temp, group=Sex))+
+ 
     scale_color_viridis_c(limits = c( 1886,2006) ) -> TempvsSize1
   
 
@@ -128,7 +150,6 @@ plotlist_NHM<-purrr::map(NHM_Species,
                          data=NHM_ForFitting, 
                          dataset='NHM' )
 
-
 ## 52 species, 8 per page:
 for(i in 1:7){
   plotlist<- plotlist_NHM[ ((i*8)-7):(i*8)]
@@ -143,16 +164,8 @@ for(i in 1:7){
          WithScales, width = 8, height = 20, bg = 'white')
 }
 
-
-
-
 ########
 ### Weird low temperatures - where are they?
-
-####### 
-### Weirdly low values 
-
-
 
 
  NHM_ForFitting %>%
