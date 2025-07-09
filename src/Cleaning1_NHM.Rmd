@@ -111,10 +111,58 @@ NHM_filter1 %>%
 
 ```
 
+## Excluding Improbable Values
+
+Based on manual inspection of the spread of the data, plausible maximum and minumum sizes for each species are used to exclude likely AI errors. 
+
+These bounds are listed in `brood_table.csv`
+
+```{r}
+
+read_csv('../data/brood_table.csv') %>%
+  left_join(read_csv('../data/names_table.csv'), by = 'NHM name')%>%
+  select( `Taxon name`,
+         maximum_plausible,
+         minimum_plausible) -> MaxMinPlausible
+
+
+NHM_filter2 %>%
+  left_join( MaxMinPlausible)%>%
+  mutate( Implausible = (`right_wing (mm)` < minimum_plausible) | (`right_wing (mm)` > maximum_plausible))   ->NHM_filter3x
+
+NHM_filter3x %>%
+  filter( `Taxon name` == 'Aglais urticae') %>%
+  select( `right_wing (mm)` , month, maximum_plausible, minimum_plausible)%>%
+  ggplot()+
+  geom_point(aes( x = month, y = `right_wing (mm)` ))+
+  geom_point(aes( x = month, y =  minimum_plausible), col = 'red')+
+ geom_point(aes( x = month, y =  maximum_plausible), col = 'red')+
+  ggtitle('Size distribution of Aglais urticae by month')
+
+
+NHM_filter3x %>%
+  group_by( `Taxon name`) %>%
+  summarise( Percentage_Implausible = 100*mean(Implausible )) %>%
+  arrange( desc(Percentage_Implausible)) %>%
+  ggplot( aes( x =  `Taxon name` , y = Percentage_Implausible))+
+  geom_point()+
+  theme_minimal_grid()+
+  theme(axis.text.x = element_text(angle =-90, hjust = 0))
+
+```
+
+
+
+
+
+
+
+
+
 ## Dealing with month windows by picking middle
 
 ```{r}
-NHM_filter2 %>%
+NHM_filter3 %>%
   mutate( month = case_when(month == '3 - 4'   ~ 3.5  ,
                             month == '5 - 9'   ~ 7  ,
                             month == '8 - 7'   ~ 7.5  ,
@@ -128,7 +176,7 @@ NHM_filter2 %>%
                             month == '5 - 6'   ~ 5.5  ,
                             month == '7 - 8'   ~ 7.5   , 
                             .default = as.numeric(month)))%>%
-  filter( month >= 3) -> NHM_filter3       ########### FILTER OUT ALL from Jan and Feb
+  filter( month >= 3) -> NHM_filter4       ########### FILTER OUT ALL from Jan and Feb
 
 
 ```
@@ -136,7 +184,7 @@ NHM_filter2 %>%
 ## Cutting down to focal columns:
 
 ```{r}
-NHM_filter3 %>%
+NHM_filter4 %>%
   mutate( LocationType = 'LatLong') %>%
   select( Individual = filename ,
           `Taxon name`,

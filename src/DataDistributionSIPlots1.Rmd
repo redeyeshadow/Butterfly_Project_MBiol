@@ -20,7 +20,7 @@ library(maps)
 library(mapdata)    
 library(cowplot)
 
-Species_info <- left_join(read_csv('../data/brood_table.csv')
+Species_info <- left_join(read_csv('../data/brood_table.csv'),
                           read_csv('../data/names_table.csv'))%>%
   select( Sp = `Taxon name`,
           maximum_plausible,
@@ -31,12 +31,7 @@ NHM_ForFitting <- read_csv(  '../data/NHM_for_models.csv')%>%
   left_join(Species_info)
 OUM_ForFitting <- read_csv(  '../data/OUNHM_for_models.csv')
 
-
-
-
 NHM_ForFitting
-
-
 
 SouthBritishIsles<- map_data('worldHires') 
 
@@ -57,7 +52,7 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
     minimum_plausible <- XX$minimum_plausible[1]
   }else{
     XX$Size <- XX$Wing_Length 
-     maximum_plausible <- NA
+    maximum_plausible <- NA
     minimum_plausible <- NA
   }
   
@@ -70,39 +65,39 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
                    col = Year, shape = Sex))+
     geom_smooth(method = 'lm', 
                 aes(y = Size, x = Temp, group=Sex))+
- 
+    
     scale_color_viridis_c(limits = c( 1886,2006) ) -> TempvsSize1
   
-
+  
   if(Jitter){
-      XX%>%
-    ggplot()+
-    geom_polygon(data= SouthBritishIsles,
-                 aes(x = long,   y = lat,  group = group, ),
-                 fill = 'gray90',  color = 'black')+
-    geom_jitter(aes(y = Latitude,  x = Longitude,   col = Year),
-                height = 0.1, width = 0.1, 
-                size = 0.3)+
-    scale_color_viridis_c(limits = c( 1886,2006) )+
-    coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
-    theme_minimal()+
-    theme(axis.title = element_blank())+
-    ggtitle(paste(species, dataset),
-            subtitle = 'NB Locations jittered to reduce overlap' )-> Map2
-  
+    XX%>%
+      ggplot()+
+      geom_polygon(data= SouthBritishIsles,
+                   aes(x = long,   y = lat,  group = group, ),
+                   fill = 'gray90',  color = 'black')+
+      geom_jitter(aes(y = Latitude,  x = Longitude,   col = Year),
+                  height = 0.1, width = 0.1, 
+                  size = 0.3)+
+      scale_color_viridis_c(limits = c( 1886,2006) )+
+      coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
+      theme_minimal()+
+      theme(axis.title = element_blank())+
+      ggtitle(paste(species, dataset),
+              subtitle = 'NB Locations jittered to reduce overlap' )-> Map2
+    
   }else{
-      XX%>%
-    ggplot()+
-    geom_polygon(data= SouthBritishIsles,
-                 aes(x = long,   y = lat,  group = group, ),
-                 fill = 'gray90',  color = 'black')+
-    geom_point(aes(y = Latitude,  x = Longitude,   col = Year))+
-    scale_color_viridis_c(limits = c( 1886,2006) )+
-    coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
-    theme_minimal()+
-    theme(axis.title = element_blank())+
-    ggtitle(paste(species, dataset))-> Map2
-  
+    XX%>%
+      ggplot()+
+      geom_polygon(data= SouthBritishIsles,
+                   aes(x = long,   y = lat,  group = group, ),
+                   fill = 'gray90',  color = 'black')+
+      geom_point(aes(y = Latitude,  x = Longitude,   col = Year))+
+      scale_color_viridis_c(limits = c( 1886,2006) )+
+      coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
+      theme_minimal()+
+      theme(axis.title = element_blank())+
+      ggtitle(paste(species, dataset))-> Map2
+    
     
   }
   
@@ -113,7 +108,7 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
     geom_point(aes(y = Size,x = Latitude, 
                    col = Temp, shape = Sex))+
     #  scale_color_manual(values = c('blue', 'red', 'black')) 
-        geom_smooth(method = 'lm', 
+    geom_smooth(method = 'lm', 
                 aes(y = Size, x = Latitude))+
     scale_color_viridis_c(limits = c( 4,20), option = 'C' ) -> LatvsSize3
   
@@ -158,8 +153,8 @@ for(i in 1:7){
   WithScales<-plot_grid( EightPlots, Scales,
                          rel_heights = c(10,1),
                          ncol = 1)
-
-      ## add scales to the bottom of each
+  
+  ## add scales to the bottom of each
   ggsave(paste0('../figs/SI_dataspread_', i ,'.png'), 
          WithScales, width = 8, height = 20, bg = 'white')
 }
@@ -168,25 +163,25 @@ for(i in 1:7){
 ### Weird low temperatures - where are they?
 
 
- NHM_ForFitting %>%
-    filter(Sp == 'Hipparchia semele',
-           Brood==1)%>%
-    ggplot()+
-    geom_polygon(data= SouthBritishIsles,
-                 aes(x = long,   y = lat,  group = group, ),
-                 fill = 'gray90',  color = 'black')+
-    geom_point(aes(y = Latitude,  x = Longitude,   col = Right_wing>15 ))+
-    scale_color_viridis_d( )+
-    coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
-    theme_minimal()+
-    theme(axis.title = element_blank())
+NHM_ForFitting %>%
+  filter(Sp == 'Hipparchia semele',
+         Brood==1)%>%
+  ggplot()+
+  geom_polygon(data= SouthBritishIsles,
+               aes(x = long,   y = lat,  group = group, ),
+               fill = 'gray90',  color = 'black')+
+  geom_point(aes(y = Latitude,  x = Longitude,   col = Right_wing>15 ))+
+  scale_color_viridis_d( )+
+  coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
+  theme_minimal()+
+  theme(axis.title = element_blank())
 
 NHM_filter1%>%
-    filter(`Taxon Name`  == 'Hipparchia semele',
-           `right_wing (mm)` < 15) %>%
+  filter(`Taxon Name`  == 'Hipparchia semele',
+         `right_wing (mm)` < 15) %>%
   arrange( `right_wing (mm)` ) %>%
   select(`Taxon Name`,`specimen number`,
-           `right_wing (mm)`, year )
+         `right_wing (mm)`, year )
 
 ## https://data.nhm.ac.uk/object/29e42629-d0c4-45b1-b61a-5a4cf3a3fab5/1748251284062  # Nothing weird about the image. 
 
@@ -212,7 +207,7 @@ for(i in 1:4){
   WithScales<-plot_grid( EightPlots,
                          Scales, ## add scales to the bottom of each
                          rel_heights = c(10,1), ncol = 1)
-
+  
   ggsave(paste0('../figs/SI_OUNHM_dataspread_', i ,'.png'), 
          WithScales, width = 8, height = 20, bg = 'white')
 }
