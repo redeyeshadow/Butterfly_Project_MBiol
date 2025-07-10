@@ -15,7 +15,7 @@ Polyommatus icarus,TRUE,FALSE,May-July,June-July,August-September,August-April,o
 Anthocharis cardamines,TRUE,TRUE,May-June,June ,,,,Summer_before,,3,NA,23,13
 Apatura iris,TRUE,TRUE,July-August,July-June,,,,Summer_before,,3,NA,40,26
 Aphantopus hyperantus,TRUE,TRUE,July-August,July-June,,,overwinters as larva,Summer_before,,3,NA,26,16
-Aporia crataegi,TRUE,TRUE,July-August,July-June,,,extinct 1925,Summer_before,,3,NA,,
+Aporia crataegi,FALSE,TRUE,July-August,July-June,,,extinct 1925,Summer_before,,3,NA,,
 Argynnis adippe,TRUE,TRUE,June-July,April-May,,,,Spring,,3,NA,33,23
 Argynnis aglaja,TRUE,TRUE,June-July,March-may,,,,Spring,,3,NA,33,22
 Argynnis paphia,TRUE,TRUE,August-September,August-June,,,overwinters as larva,Summer_before,,3,NA,37,26
