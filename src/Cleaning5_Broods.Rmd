@@ -89,6 +89,7 @@ OUNHM_for_models <- OUNHM_data_temps %>%
                                                FirstMonth,
                                                LastMonth),
                                        TRUE, FALSE))) %>%
+    filter( InFocalBrood) %>% 
   select(Sp = `Taxon name`,
          Latitude  = latitude,
          Longitude = longitude,
@@ -110,3 +111,4 @@ OUNHM_for_models <- OUNHM_data_temps %>%
 OUNHM_for_models
 write_csv(OUNHM_for_models, "../data/OUNHM_for_models.csv")
 ```
+
