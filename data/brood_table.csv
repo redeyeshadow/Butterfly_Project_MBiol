@@ -1,60 +1,60 @@
-﻿NHM name,Include,Univoltine,Month egg layed,Month larval dev,Brood 2 laying,Brood 2 larval dev,Comment,Brood1Use,Brood2Use,FirstMonthBrood1,FirstMonthBrood2,maximum_plausible,minimum_plausible
-Aglais urticae,TRUE,FALSE,May ,May-June,July,July-August,,Spring,Summer,3,6,24,21
-Aricia agestis,TRUE,FALSE,May-July,June-July,August-September,August-April,overwinters as larva,Spring,Summer,3,7,14,9
-Celastrina argiolus,TRUE,FALSE,April-June,May-July,July-August,August-September,,Spring,Summer,3,6,17,12
-Lasiommata megera,TRUE,FALSE,May-June,June ,August-September,August-September,,Spring,Summer,3,7,25,16
-Leptidea sinapis,TRUE,FALSE,June-July,July-August,,,only second gen at some sites,Spring,Summer,3,7,23,16
-Lycaena phlaeas,TRUE,FALSE,May-June,June-July,August,August-September,,Spring,Summer,3,7,16,10
-Lysandra bellargus,TRUE,FALSE,May-July,June-August,August-October,September-May,,Spring,Summer,3,7,17,13
-Pararge aegeria,TRUE,FALSE,April-June,May-June,July-August,July-August,,Spring,Summer,3,6,23,18
-Pieris brassicae,TRUE,FALSE,May-June,May-July,July-September,August-September,,Spring,Summer,3,6,33,27
-Pieris napi,TRUE,FALSE,May-June,June ,August,August-September,,Spring,Summer,3,7,24,18
-Pieris rapae,TRUE,FALSE,May-June,June,August-September,August-September,,Spring,Summer,3,7,25,18
-Polygonia c-album,TRUE,FALSE,April-May,April-June,July-August,July-September,,Spring,Summer,3,6,26,21
-Polyommatus icarus,TRUE,FALSE,May-July,June-July,August-September,August-April,overwinters as larva,Spring,Summer,3,7,17,12
-Anthocharis cardamines,TRUE,TRUE,May-June,June ,,,,Summer_before,NA,3,NA,23,13
-Apatura iris,TRUE,TRUE,July-August,July-June,,,,Summer_before,NA,3,NA,40,26
-Aphantopus hyperantus,TRUE,TRUE,July-August,July-June,,,overwinters as larva,Summer_before,NA,3,NA,26,16
-Aporia crataegi,TRUE,TRUE,July-August,July-June,,,extinct 1925,Summer_before,NA,3,NA,,
-Argynnis adippe,TRUE,TRUE,June-July,April-May,,,,Spring,NA,3,NA,33,23
-Argynnis aglaja,TRUE,TRUE,June-July,March-may,,,,Spring,NA,3,NA,33,22
-Argynnis paphia,TRUE,TRUE,August-September,August-June,,,overwinters as larva,Summer_before,NA,3,NA,37,26
-Aricia artaxerxes,TRUE,TRUE,July-August,July-May,,,overwinters as larva,Summer_before,NA,3,NA,,
-Boloria euphrosyne,TRUE,TRUE,May-June,June-April,,,overwinters as larva,Summer_before,NA,3,NA,23,17
-Boloria selene,TRUE,TRUE,June,June-May,,,overwinters as larva,Summer_before,NA,3,NA,24,14
-Callophrys rubi,TRUE,TRUE,May-July,May-August,,,,Summer ,NA,3,NA,16,11
-Carterocephalus palaemon,TRUE,TRUE,June-July,June-April,,,,Summer_before,NA,3,NA,14,11
-Coenonympha pamphilus,TRUE,TRUE,June-September,June-April,,,,Summer_before,NA,3,NA,20,10
-Coenonympha tullia,TRUE,TRUE,July ,July-May,,,overwinters as larva,Summer_before,NA,3,NA,20,16
-Cupido minimus,TRUE,TRUE,June,June-July,,,,Summer_before,NA,3,NA,13,8
-Erebia aethiops,TRUE,TRUE,August-September,August-June,,,,Summer_before,NA,3,NA,,
-Erebia epiphron,TRUE,TRUE,July ,July-August,,,,Summer_before,NA,3,NA,,
-Erynnis tages,TRUE,TRUE,May-June,June-April,,,overwinters as larva,Summer_before,NA,3,NA,14,10
-Euphydryas aurinia,TRUE,TRUE,June-July,June-May,,,,Summer_before,NA,3,NA,24,15
-Gonepteryx rhamni,TRUE,TRUE,April-May,May-July,,,,Summer ,NA,3,NA,32,25
-Hamearis lucina,TRUE,TRUE,May-June,June-July,,,,Summer ,NA,3,NA,15,12
-Hesperia comma,TRUE,TRUE,August-March,March-July,,,odd one overwinters as egg,Spring,NA,3,NA,16,11
-Hipparchia semele,TRUE,TRUE,July-September,August-June,,,overwinters as larva,Summer_before,NA,3,NA,34,18
-Inachis io,TRUE,TRUE,May,May-July,,,,Summer ,NA,3,NA,34,22
-Limenitis camilla,TRUE,TRUE,July-August,July-June,,,,Summer_before,NA,3,NA,33,23
-Lysandra coridon,TRUE,TRUE,August-September,April-June,,,,Spring,NA,3,NA,20,10
-Maniola jurtina,TRUE,TRUE,July-October,July-June,,,overwinters as larva,Summer_before,NA,3,NA,30,15
-Melanargia galathea,TRUE,TRUE,July-August,July-August,,,,Summer_before,NA,3,NA,30,15
-Melitaea athalia,TRUE,TRUE,June-July,July-May,,,,Summer_before,NA,3,NA,23,15
-Melitaea cinxia,TRUE,TRUE,June,June-April,,,overwinters as larva,Summer_before,NA,3,NA,23,15
-Neozephyrus quercus,TRUE,TRUE,July-April,March-June,,,,Spring,NA,3,NA,18,13
-Nymphalis polychloros,TRUE,TRUE,April,May-June,,,,Spring,NA,3,NA,35,23
-Ochlodes venata,TRUE,TRUE,July-August,July-May,,,overwinters as larva,Summer_before,NA,3,NA,17,11
-Papilio machaon,TRUE,TRUE,June,June-July,,,,Summer_before,NA,3,NA,45,30
-Plebejus argus,TRUE,TRUE,June-March,Feburary-May,,,odd one overwinters as egg,Spring,NA,3,NA,20,7
-Pyrgus malvae,TRUE,TRUE,May-July,June-July,,,,Summer ,NA,3,NA,12,9
-Pyronia tithonus,TRUE,TRUE,July-August,August-June,,,overwinters as larva,Summer_before,NA,3,NA,23,15
-Satyrium pruni,TRUE,TRUE,June,March-June,,,"odd one, longdev period",Spring,NA,3,NA,17,14
-Satyrium w-album,TRUE,TRUE,July-April,March-may,,,odd one overwinters as egg,Spring,NA,3,NA,17,13
-Thecla betulae,TRUE,TRUE,August-May,April-July,,,odd one overwinters as egg,Summer ,NA,3,NA,19,15
-Thymelicus acteon,TRUE,TRUE,June-September,July-June,,,overwinters as larva,Summer_before,NA,3,NA,13,9
-Thymelicus lineola,TRUE,TRUE,July-August,April-June,,,,Spring,NA,3,NA,15,10
-Thymelicus sylvestris,TRUE,TRUE,July-August,August-June,,,overwinters as larva,Summer ,NA,3,NA,14,11
+﻿NHM name,Include,Univoltine,Month egg layed,Month larval dev,Brood 2 laying,Brood 2 larval dev,Comment,BroodFocalUse,FocalBrood,FirstMonthBrood_focal,LastMonthBrood_focal,maximum_plausible,minimum_plausible
+Aglais urticae,TRUE,FALSE,May ,May-June,July,July-August,,Spring,1,6,8,24,21
+Aricia agestis,TRUE,FALSE,May-July,June-July,August-September,August-April,overwinters as larva,Summer,2,8,10,14,9
+Celastrina argiolus,TRUE,FALSE,April-June,May-July,July-August,August-September,,Spring,2,8,10,17,12
+Lasiommata megera,TRUE,FALSE,May-June,June ,August-September,August-September,,Summer,2,8,10,25,16
+Leptidea sinapis,TRUE,FALSE,June-July,July-August,,,only second gen at some sites,Summer_before,1,3,6,23,16
+Lycaena phlaeas,TRUE,FALSE,May-June,June-July,August,August-September,will include possible brood 3+,Summer,2,7,10,16,10
+Lysandra bellargus,TRUE,FALSE,May-July,June-August,August-October,September-May,,Summer,2,8,9,17,13
+Pararge aegeria,TRUE,FALSE,April-June,May-June,July-August,July-August,excluding possible third broods (larvae in summer not spring),Spring,2,7,8,23,18
+Pieris brassicae,TRUE,FALSE,May-June,May-July,July-September,August-September,,Summer,2,7,9,33,27
+Pieris napi,TRUE,FALSE,May-June,June ,August,August-September,,Summer,2,7,9,24,18
+Pieris rapae,TRUE,FALSE,May-June,June,August-September,August-September,,Summer,2,7,9,25,18
+Polygonia c-album,TRUE,FALSE,April-May,April-June,July-August,July-September,,Spring,1,6,8,26,21
+Polyommatus icarus,TRUE,FALSE,May-July,June-July,August-September,August-April,overwinters as larva,Summer,2,8,9,17,12
+Anthocharis cardamines,TRUE,TRUE,May-June,June ,,,,Summer_before,,3,NA,23,13
+Apatura iris,TRUE,TRUE,July-August,July-June,,,,Summer_before,,3,NA,40,26
+Aphantopus hyperantus,TRUE,TRUE,July-August,July-June,,,overwinters as larva,Summer_before,,3,NA,26,16
+Aporia crataegi,TRUE,TRUE,July-August,July-June,,,extinct 1925,Summer_before,,3,NA,,
+Argynnis adippe,TRUE,TRUE,June-July,April-May,,,,Spring,,3,NA,33,23
+Argynnis aglaja,TRUE,TRUE,June-July,March-may,,,,Spring,,3,NA,33,22
+Argynnis paphia,TRUE,TRUE,August-September,August-June,,,overwinters as larva,Summer_before,,3,NA,37,26
+Aricia artaxerxes,TRUE,TRUE,July-August,July-May,,,overwinters as larva,Summer_before,,3,NA,,
+Boloria euphrosyne,TRUE,TRUE,May-June,June-April,,,overwinters as larva,Summer_before,,3,NA,23,17
+Boloria selene,TRUE,TRUE,June,June-May,,,overwinters as larva,Summer_before,,3,NA,24,14
+Callophrys rubi,TRUE,TRUE,May-July,May-August,,,,Summer ,,3,NA,16,11
+Carterocephalus palaemon,TRUE,TRUE,June-July,June-April,,,,Summer_before,,3,NA,14,11
+Coenonympha pamphilus,TRUE,TRUE,June-September,June-April,,,,Summer_before,,3,NA,20,10
+Coenonympha tullia,TRUE,TRUE,July ,July-May,,,overwinters as larva,Summer_before,,3,NA,20,16
+Cupido minimus,TRUE,TRUE,June,June-July,,,,Summer_before,,3,NA,13,8
+Erebia aethiops,TRUE,TRUE,August-September,August-June,,,,Summer_before,,3,NA,,
+Erebia epiphron,TRUE,TRUE,July ,July-August,,,,Summer_before,,3,NA,,
+Erynnis tages,TRUE,TRUE,May-June,June-April,,,overwinters as larva,Summer_before,,3,NA,14,10
+Euphydryas aurinia,TRUE,TRUE,June-July,June-May,,,,Summer_before,,3,NA,24,15
+Gonepteryx rhamni,TRUE,TRUE,April-May,May-July,,,,Summer ,,3,NA,32,25
+Hamearis lucina,TRUE,TRUE,May-June,June-July,,,,Summer ,,3,NA,15,12
+Hesperia comma,TRUE,TRUE,August-March,March-July,,,odd one overwinters as egg,Spring,,3,NA,16,11
+Hipparchia semele,TRUE,TRUE,July-September,August-June,,,overwinters as larva,Summer_before,,3,NA,34,18
+Inachis io,TRUE,TRUE,May,May-July,,,,Summer ,,3,NA,34,22
+Limenitis camilla,TRUE,TRUE,July-August,July-June,,,,Summer_before,,3,NA,33,23
+Lysandra coridon,TRUE,TRUE,August-September,April-June,,,,Spring,,3,NA,20,10
+Maniola jurtina,TRUE,TRUE,July-October,July-June,,,overwinters as larva,Summer_before,,3,NA,30,15
+Melanargia galathea,TRUE,TRUE,July-August,July-August,,,,Summer_before,,3,NA,30,15
+Melitaea athalia,TRUE,TRUE,June-July,July-May,,,,Summer_before,,3,NA,23,15
+Melitaea cinxia,TRUE,TRUE,June,June-April,,,overwinters as larva,Summer_before,,3,NA,23,15
+Neozephyrus quercus,TRUE,TRUE,July-April,March-June,,,,Spring,,3,NA,18,13
+Nymphalis polychloros,TRUE,TRUE,April,May-June,,,,Spring,,3,NA,35,23
+Ochlodes venata,TRUE,TRUE,July-August,July-May,,,overwinters as larva,Summer_before,,3,NA,17,11
+Papilio machaon,TRUE,TRUE,June,June-July,,,,Summer_before,,3,NA,45,30
+Plebejus argus,TRUE,TRUE,June-March,Feburary-May,,,odd one overwinters as egg,Spring,,3,NA,20,7
+Pyrgus malvae,TRUE,TRUE,May-July,June-July,,,,Summer ,,3,NA,12,9
+Pyronia tithonus,TRUE,TRUE,July-August,August-June,,,overwinters as larva,Summer_before,,3,NA,23,15
+Satyrium pruni,TRUE,TRUE,June,March-June,,,"odd one, longdev period",Spring,,3,NA,17,14
+Satyrium w-album,TRUE,TRUE,July-April,March-may,,,odd one overwinters as egg,Spring,,3,NA,17,13
+Thecla betulae,TRUE,TRUE,August-May,April-July,,,odd one overwinters as egg,Summer ,,3,NA,19,15
+Thymelicus acteon,TRUE,TRUE,June-September,July-June,,,overwinters as larva,Summer_before,,3,NA,13,9
+Thymelicus lineola,TRUE,TRUE,July-August,April-June,,,,Spring,,3,NA,15,10
+Thymelicus sylvestris,TRUE,TRUE,July-August,August-June,,,overwinters as larva,Summer ,,3,NA,14,11
 Araschnia levana,FALSE,,,,,,,,,,,,
 Arethusana arethusa,FALSE,,,,,,,,,,,,
 Argynnis niobe,FALSE,,,,,,,,,,,,
