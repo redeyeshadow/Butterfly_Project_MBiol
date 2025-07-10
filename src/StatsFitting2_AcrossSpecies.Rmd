@@ -22,10 +22,10 @@ specialism <- read_csv( '../data/specialism_with_nhm.csv')
 #######  Which Seasons?
 read_csv('../data/brood_table.csv') %>%
   left_join(read_csv('../data/names_table.csv'), by = 'NHM name')%>% 
-  mutate(FirstMonthBrood2 = as.numeric(FirstMonthBrood2) ) %>%
+  mutate(FirstMonthBrood_focal = as.numeric(FirstMonthBrood_focal),
+         LastMonthBrood_focal  = as.numeric(LastMonthBrood_focal ) ) %>%
   filter(Include == 'TRUE' )%>%
-  select(Sp = `Taxon name` ,
-         Brood1Use)-> Seasons
+  select(Sp = `Taxon name` ,FirstMonthBrood_focal, LastMonthBrood_focal)-> Seasons
 
 ######
 ##  TODO once seasons set : try adding to modeles
@@ -35,7 +35,7 @@ read_csv('../data/brood_table.csv') %>%
 # NHM
 
 ```{r}
-PS_NHM<- read_csv('../statsresults/NHM_Posterior_Summaries_dryrun3.csv')
+PS_NHM<- read_csv('../statsresults/NHM_Posterior_Summaries_X1.csv')
 ```
 
 ## Overall Plots
@@ -54,7 +54,7 @@ PS_NHM %>%
   geom_vline(xintercept = 0)+
   facet_grid(Specialism~variable, scales = 'free')
 
-ggsave(filename = '../figs/NHM_AllCombos_Trends_DryRun.pdf', width = 8, height =8)
+ggsave(filename = '../figs/NHM_AllCombos_Trends_X1.pdf', width = 8, height =8)
 
 ```
 
@@ -65,15 +65,19 @@ ggsave(filename = '../figs/NHM_AllCombos_Trends_DryRun.pdf', width = 8, height =
 
 ```{r}
 PS_NHM %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
-  filter( variable =='b_Temp' )-> bTemp_pred_NHM
+  left_join(specialism, by =c( 'Sp'='Taxon name'))%>%
+  filter(Specialism !='Habitat specialist and foodplant generalist') %>% ## trying excluding the two HS/FG
+  filter( sp != 'Papilio machaon') %>%
+  filter( variable =='b_Temp' ) -> bTemp_pred_NHM
 
 bTemp_pred_NHM %>%
-  brm( median|mi(sd)  ~  Sex+Specialism + (1|Sp),data = .)%>%
+  brm( median|mi(sd)  ~  Sex+Specialism + (1|Sp),
+       data = ., iter = 10000)%>%
   add_criterion( criterion = c("loo")) -> bTemp_model_NHM
 
 bTemp_pred_NHM %>%
-  brm( median|mi(sd)  ~  Sex+ (1|Sp), data = .)%>%
+  brm( median|mi(sd)  ~  Sex+ (1|Sp),
+       data = ., iter = 10000)%>%
   add_criterion(criterion = c("loo")) -> bTemp_model_NHM_NoSpec
 
 loo_compare(bTemp_model_NHM,bTemp_model_NHM_NoSpec ) ### It is worth including specialism

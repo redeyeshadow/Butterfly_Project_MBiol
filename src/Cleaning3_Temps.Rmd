@@ -196,13 +196,17 @@ ViceCounties %>%
 
 ## Vice Counties
 
-```{r echo=TRUE, include=FALSE}
+```{r echo=TRUE, include=FALSE, eval = FALSE}
 VC_Seasonal_Temps<- exactextractr::exact_extract(Collated_SeasonalTemps,
                                                 ViceCounties, fun = 'mean', weights ='area',
                                                 append_cols = c( 'VCNUMBER','VCNAME' ))
+
+write_csv(VC_Seasonal_Temps, '../data/VC_Seasonal_Temps.csv' )
 ```
 
 ```{r}
+VC_Seasonal_Temps<- read_csv('../data/VC_Seasonal_Temps.csv' )
+
 VC_Seasonal_Temps %>% 
   pivot_longer(cols = starts_with('mean'), 
                names_to = 'MidDate',
@@ -237,21 +241,17 @@ ViceCounties %>%
   ggplot()+
   geom_sf(aes ( fill =MeanTemp  ))
 
-ggplot()+
-  geom_spatraster(data = List_Rasters[[109]], aes(fill = tas_3) )
+#ggplot()+ geom_spatraster(data = List_Rasters[[109]], aes(fill = tas_3) )
 
 
 ```
 
 ## Unitary authoriries 
 
-```{r echo=TRUE, include=FALSE}
+```{r echo=TRUE, eval=FALSE}
 UA_Seasonal_Temps<- exactextractr::exact_extract(Collated_SeasonalTemps,
                                                 LegalCounties, fun = 'mean', weights ='area',
                                                 append_cols = 'CTYUA23NM')
-```
-
-```{r}
 
 UA_Seasonal_Temps %>% 
   pivot_longer(cols = starts_with('mean'), 
@@ -268,6 +268,10 @@ UA_Seasonal_Temps %>%
 
 write_csv(UA_Seasonal_Temps_Long, 
           '../data/UA_Seasonal_Temps_Long.csv')
+```
+
+```{r}
+UA_Seasonal_Temps_Long <- read_csv( '../data/UA_Seasonal_Temps_Long.csv')
 
 ## Visual checks
 
@@ -286,8 +290,7 @@ LegalCounties %>%
   ggplot()+
   geom_sf(aes ( fill =MeanTemp  ))
 
-ggplot()+
-  geom_spatraster(data = List_Rasters[[109]], aes(fill = tas_3) )
+#ggplot()+ geom_spatraster(data = List_Rasters[[109]], aes(fill = tas_3) )
 
 ```
 

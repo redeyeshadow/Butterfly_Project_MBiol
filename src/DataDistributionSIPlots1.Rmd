@@ -14,7 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{R}
-
 library(tidyverse)
 library(maps)
 library(mapdata)    
@@ -42,8 +41,7 @@ SouthBritishIsles<- map_data('worldHires')
 ```{r}
 Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
   data %>%
-    filter(Sp == species,
-           Brood==1)-> XX  ### Only plot out brood 1
+    filter(Sp == species)-> XX  ### Only plot out brood 1
   ### 
   if(dataset == 'NHM'){
     XX$Size <- XX$Right_wing
@@ -97,11 +95,7 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
       theme_minimal()+
       theme(axis.title = element_blank())+
       ggtitle(paste(species, dataset))-> Map2
-    
-    
   }
-  
-  
   
   XX%>%
     ggplot()+
@@ -112,10 +106,21 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
                 aes(y = Size, x = Latitude))+
     scale_color_viridis_c(limits = c( 4,20), option = 'C' ) -> LatvsSize3
   
-  
+    XX%>%
+    ggplot()+
+    geom_point(aes(y = Size,x = Month))+
+    scale_x_continuous(limits=c(1,12))-> MonthSpread
+    
+    XX%>%
+      ggplot(aes(y = Temp ,x = Year ))+
+      geom_point()+
+      geom_smooth(method = 'lm') -> Temp_year_Corr
+    
   plot_grid(Map2+guides(col = 'none', shape = 'none' ),
             TempvsSize1+guides(col = 'none', shape = 'none' ),
             LatvsSize3+guides(col = 'none', shape = 'none' ),
+            MonthSpread, 
+            Temp_year_Corr,
             nrow=1)-> GroupedFigure
   return(GroupedFigure)
 }

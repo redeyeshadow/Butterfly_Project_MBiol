@@ -11,7 +11,7 @@
 
 <meta name="author" content="Chris Terry" />
 
-<meta name="date" content="2025-07-08" />
+<meta name="date" content="2025-07-10" />
 
 <title>Cleaning5_Broods</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Cleaning5_Broods</h1>
 <h4 class="author">Chris Terry</h4>
-<h4 class="date">2025-07-08</h4>
+<h4 class="date">2025-07-10</h4>
 
 </div>
 
@@ -362,7 +362,7 @@ library(readxl)
 
 OUNHM_data_temps&lt;- read_csv(&#39;../data/OUNHM_data_temps.csv&#39;)
 NHM_data_temps &lt;- read_csv(&#39;../data/NHM_w_temps.csv&#39;)
-BroodTable &lt;- read_xlsx(&#39;../data/butterfly brood table.xlsx&#39;)</code></pre>
+BroodTable &lt;- read_csv(&#39;../data/brood_table.csv&#39;)</code></pre>
 <div id="tidying-brood-table" class="section level1">
 <h1>Tidying Brood Table</h1>
 <pre class="r"><code>Names_table&lt;- read_csv(&#39;../data/names_table.csv&#39;)</code></pre>
@@ -375,45 +375,47 @@ BroodTable &lt;- read_xlsx(&#39;../data/butterfly brood table.xlsx&#39;)</code><
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>BroodTable %&gt;%
   left_join(Names_table, by = &#39;NHM name&#39;)%&gt;% 
-  mutate(FirstMonthBrood2 = as.numeric(FirstMonthBrood2) ) %&gt;%
+  mutate(FirstMonth = as.numeric(FirstMonthBrood_focal ),
+         LastMonth =  as.numeric(LastMonthBrood_focal )) %&gt;%
   filter(Include == &#39;TRUE&#39; )%&gt;%
-  select(`Taxon name` ,  Brood1Use, Brood2Use, FirstMonthBrood2, Univoltine )-&gt; Brood_table2</code></pre>
-<pre><code>## Warning: There was 1 warning in `mutate()`.
-## ℹ In argument: `FirstMonthBrood2 = as.numeric(FirstMonthBrood2)`.
-## Caused by warning:
-## ! NAs introduced by coercion</code></pre>
-<pre class="r"><code>Brood_table2 %&gt;%
-  select(-FirstMonthBrood2, - Univoltine  ) %&gt;%
-  pivot_longer(names_to = &#39;Brood&#39;, values_to = &#39;TempToUse&#39;, cols =  Brood1Use:Brood2Use  ) %&gt;%
-  filter( TempToUse!=&#39;NA&#39;) %&gt;%
-  mutate(Brood = parse_number(Brood)) -&gt; Brood_table_long</code></pre>
+  select(`Taxon name` ,  BroodFocalUse, FirstMonth,LastMonth, Univoltine )-&gt; Brood_table2</code></pre>
 </div>
 <div id="adding-brood-tables-to-nhm" class="section level1">
 <h1>Adding Brood Tables to NHM</h1>
+<div id="now-add-temperature-to-use-column-from-brood_table_long" class="section level2">
+<h2>Now add temperature to use column from Brood_table_long</h2>
 <pre class="r"><code>## Which brood is each record
 NHM_data_temps%&gt;%
   left_join(select(Brood_table2,
-                   `Taxon name`, FirstMonthBrood2, Univoltine ), 
+                   `Taxon name`, FirstMonth,LastMonth, Univoltine,
+                   BroodFocalUse ), 
             by = &#39;Taxon name&#39;) %&gt;%
-  mutate(Brood = ifelse(Univoltine, 1, 
-                        ifelse(Month &lt;  FirstMonthBrood2, 1, 2   ))) %&gt;% 
-  ## Now add temperature to use column from   Brood_table_long
-  left_join(Brood_table_long ,by = c(&#39;Taxon name&#39;, &#39;Brood&#39;)) %&gt;%
+  mutate(InFocalBrood = ifelse(Univoltine, TRUE, 
+                               ifelse( between(Month,
+                                               FirstMonth,
+                                               LastMonth),
+                                       TRUE, FALSE))) %&gt;%
+  filter( InFocalBrood) %&gt;% 
+  filter(!Implausible ) %&gt;%
   select(Sp = `Taxon name`,
          Latitude= decimalLatitude ,
          Longitude= decimalLongitude  ,
-         Year ,Sex  , 
-         Right_wing=`right_wing (mm)` , Brood, TempToUse  ,
-         SPRING_temp,SUMMER_temp,SUMMER_before_temp  ) %&gt;%
-  mutate( Temp = ifelse( TempToUse == &#39;Spring&#39;, SPRING_temp  ,
-                         ifelse(TempToUse == &#39;Summer&#39; , SUMMER_temp ,
-                                ifelse(TempToUse == &#39;Summer_before&#39;,  SUMMER_before_temp,
-                                       NA))),
+         Month, Year ,Sex  , 
+         Right_wing=`right_wing (mm)` ,
+         BroodFocalUse  ,
+         SPRING_temp,
+         SUMMER_temp,
+         SUMMER_before_temp  ) %&gt;%
+  mutate( Temp = case_when( BroodFocalUse == &#39;Spring&#39; ~ SPRING_temp,
+                           BroodFocalUse == &#39;Summer&#39; ~ SUMMER_temp,
+                           BroodFocalUse == &#39;Summer_before&#39; ~ SUMMER_before_temp,
+                           TRUE ~ NA_real_),
           Temp = round(Temp, digits = 3),
           Sex = ifelse( Sex ==&#39;N/A&#39;, &#39;undetermined&#39;, Sex)   ) %&gt;%
   select(-ends_with(&#39;_temp&#39;)) -&gt; NHM_for_models
 
 write_csv(NHM_for_models, &#39;../data/NHM_for_models.csv&#39;)</code></pre>
+</div>
 </div>
 <div id="adding-brood-tables-and-lats-to-ounhm" class="section level1">
 <h1>Adding Brood Tables and Lats to OUNHM</h1>
@@ -434,21 +436,27 @@ write_csv(NHM_for_models, &#39;../data/NHM_for_models.csv&#39;)</code></pre>
 <pre class="r"><code>OUNHM_for_models &lt;- OUNHM_data_temps %&gt;%
   left_join(combined_locations,
             by = c(&quot;Location&quot;,&quot;LocationType&quot;)) %&gt;%
-  left_join( select(Brood_table2, `Taxon name`, FirstMonthBrood2, Univoltine),
+  left_join( select(Brood_table2,
+                   `Taxon name`, FirstMonth,LastMonth, Univoltine,
+                   BroodFocalUse ),
              by = &#39;Taxon name&#39;) %&gt;%
-  mutate(Brood = ifelse(Univoltine, 1,
-                        ifelse(Month &lt; FirstMonthBrood2, 1, 2))) %&gt;%
-  # Join brood temp table
-  left_join(Brood_table_long, by = c(&#39;Taxon name&#39;, &#39;Brood&#39;)) %&gt;%
+  
+      mutate(InFocalBrood = ifelse(Univoltine, TRUE, 
+                               ifelse( between(Month,
+                                               FirstMonth,
+                                               LastMonth),
+                                       TRUE, FALSE))) %&gt;%
+    filter( InFocalBrood) %&gt;% 
   select(Sp = `Taxon name`,
          Latitude  = latitude,
          Longitude = longitude,
-         Year,Sex  , 
-         Wing_Length, Brood, TempToUse,
+         Month,Year,Sex  , 
+         Wing_Length,
+         BroodFocalUse,
          SPRING_temp, SUMMER_temp, SUMMER_before_temp) %&gt;%
-  mutate(Temp = case_when( TempToUse == &#39;Spring&#39; ~ SPRING_temp,
-                           TempToUse == &#39;Summer&#39; ~ SUMMER_temp,
-                           TempToUse == &#39;Summer_before&#39; ~ SUMMER_before_temp,
+  mutate(Temp = case_when( BroodFocalUse == &#39;Spring&#39; ~ SPRING_temp,
+                           BroodFocalUse == &#39;Summer&#39; ~ SUMMER_temp,
+                           BroodFocalUse == &#39;Summer_before&#39; ~ SUMMER_before_temp,
                            TRUE ~ NA_real_),
          Temp = round(Temp, digits = 3),
         Sex = ifelse( is.na(Sex), &#39;undetermined&#39;, Sex)  ) %&gt;%
@@ -458,20 +466,20 @@ write_csv(NHM_for_models, &#39;../data/NHM_for_models.csv&#39;)</code></pre>
 <div id="view-and-save" class="section level1">
 <h1>View and save</h1>
 <pre class="r"><code>OUNHM_for_models</code></pre>
-<pre><code>## # A tibble: 2,619 × 9
-##    Sp           Latitude Longitude  Year Sex   Wing_Length Brood TempToUse  Temp
-##    &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
-##  1 Erynnis tag…     51.5    -1.21   1885 unde…        11.4     1 Spring     6.99
-##  2 Erynnis tag…     51.5    -1.21   1885 unde…        12.0     1 Spring     6.99
-##  3 Erynnis tag…     51.8    -1.29   1886 unde…        11.8     1 Spring     7.27
-##  4 Erynnis tag…     51.8    -1.29   1886 unde…        12.5     1 Spring     7.27
-##  5 Thymelicus …     51.3    -0.374  1887 male         13.0     1 Spring     6.49
-##  6 Thymelicus …     50.7    -2.34   1887 fema…        13.5     1 Spring     6.69
-##  7 Thymelicus …     50.7    -2.34   1887 male         12.7     1 Spring     6.69
-##  8 Erynnis tag…     51.3    -0.374  1888 unde…        11.7     1 Spring     6.61
-##  9 Pyrgus malv…     51.1    -1.29   1888 unde…        11.6     1 Spring     6.73
-## 10 Thymelicus …     52.7     0.953  1888 male         12.9     1 Spring     6.36
-## # ℹ 2,609 more rows</code></pre>
+<pre><code>## # A tibble: 2,282 × 9
+##    Sp       Latitude Longitude Month  Year Sex   Wing_Length BroodFocalUse  Temp
+##    &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt;
+##  1 Erynnis…     51.5    -1.21      6  1885 unde…        11.4 Summer_before  15.7
+##  2 Erynnis…     51.5    -1.21      6  1885 unde…        12.0 Summer_before  15.7
+##  3 Erynnis…     51.8    -1.29      5  1886 unde…        11.8 Summer_before  14.7
+##  4 Erynnis…     51.8    -1.29      5  1886 unde…        12.5 Summer_before  14.7
+##  5 Thymeli…     51.3    -0.374     7  1887 male         13.0 Summer         16.3
+##  6 Thymeli…     50.7    -2.34      7  1887 fema…        13.5 Summer         16.0
+##  7 Thymeli…     50.7    -2.34      7  1887 male         12.7 Summer         16.0
+##  8 Erynnis…     51.3    -0.374     5  1888 unde…        11.7 Summer_before  16.3
+##  9 Pyrgus …     51.1    -1.29      5  1888 unde…        11.6 Summer         14.1
+## 10 Thymeli…     52.7     0.953     7  1888 male         12.9 Summer         13.9
+## # ℹ 2,272 more rows</code></pre>
 <pre class="r"><code>write_csv(OUNHM_for_models, &quot;../data/OUNHM_for_models.csv&quot;)</code></pre>
 </div>
 

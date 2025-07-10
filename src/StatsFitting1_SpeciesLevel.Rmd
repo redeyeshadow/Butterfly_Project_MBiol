@@ -26,12 +26,15 @@ OUM_ForFitting <- read_csv(  '../data/OUNHM_for_models.csv')
 
 ## How much data per species/sex/brood?
 
-For now just taking those with at least 100 measurememts. 
+For now just taking those with at least 100 measurements. 
+
+Already filterred 
+
 ```{r}
 ## Cycle through each species to fit models 
 
 Batches<- count(NHM_ForFitting,
-                Sp, Brood ,Sex)%>%
+                Sp ,Sex)%>%
   arrange( n)
 
 ## 200 potential models to fit:
@@ -45,7 +48,7 @@ Batches %>%
   mutate( Perc_Undetermined = 100* undetermined / ( male+undetermined+female)  ) -> PercentageUndetermined
 
 PercentageUndetermined %>%
-  ggplot( aes( x =Perc_Undetermined, fill = Brood))+
+  ggplot( aes( x =Perc_Undetermined))+
   geom_histogram()
 
 NHM_ForFitting%>%
@@ -56,7 +59,7 @@ NHM_ForFitting%>%
 
 ### For spotting weirdnesses
 NHM_ForFitting %>%
-  group_by(Sp, Brood) %>%
+  group_by(Sp) %>%
   summarise( signif(mean(Year),1), 
              min(Year), 
              quantile(Year, 0.1), 
@@ -77,8 +80,7 @@ NHM_ForFitting %>%
 ```{r}
 ## Exclude all of brood 2:
 Batches %>%
-  filter(Brood ==1,
-         n >100 ) -> TableOfModels_NHM
+  filter( n >100 ) -> TableOfModels_NHM
 
 Set = paste0('Sp.', TableOfModels_NHM$Sp,
              '_Sex.',TableOfModels_NHM$Sex)
@@ -99,7 +101,7 @@ for( i in 1:nrow( TableOfModels_NHM)){
     filter(Sp == TableOfModels_NHM$Sp[i],
            Sex     == TableOfModels_NHM$Sex[i]) -> batchDATA
   update( CoreModel, newdata = batchDATA, refresh = 0) -> MODEL_FIT
-  save(MODEL_FIT, file = paste('../NHM_modelfits3/',Set[i]  ))
+  save(MODEL_FIT, file = paste('../NHM_modelfitsX1/',Set[i]  ))
 }
 
 ```
@@ -108,7 +110,7 @@ for( i in 1:nrow( TableOfModels_NHM)){
 
 ```{r eval = FALSE}
 map_df(1:nrow( TableOfModels_NHM), function(i){
-  load(file = paste('../NHM_modelfits3/',Set[i]  )) 
+  load(file = paste('../NHM_modelfitsX1/',Set[i]  )) 
   MODEL_FIT %>%
     as_draws_array %>%
     summarise_draws -> Fit_df
@@ -117,7 +119,7 @@ map_df(1:nrow( TableOfModels_NHM), function(i){
   return(Fit_df)
 })-> Posterior_Summaries_NHM
 
-write_csv(Posterior_Summaries_NHM, '../statsresults/NHM_Posterior_Summaries_dryrun3.csv')
+write_csv(Posterior_Summaries_NHM, '../statsresults/NHM_Posterior_Summaries_X1.csv')
 
 ```
 
@@ -130,12 +132,12 @@ For now just taking those with at least 100 measurememts.
 ## Cycle through each species to fit models 
 
 Batches<- count(OUM_ForFitting,
-                Sp, Brood ,Sex)%>%
+                Sp ,Sex)%>%
   arrange( desc(n))
 
 ## 200 potential models to fit:
 Batches$n  %>% plot; abline(h = 40) # almost perfect log-normal plot
-sum(Batches$n  >=40) # 154 have over 40, 
+sum(Batches$n  >=40) 
 
 OUM_ForFitting%>%
   group_by(Year) %>%
@@ -145,7 +147,7 @@ OUM_ForFitting%>%
 
 ### For spotting weirdnesses
 OUM_ForFitting %>%
-  group_by(Sp, Brood) %>%
+  group_by(Sp) %>%
   summarise( signif(mean(Year),1), 
              min(Year), 
              quantile(Year, 0.1), 
@@ -164,10 +166,8 @@ OUM_ForFitting %>%
 
 ## Build unique Name for each brood
 ```{r}
-## Exclude all of brood 2:
 Batches %>%
-  filter(Brood ==1,
-         n >=40 ) -> TableOfModels_OUNHM
+  filter( n >=40 ) -> TableOfModels_OUNHM
 
 Set = paste0('Sp.', TableOfModels_OUNHM$Sp,
              '_Sex.',TableOfModels_OUNHM$Sex)
@@ -188,7 +188,7 @@ for( i in 1:nrow( TableOfModels_OUNHM)){
     filter(Sp == TableOfModels_OUNHM$Sp[i],
            Sex     == TableOfModels_OUNHM$Sex[i]) -> batchDATA
   update( CoreModel_OU, newdata = batchDATA, refresh = 0) -> MODEL_FIT
-  save(MODEL_FIT, file = paste('../OUM_modelfits3/',Set[i]  ))
+  save(MODEL_FIT, file = paste('../OUM_modelfitsX1/',Set[i]  ))
 }
 
 ```
@@ -197,7 +197,7 @@ for( i in 1:nrow( TableOfModels_OUNHM)){
 
 ```{r eval = FALSE}
 map_df(1:nrow( TableOfModels_OUNHM), function(i){
-  load(file = paste('../OUM_modelfits3/',Set[i]  )) 
+  load(file = paste('../OUM_modelfitsX1/',Set[i]  )) 
   MODEL_FIT %>%
     as_draws_array %>%
     summarise_draws -> Fit_df
@@ -206,7 +206,7 @@ map_df(1:nrow( TableOfModels_OUNHM), function(i){
   return(Fit_df)
 })-> Posterior_Summaries_OUM
 
-write_csv(Posterior_Summaries_OUM, '../statsresults/OUM_Posterior_Summaries_dryrun3.csv')
+write_csv(Posterior_Summaries_OUM, '../statsresults/OUM_Posterior_Summaries_X1.csv')
 
 ```
 

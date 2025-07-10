@@ -45,10 +45,11 @@ NHM_data_temps%>%
                                                LastMonth),
                                        TRUE, FALSE))) %>%
   filter( InFocalBrood) %>% 
+  filter(!Implausible ) %>%
   select(Sp = `Taxon name`,
          Latitude= decimalLatitude ,
          Longitude= decimalLongitude  ,
-         Year ,Sex  , 
+         Month, Year ,Sex  , 
          Right_wing=`right_wing (mm)` ,
          BroodFocalUse  ,
          SPRING_temp,
@@ -93,7 +94,7 @@ OUNHM_for_models <- OUNHM_data_temps %>%
   select(Sp = `Taxon name`,
          Latitude  = latitude,
          Longitude = longitude,
-         Year,Sex  , 
+         Month,Year,Sex  , 
          Wing_Length,
          BroodFocalUse,
          SPRING_temp, SUMMER_temp, SUMMER_before_temp) %>%
