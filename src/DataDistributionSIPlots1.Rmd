@@ -41,31 +41,32 @@ SouthBritishIsles<- map_data('worldHires')
 ```{r}
 Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
   data %>%
-    filter(Sp == species)-> XX  ### Only plot out brood 1
+    filter(Sp == species)-> XX 
   ### 
+  
   if(dataset == 'NHM'){
     XX$Size <- XX$Right_wing
-    
-    maximum_plausible <- XX$maximum_plausible[1]
-    minimum_plausible <- XX$minimum_plausible[1]
   }else{
     XX$Size <- XX$Wing_Length 
-    maximum_plausible <- NA
-    minimum_plausible <- NA
   }
   
   
   XX%>%
     ggplot()+
-    geom_hline( yintercept= maximum_plausible)+
-    geom_hline( yintercept= minimum_plausible)+
     geom_point(aes(y = Size, x = Temp, 
                    col = Year, shape = Sex))+
     geom_smooth(method = 'lm', 
                 aes(y = Size, x = Temp, group=Sex))+
-    
-    scale_color_viridis_c(limits = c( 1886,2006) ) -> TempvsSize1
+    scale_color_viridis_c(limits = c( 1880,2020) ) -> TempvsSize1
   
+  if(dataset == 'NHM'){
+    maximum_plausible <- XX$maximum_plausible[1]
+    minimum_plausible <- XX$minimum_plausible[1]
+    
+    TempvsSize1 <-  TempvsSize1+
+      geom_hline( yintercept= maximum_plausible)+
+      geom_hline( yintercept= minimum_plausible)
+  }
   
   if(Jitter){
     XX%>%
@@ -76,11 +77,11 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
       geom_jitter(aes(y = Latitude,  x = Longitude,   col = Year),
                   height = 0.1, width = 0.1, 
                   size = 0.3)+
-      scale_color_viridis_c(limits = c( 1886,2006) )+
+      scale_color_viridis_c(limits = c( 1880,2020) )+
       coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
       theme_minimal()+
       theme(axis.title = element_blank())+
-      ggtitle(paste(species, dataset),
+      ggtitle(paste(dataset, '\n',species ),
               subtitle = 'NB Locations jittered to reduce overlap' )-> Map2
     
   }else{
@@ -90,11 +91,11 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
                    aes(x = long,   y = lat,  group = group, ),
                    fill = 'gray90',  color = 'black')+
       geom_point(aes(y = Latitude,  x = Longitude,   col = Year))+
-      scale_color_viridis_c(limits = c( 1886,2006) )+
+      scale_color_viridis_c(limits = c( 1880,2020) )+
       coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
       theme_minimal()+
       theme(axis.title = element_blank())+
-      ggtitle(paste(species, dataset))-> Map2
+      ggtitle(paste(dataset, '\n',species ))-> Map2
   }
   
   XX%>%
@@ -107,17 +108,17 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
     scale_x_continuous(limits =  c(49.5, 54))+
     scale_color_viridis_c(limits = c( 4,20), option = 'C' ) -> LatvsSize3
   
-    XX%>%
+  XX%>%
     ggplot()+
     geom_point(aes(y = Size,x = Month))+
     scale_x_continuous(limits=c(2,12), breaks = c(2:12))-> MonthSpread
-    
-    XX%>%
-      ggplot(aes(y = Temp ,x = Year ))+
-      geom_point()+
-      scale_x_continuous(limits =  c( 1886,2006))+
-      geom_smooth(method = 'lm') -> Temp_year_Corr
-    
+  
+  XX%>%
+    ggplot(aes(y = Temp ,x = Year ))+
+    geom_point()+
+    scale_x_continuous(limits =  c( 1880,2020) )+
+    geom_smooth(method = 'lm') -> Temp_year_Corr
+  
   plot_grid(Map2+guides(col = 'none', shape = 'none' ),
             TempvsSize1+guides(col = 'none', shape = 'none' ),
             LatvsSize3+guides(col = 'none', shape = 'none' ),
@@ -132,7 +133,7 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
 ggplot(NHM_ForFitting)+
   geom_point(aes(y = Right_wing, x = Temp, 
                  col = Year, shape = Sex))+
-  scale_color_viridis_c(limits = c( 1886,2006) ) -> TempvsSize1
+  scale_color_viridis_c(limits = c( 1880,2020) ) -> TempvsSize1
 
 ggplot(NHM_ForFitting)+
   geom_point(aes(y = Right_wing,x = Latitude,  col = Temp, shape = Sex))+
@@ -145,7 +146,9 @@ Scales <- plot_grid(get_legend(TempvsSize1+guides(col = 'none')),
 ############################################################
 ```
 
-```{r}
+# Making NHM Maps and Plots
+
+```{r eval = FALSE}
 
 NHM_Species<-sort(unique(NHM_ForFitting$Sp))
 
@@ -172,7 +175,7 @@ for(i in 1:7){
 ```
 
 
-# OUNHM
+# OUNHM Maps and Plots
 
 ```{r}
 OUM_Species<-sort(unique(OUM_ForFitting$Sp))
