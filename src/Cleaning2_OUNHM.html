@@ -11,7 +11,7 @@
 
 <meta name="author" content="Chris Terry" />
 
-<meta name="date" content="2025-06-11" />
+<meta name="date" content="2025-07-14" />
 
 <title>Cleaning2_OUNHM</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Cleaning2_OUNHM</h1>
 <h4 class="author">Chris Terry</h4>
-<h4 class="date">2025-06-11</h4>
+<h4 class="date">2025-07-14</h4>
 
 </div>
 
@@ -438,7 +438,8 @@ OUNHM_measurements3 %&gt;%
   mutate(  Month_num = match(str_to_sentence(Month),# reading mess of different capitalisations
                              month.name)) %&gt;%
   filter( Year &gt;= 1885) %&gt;%
-  filter( Month_num &gt;= 3 | is.na(Month_num)) %&gt;% ########### FILTER OUT ALL from Jan and Feb
+  filter(!is.na(Month_num) ) %&gt;% ## only keep those with months 
+  filter( Month_num &gt;= 3) %&gt;% ########### FILTER OUT ALL from Jan and Feb
   select(Individual ,  `Taxon name`,
          Location,LocationType ,
          Month = Month_num, Year,
@@ -452,12 +453,12 @@ OUNHM_measurements3 %&gt;%
 <div id="session-info" class="section level1">
 <h1>Session info</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 4.4.0 (2024-04-24 ucrt)
+<pre><code>## R version 4.5.1 (2025-06-13 ucrt)
 ## Platform: x86_64-w64-mingw32/x64
-## Running under: Windows 10 x64 (build 19045)
+## Running under: Windows 11 x64 (build 26100)
 ## 
 ## Matrix products: default
-## 
+##   LAPACK version 3.12.1
 ## 
 ## locale:
 ## [1] LC_COLLATE=English_United Kingdom.utf8 
@@ -473,22 +474,22 @@ OUNHM_measurements3 %&gt;%
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] lubridate_1.9.3 forcats_1.0.0   stringr_1.5.1   dplyr_1.1.4    
-##  [5] purrr_1.0.2     readr_2.1.5     tidyr_1.3.1     tibble_3.2.1   
-##  [9] ggplot2_3.5.1   tidyverse_2.0.0
+##  [1] lubridate_1.9.4 forcats_1.0.0   stringr_1.5.1   dplyr_1.1.4    
+##  [5] purrr_1.1.0     readr_2.1.5     tidyr_1.3.1     tibble_3.3.0   
+##  [9] ggplot2_3.5.2   tidyverse_2.0.0
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] bit_4.5.0         gtable_0.3.6      jsonlite_1.8.9    crayon_1.5.3     
-##  [5] compiler_4.4.0    tidyselect_1.2.1  parallel_4.4.0    jquerylib_0.1.4  
-##  [9] scales_1.3.0      yaml_2.3.8        fastmap_1.2.0     R6_2.5.1         
-## [13] generics_0.1.3    knitr_1.48        munsell_0.5.1     bslib_0.8.0      
-## [17] pillar_1.9.0      tzdb_0.4.0        rlang_1.1.3       utf8_1.2.4       
-## [21] stringi_1.8.4     cachem_1.1.0      xfun_0.44         sass_0.4.9       
-## [25] bit64_4.5.2       timechange_0.3.0  cli_3.6.2         withr_3.0.2      
-## [29] magrittr_2.0.3    digest_0.6.35     grid_4.4.0        vroom_1.6.5      
-## [33] rstudioapi_0.17.1 hms_1.1.3         lifecycle_1.0.4   vctrs_0.6.5      
-## [37] evaluate_1.0.1    glue_1.7.0        fansi_1.0.6       colorspace_2.1-1 
-## [41] rmarkdown_2.28    tools_4.4.0       pkgconfig_2.0.3   htmltools_0.5.8.1</code></pre>
+##  [1] bit_4.6.0          gtable_0.3.6       jsonlite_2.0.0     crayon_1.5.3      
+##  [5] compiler_4.5.1     tidyselect_1.2.1   parallel_4.5.1     jquerylib_0.1.4   
+##  [9] scales_1.4.0       yaml_2.3.10        fastmap_1.2.0      R6_2.6.1          
+## [13] generics_0.1.4     knitr_1.50         bslib_0.9.0        pillar_1.11.0     
+## [17] RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.1.6        cachem_1.1.0      
+## [21] stringi_1.8.7      xfun_0.52          sass_0.4.10        bit64_4.6.0-1     
+## [25] timechange_0.3.0   cli_3.6.5          withr_3.0.2        magrittr_2.0.3    
+## [29] digest_0.6.37      grid_4.5.1         vroom_1.6.5        rstudioapi_0.17.1 
+## [33] hms_1.1.3          lifecycle_1.0.4    vctrs_0.6.5        evaluate_1.0.4    
+## [37] glue_1.8.0         farver_2.1.2       rmarkdown_2.29     tools_4.5.1       
+## [41] pkgconfig_2.0.3    htmltools_0.5.8.1</code></pre>
 </div>
 
 

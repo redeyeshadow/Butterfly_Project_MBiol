@@ -56,9 +56,9 @@ NHM_data_temps%>%
          SUMMER_temp,
          SUMMER_before_temp  ) %>%
   mutate( Temp = case_when( BroodFocalUse == 'Spring' ~ SPRING_temp,
-                           BroodFocalUse == 'Summer' ~ SUMMER_temp,
-                           BroodFocalUse == 'Summer_before' ~ SUMMER_before_temp,
-                           TRUE ~ NA_real_),
+                            BroodFocalUse == 'Summer' ~ SUMMER_temp,
+                            BroodFocalUse == 'Summer_before' ~ SUMMER_before_temp,
+                            TRUE ~ NA_real_),
           Temp = round(Temp, digits = 3),
           Sex = ifelse( Sex =='N/A', 'undetermined', Sex)   ) %>%
   select(-ends_with('_temp')) -> NHM_for_models
@@ -81,16 +81,16 @@ OUNHM_for_models <- OUNHM_data_temps %>%
   left_join(combined_locations,
             by = c("Location","LocationType")) %>%
   left_join( select(Brood_table2,
-                   `Taxon name`, FirstMonth,LastMonth, Univoltine,
-                   BroodFocalUse ),
+                    `Taxon name`, FirstMonth,LastMonth, Univoltine,
+                    BroodFocalUse ),
              by = 'Taxon name') %>%
   
-      mutate(InFocalBrood = ifelse(Univoltine, TRUE, 
+  mutate(InFocalBrood = ifelse(Univoltine, TRUE, 
                                ifelse( between(Month,
                                                FirstMonth,
                                                LastMonth),
                                        TRUE, FALSE))) %>%
-    filter( InFocalBrood) %>% 
+  filter( InFocalBrood) %>% 
   select(Sp = `Taxon name`,
          Latitude  = latitude,
          Longitude = longitude,
@@ -103,7 +103,7 @@ OUNHM_for_models <- OUNHM_data_temps %>%
                            BroodFocalUse == 'Summer_before' ~ SUMMER_before_temp,
                            TRUE ~ NA_real_),
          Temp = round(Temp, digits = 3),
-        Sex = ifelse( is.na(Sex), 'undetermined', Sex)  ) %>%
+         Sex = ifelse( is.na(Sex), 'undetermined', Sex)  ) %>%
   select(-ends_with('_temp')) 
 ```
 

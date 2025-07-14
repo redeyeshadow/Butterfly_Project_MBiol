@@ -15,10 +15,7 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 67,Pyrgus malvae,Hampshire,UA,5,1890,NA,10.331,43.632,1.861,4.651
 68,Pyrgus malvae,Hampshire,UA,5,1890,NA,11.66,52.661,2.334,5.581
 69,Pyrgus malvae,Hampshire,UA,5,1890,NA,10.427,41.04,1.991,4.781
-5,Thymelicus sylvestris,Dorset,VC,NA,1890,female,13.074,62.3,2.643,5.327
-14,Thymelicus sylvestris,Dorset,VC,NA,1890,male,11.149,52.255,1.879,6.671
 20,Thymelicus sylvestris,Hampshire,UA,8,1890,male,12.409,60.27,2.355,5.74
-23,Thymelicus sylvestris,Dorset,VC,NA,1890,female,13.023,58.89,2.107,5.434
 29,Thymelicus sylvestris,Hampshire,UA,8,1890,female,13.701,69.184,2.891,7.102
 30,Thymelicus sylvestris,Hampshire,UA,8,1890,female,13.476,66.878,2.871,6.545
 42,Thymelicus sylvestris,Hampshire,UA,8,1890,female,13.361,64.375,2.829,6.058
@@ -40,7 +37,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 58,Pyrgus malvae,Hampshire,UA,4,1893,NA,10.747,44.459,1.988,5.004
 60,Pyrgus malvae,Oxfordshire,VC,4,1893,NA,11.162,48.068,2.17,5.238
 87,Pyrgus malvae,Essex,UA,5,1893,NA,11.172,45.596,1.968,4.918
-48,Thymelicus sylvestris,Berkshire,VC,NA,1893,male,11.847,51.9,1.88,6.629
 79,Pyrgus malvae,Surrey,VC,5,1895,NA,11.382,51.202,2.115,4.787
 15,Hesperia comma,Berkshire,VC,8,1895,male,12.84,60.662,2.125,5.865
 16,Hesperia comma,Berkshire,VC,8,1895,male,12.966,59.901,2.029,5.374
@@ -110,14 +106,11 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 75,Pyrgus malvae,Hampshire,UA,5,1901,NA,11.144,48.913,2.016,5.051
 77,Pyrgus malvae,Oxfordshire,VC,5,1901,NA,11.766,53.504,2.362,5.164
 51,Hesperia comma,Surrey,VC,8,1901,female,13.803,65.635,3.44,6.088
-54,Hesperia comma,West Sussex,VC,NA,1901,female,14.054,76.728,3.534,6.335
 57,Hesperia comma,Surrey,VC,8,1901,male,13.053,55.736,2.241,5.703
 58,Hesperia comma,Surrey,VC,8,1901,female,13.816,70.664,3.17,6.433
 61,Hesperia comma,Surrey,VC,8,1901,male,12.204,51.093,2.244,4.647
 62,Hesperia comma,Surrey,VC,8,1901,male,13.087,56.306,2.551,4.901
 86,Pyrgus malvae,Oxfordshire,VC,5,1902,NA,12.091,54.146,2.377,4.001
-1,Hesperia comma,Dorset,VC,NA,1902,male,11.936,55.164,2.029,5.261
-8,Hesperia comma,Dorset,VC,NA,1902,male,12.796,58.819,2.575,5.393
 35,Thymelicus sylvestris,Surrey,VC,7,1903,male,12.738,59.459,1.363,5.989
 23,Hesperia comma,Surrey,VC,8,1904,male,13.275,62.747,2.031,5.243
 24,Hesperia comma,Surrey,VC,8,1904,male,13.705,66.836,2.255,5.149
@@ -136,10 +129,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 68,Thymelicus sylvestris,Essex,UA,7,1905,female,13.147,57.359,2.368,5.05
 33,Erynnis tages,Buckinghamshire,VC,5,1906,NA,12.226,57.667,2.136,4.897
 72,Pyrgus malvae,Oxfordshire,VC,5,1906,NA,11.811,56.466,2.213,4.541
-52,Hesperia comma,Surrey,VC,NA,1906,female,13.382,67.033,3.326,6.54
-53,Hesperia comma,Surrey,VC,NA,1906,female,15.336,75.873,3.138,6.918
-59,Hesperia comma,Surrey,VC,NA,1906,male,13.176,56.104,2.552,6.541
-60,Hesperia comma,Surrey,VC,NA,1906,female,14.341,70.048,2.897,6.45
 69,Thymelicus sylvestris,Essex,UA,7,1906,male,13.251,55.815,1.992,6.628
 1,Erynnis tages,Surrey,VC,5,1907,NA,11.411,52.948,2.755,4.613
 81,Pyrgus malvae,Surrey,VC,5,1907,NA,10.824,42.474,2.082,4.459
@@ -188,9 +177,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 37,Thymelicus sylvestris,Surrey,VC,7,1914,male,12.131,57.302,2.168,6.318
 38,Thymelicus sylvestris,Berkshire,VC,7,1914,male,12.557,60.055,2.045,5.804
 27,Erynnis tages,Buckinghamshire,VC,5,1915,NA,12.743,60.927,2.102,4.372
-37,Pyrgus malvae,Somerset,UA,NA,1915,NA,11.148,49.444,2.254,4.563
-44,Pyrgus malvae,Somerset,UA,NA,1915,NA,11.079,49.285,2.218,5.039
-51,Pyrgus malvae,Somerset,UA,NA,1915,NA,10.963,46.164,1.963,4.345
 55,Pyrgus malvae,Hampshire,UA,5,1915,NA,11.289,51.097,2.293,5.632
 65,Pyrgus malvae,Hampshire,UA,5,1915,NA,11.178,47.559,2.154,4.455
 14,Erynnis tages,Staffordshire,VC,6,1917,NA,11.814,55.989,2.151,5.715
@@ -244,7 +230,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 77,Hesperia comma,Hertfordshire,VC,8,1940,female,14.207,71.277,3.405,6.483
 28,Pyrgus malvae,Devon,UA,6,1941,NA,11.669,51.793,2.333,4.739
 4,Erynnis tages,Kent,UA,6,1942,NA,11.869,52.539,2.341,3.546
-23,Pyrgus malvae,Hampshire,UA,NA,1943,NA,11.463,49.201,2.479,4.737
 64,Thymelicus sylvestris,Kent,UA,7,1945,female,13.203,62.323,2.495,6.392
 91,Pyrgus malvae,East Sussex,VC,6,1946,NA,11.085,48.08,1.985,5.215
 6,Erynnis tages,Hertfordshire,VC,5,1947,NA,12.408,58.974,2.031,5.2
@@ -343,10 +328,7 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 83,Erynnis tages,Hampshire,UA,5,1976,NA,11.567,49.191,2.083,5.181
 91,Erynnis tages,Buckinghamshire,VC,6,1976,NA,13.084,62.45,2.171,5.359
 92,Erynnis tages,Buckinghamshire,VC,6,1976,NA,13.126,67.92,2.071,5.757
-4,Pyrgus malvae,West Sussex,VC,NA,1976,NA,11.388,47.459,2.223,5.212
 21,Pyrgus malvae,Hampshire,UA,5,1976,NA,11.864,52.662,2.113,5.175
-86,Thymelicus sylvestris,Middlesex,VC,NA,1976,female,13.418,64.503,2.515,5.95
-87,Thymelicus sylvestris,Middlesex,VC,NA,1976,male,11.93,51.021,1.886,6.56
 90,Thymelicus sylvestris,Hampshire,UA,7,1976,male,12.832,59.258,1.865,6.836
 90,Pyrgus malvae,Oxfordshire,VC,6,1977,NA,10.939,49.42,2.197,4.772
 101,Hesperia comma,Hampshire,UA,8,1977,male,12.141,60.277,2.464,5.469
@@ -419,11 +401,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 3,Cupido minimus,Isle of Wight,VC,6,1887,male,12.033,54.489,1.215,5.183
 9,Cupido minimus,Isle of Wight,VC,6,1887,male,13.074,62.301,1.386,4.215
 71,Celastrina argiolus,Berkshire,VC,5,1888,male,13.85,74.289,1.113,5.715
-1,Favonius quercus,Kent,UA,NA,1888,male,16.288,117.12,1.501,6.6
-2,Favonius quercus,Kent,UA,NA,1888,male,16.918,126.891,1.752,6.305
-3,Favonius quercus,Kent,UA,NA,1888,male,17.366,125.675,1.684,6.689
-4,Favonius quercus,Kent,UA,NA,1888,female,16.802,118.286,2.798,5.664
-5,Favonius quercus,Kent,UA,NA,1888,female,16.422,116.689,1.706,5.551
 16,Favonius quercus,Hampshire,UA,8,1888,female,17.192,130.853,1.752,5.348
 34,Aricia agestis,Middlesex,VC,6,1889,NA,13.017,65.644,1.805,4.82
 17,Celastrina argiolus,Worcestershire,VC,5,1889,male,16.119,102.364,1.441,6.402
@@ -432,24 +409,14 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 58,Lycaena phlaeas,Middlesex,VC,6,1889,NA,13.409,70.722,1.552,4.133
 22,Polyommatus icarus,Berkshire,VC,6,1890,female,15.86,93.416,2.181,5.2
 29,Polyommatus icarus,Berkshire,VC,6,1890,female,16.001,95.231,1.949,5.01
-55,Favonius quercus,Gloucestershire,UA,NA,1890,female,14.753,93.887,1.707,5.551
-92,Cupido minimus,Gloucestershire,UA,NA,1890,male,11.025,49.185,0.974,4.458
 27,Polyommatus icarus,Oxfordshire,VC,8,1891,male,14.069,76.667,1.404,5.032
-91,Cupido minimus,Gloucestershire,UA,NA,1891,male,10.398,40.37,0.826,3.897
 47,Lycaena phlaeas,Middlesex,VC,8,1891,NA,15.108,90.749,2.242,4.758
 6,Polyommatus icarus,Hampshire,UA,8,1892,female,12.081,60.053,1.467,4.253
 34,Polyommatus icarus,Berkshire,VC,8,1892,female,14.252,75.131,1.676,4.945
-35,Polyommatus icarus,Berkshire,VC,NA,1892,female,14.966,85.408,1.823,6.035
 39,Polyommatus icarus,Berkshire,VC,8,1892,female,15.476,92.09,1.803,4.232
-24,Favonius quercus,Hampshire,UA,NA,1892,female,16.193,105.865,1.866,5.3
-38,Favonius quercus,Berkshire,VC,NA,1892,female,14.822,97.075,1.843,5.576
-39,Favonius quercus,Berkshire,VC,NA,1892,male,15.85,104.493,1.638,6.052
-44,Favonius quercus,Berkshire,VC,NA,1892,male,15.762,110.462,1.524,5.505
 59,Favonius quercus,Northamptonshire,VC,7,1892,female,16.354,117.816,2.571,5.324
 53,Cupido minimus,Surrey,VC,5,1892,male,10.143,40.042,1.04,3.848
 58,Cupido minimus,Surrey,VC,6,1892,male,11.55,48.745,1.238,4.013
-94,Cupido minimus,Kent,UA,NA,1892,male,12.256,55.768,1.123,4.739
-104,Lycaena phlaeas,Berkshire,VC,NA,1893,NA,14.024,74.813,1.706,4.48
 105,Lycaena phlaeas,Suffolk,UA,7,1893,NA,12.199,63.8,1.255,3.868
 33,Polyommatus bellargus,Kent,UA,6,1894,male,16.798,106.293,1.736,6.448
 39,Polyommatus bellargus,Surrey,VC,5,1894,female,15.516,97.044,2.029,5.703
@@ -462,7 +429,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 2,Polyommatus bellargus,Dorset,VC,8,1895,female,15.701,100.545,1.988,5.318
 11,Polyommatus bellargus,Dorset,VC,8,1895,female,15.845,95.935,2.014,5.866
 90,Cupido minimus,Gloucestershire,UA,6,1895,male,10.664,44.768,1.057,3.966
-108,Lycaena phlaeas,Berkshire,VC,NA,1895,NA,12.915,62.472,1.707,4.131
 10,Polyommatus bellargus,Gloucestershire,UA,6,1896,male,15.069,85.301,1.839,5.816
 12,Polyommatus bellargus,Gloucestershire,UA,6,1896,male,15.608,101.626,1.74,5.275
 18,Polyommatus bellargus,West Sussex,VC,8,1896,male,15.705,94.335,1.616,5.766
@@ -472,7 +438,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 25,Polyommatus bellargus,West Sussex,VC,8,1896,female,15.612,93.395,1.487,5.932
 61,Polyommatus bellargus,Gloucestershire,UA,6,1896,male,14.69,78.996,1.573,5.262
 62,Polyommatus bellargus,Gloucestershire,UA,6,1896,male,14.503,89.335,1.753,5.638
-5,Aricia agestis,West Sussex,VC,NA,1896,NA,12.076,52.843,1.17,5.178
 1,Polyommatus icarus,Hampshire,UA,8,1896,male,12.614,63.38,1.312,5.478
 2,Polyommatus icarus,Hampshire,UA,8,1896,male,14.167,86.163,1.467,5.995
 4,Polyommatus icarus,Hampshire,UA,8,1896,female,13.713,69.374,1.503,4.625
@@ -484,9 +449,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 21,Polyommatus icarus,Oxfordshire,VC,8,1896,female,14.563,79.764,1.404,4.484
 28,Polyommatus icarus,Oxfordshire,VC,8,1896,female,14.604,80.317,1.993,4.966
 38,Polyommatus icarus,Berkshire,VC,8,1896,male,15.383,87.036,1.595,6.795
-1,Celastrina argiolus,Kent,UA,NA,1896,male,14.601,88.637,1.442,5.702
-2,Celastrina argiolus,Kent,UA,NA,1896,male,13.727,69.917,1.06,4.792
-8,Celastrina argiolus,Kent,UA,NA,1896,male,15.973,102.556,1.209,5.959
 94,Celastrina argiolus,Devon,UA,7,1896,male,15.942,101.393,1.345,6.31
 95,Celastrina argiolus,Devon,UA,7,1896,female,15.631,95.206,1.423,5.25
 6,Favonius quercus,Devon,UA,7,1896,male,17.503,130.817,1.889,6.757
@@ -510,9 +472,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 8,Aricia agestis,Kent,UA,8,1898,NA,12.537,56.001,1.172,5.103
 11,Aricia agestis,Gloucestershire,UA,6,1898,NA,13.115,66.579,1.805,5.059
 13,Aricia agestis,Kent,UA,8,1898,NA,11.221,51.269,1.408,4.086
-10,Favonius quercus,Hampshire,UA,NA,1898,female,16.144,110.113,2.302,6.259
-11,Favonius quercus,Hampshire,UA,NA,1898,male,15.747,105.387,1.992,5.281
-17,Favonius quercus,Hampshire,UA,NA,1898,male,16.872,126.872,1.797,5.191
 63,Cupido minimus,East Gloucestershire,VC,6,1898,male,10.983,45.051,1.007,4.425
 68,Cupido minimus,Gloucestershire,UA,6,1898,male,10.842,44.516,1.04,4.227
 13,Lycaena phlaeas,Kent,UA,8,1898,NA,13.762,78.402,1.824,4.633
@@ -520,12 +479,9 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 2,Aricia agestis,Oxfordshire,VC,6,1899,NA,12.03,50.744,1.21,4.701
 97,Celastrina argiolus,Dorset,VC,7,1899,male,14.838,89.8,1.293,4.991
 98,Celastrina argiolus,Dorset,VC,7,1899,female,14.538,85.661,1.656,4.914
-12,Favonius quercus,Oxfordshire,VC,NA,1899,male,17.844,137.173,2.026,6.392
 23,Favonius quercus,Oxfordshire,VC,7,1899,male,16.929,127.682,1.729,5.871
 64,Cupido minimus,Dorset,VC,6,1899,male,11.167,49.543,1.206,4.921
 65,Cupido minimus,Dorset,VC,8,1899,male,10.842,44.475,1.057,4.392
-35,Lycaena phlaeas,Middlesex,VC,NA,1899,NA,14.273,86.221,1.74,4.19
-36,Lycaena phlaeas,Middlesex,VC,NA,1899,NA,14.056,81.86,1.823,4.527
 37,Lycaena phlaeas,Middlesex,VC,6,1899,NA,14.777,93.962,2.221,4.002
 5,Polyommatus bellargus,Buckinghamshire,VC,6,1900,male,14.826,81.003,1.441,6.116
 15,Polyommatus bellargus,Buckinghamshire,VC,6,1900,male,14.924,92.162,1.591,5.668
@@ -579,7 +535,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 29,Cupido minimus,Buckinghamshire,VC,6,1906,male,11.545,48.832,0.97,4.596
 52,Cupido minimus,Buckinghamshire,VC,6,1906,male,11.151,42.346,1.007,4.14
 32,Lycaena phlaeas,Buckinghamshire,VC,8,1906,NA,14.557,84.365,1.613,5.154
-56,Polyommatus bellargus,Dorset,VC,NA,1907,male,16.493,106.073,1.938,6.982
 76,Celastrina argiolus,Surrey,VC,7,1907,male,15.839,102.538,2.172,4.164
 50,Favonius quercus,Surrey,VC,7,1907,male,17.005,127.682,1.852,5.391
 71,Cupido minimus,Surrey,VC,6,1907,male,11.203,49.32,1.057,4.425
@@ -598,7 +553,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 51,Favonius quercus,Surrey,VC,7,1909,male,15.782,104.508,1.865,5.595
 70,Cupido minimus,Surrey,VC,6,1909,male,11.461,47.329,1.04,4.641
 39,Aricia agestis,Buckinghamshire,VC,6,1910,NA,12.476,55.023,1.311,5.404
-53,Celastrina argiolus,Devon,UA,NA,1910,male,15.519,99.552,1.401,6.552
 78,Celastrina argiolus,Surrey,VC,8,1910,female,15.566,101.729,1.81,5.353
 19,Cupido minimus,Buckinghamshire,VC,6,1910,female,12.064,57.396,1.196,4.652
 66,Cupido minimus,Hampshire,UA,5,1910,female,10.219,40.476,1.222,3.913
@@ -702,7 +656,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 35,Celastrina argiolus,Oxfordshire,VC,8,1920,male,15.23,93.209,1.251,6.129
 96,Celastrina argiolus,Devon,UA,5,1920,female,14.211,77.544,1.448,4.94
 30,Favonius quercus,Oxfordshire,VC,7,1920,male,16.262,111.851,1.661,5.778
-62,Aricia agestis,Oxfordshire,VC,NA,1921,NA,12.209,52.206,1.216,5.001
 37,Polyommatus icarus,Oxfordshire,VC,8,1921,female,13.502,77.104,1.844,4.526
 41,Polyommatus icarus,Berkshire,VC,9,1921,female,12.79,63.205,1.592,4.63
 100,Cupido minimus,Kent,UA,8,1921,female,9.784,37.254,1.106,4.343
@@ -920,7 +873,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 92,Aricia agestis,Mid Perthshire,VC,7,1965,NA,12.512,57.663,1.673,4.103
 63,Polyommatus icarus,Argyll,VC,6,1965,male,15.203,86.692,1.973,5.363
 69,Polyommatus icarus,East Inverness-shire,VC,6,1965,male,14.714,77.444,1.501,4.851
-16,Cupido minimus,Berkshire,VC,NA,1965,male,11.686,52.605,1.101,4.082
 51,Polyommatus bellargus,Surrey,VC,6,1966,male,16.51,103.744,1.59,6.362
 78,Polyommatus bellargus,North-east Yorkshire,VC,6,1966,male,15.739,92.042,1.394,5.855
 14,Aricia agestis,Hampshire,UA,8,1966,NA,11.864,52.397,1.35,4.067
@@ -997,7 +949,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 65,Favonius quercus,West Sussex,VC,7,1977,female,12.925,70.191,1.836,4.939
 66,Favonius quercus,West Sussex,VC,7,1977,male,16.288,108.432,1.862,6.262
 107,Polyommatus bellargus,East Sussex,VC,8,1978,male,15.268,96.351,1.529,6.618
-38,Celastrina argiolus,Oxfordshire,VC,NA,1978,female,16.884,119.547,1.675,6.298
 63,Celastrina argiolus,West Sussex,VC,5,1978,male,14.716,92.051,1.293,6.614
 73,Favonius quercus,West Sussex,VC,7,1978,male,16.379,117.106,2.302,7.009
 78,Lycaena phlaeas,Hampshire,UA,8,1978,NA,14.432,79.881,1.685,4.665
@@ -1014,9 +965,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 60,Cupido minimus,Hampshire,UA,6,1979,male,10.648,43.584,0.925,4.59
 92,Polyommatus bellargus,Kent,UA,6,1980,male,14.687,87.976,1.571,6.032
 93,Polyommatus bellargus,Kent,UA,8,1980,female,13.551,70.985,1.801,5.718
-90,Favonius quercus,Hampshire,UA,NA,1980,male,16.758,124.319,1.837,6.264
-91,Favonius quercus,Hampshire,UA,NA,1980,male,16.269,120.851,2.122,5.819
-96,Favonius quercus,Hampshire,UA,NA,1980,male,16.397,118.622,2.043,6.051
 72,Aricia agestis,Hampshire,UA,5,1981,NA,12.522,58.975,1.474,5.817
 91,Polyommatus icarus,Dorset,VC,8,1981,male,15.303,85.633,1.356,5.55
 101,Favonius quercus,Buckinghamshire,VC,8,1982,female,16.791,110.067,2.136,6.176
@@ -1049,7 +997,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 82,Aricia agestis,Wiltshire,UA,5,1989,NA,12.541,59.17,1.693,4.901
 89,Aricia agestis,Wiltshire,UA,5,1989,NA,11.904,50.929,1.275,5.437
 55,Celastrina argiolus,Oxfordshire,VC,7,1989,male,16.592,119.932,1.336,6.576
-56,Celastrina argiolus,West Sussex,VC,NA,1989,female,16.495,108.895,1.593,6.899
 44,Cupido minimus,Wiltshire,UA,5,1989,male,12.3,57.52,1.234,5.508
 78,Cupido minimus,Hampshire,UA,6,1989,female,9.455,34.617,1.09,3.529
 70,Lycaena phlaeas,Wiltshire,UA,5,1989,NA,12.95,70.573,2.035,4.275
@@ -1065,12 +1012,8 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 60,Celastrina argiolus,Oxfordshire,VC,7,1990,male,16.573,118.455,1.484,7.653
 61,Celastrina argiolus,Oxfordshire,VC,7,1990,male,16.816,116.61,1.081,7.337
 74,Favonius quercus,Surrey,VC,5,1990,female,16.383,126.122,2.302,6.855
-102,Celastrina argiolus,Hampshire,UA,NA,1991,male,14.657,93.713,1.285,6.217
-103,Celastrina argiolus,Hampshire,UA,NA,1991,female,16.483,107.525,1.643,5.649
 95,Polyommatus bellargus,Wiltshire,UA,8,1992,male,14.479,81.054,1.403,5.384
 96,Polyommatus bellargus,Wiltshire,UA,6,1992,female,15.01,82.761,1.613,6.138
-104,Celastrina argiolus,Buckinghamshire,VC,NA,1992,female,16.105,104.336,2.109,5.136
-105,Celastrina argiolus,Buckinghamshire,VC,NA,1992,female,15.124,94.92,1.266,5.743
 67,Favonius quercus,Wiltshire,UA,6,1992,female,15.773,109.612,2.198,5.819
 68,Favonius quercus,Wiltshire,UA,6,1992,female,15.754,110.676,2.25,6.054
 75,Favonius quercus,Wiltshire,UA,6,1992,male,17.113,122.021,1.991,5.87
@@ -1083,7 +1026,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 96,Aricia agestis,Derbyshire,VC,7,1993,NA,13.163,67.543,1.613,5.158
 75,Lycaena phlaeas,Wiltshire,UA,5,1993,NA,13.695,76.656,2.24,4.912
 73,Aricia agestis,Dorset,VC,7,1994,NA,12.688,62.75,1.414,5.796
-90,Lycaena phlaeas,Hampshire,UA,NA,1994,NA,14.182,86.016,2.24,5.302
 95,Aricia agestis,Dumfriesshire,VC,7,1995,NA,11.432,50.704,1.295,5.043
 101,Aricia agestis,Berwickshire,VC,8,1995,NA,13.946,74.573,1.55,5.216
 102,Aricia agestis,Berwickshire,VC,8,1995,NA,13.954,75.325,1.48,5.448
@@ -1097,7 +1039,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 95,Favonius quercus,Hampshire,UA,6,1997,male,16.914,122.369,1.967,7.293
 65,Aricia agestis,Berkshire,VC,8,1998,NA,11.464,50.105,1.155,5.537
 103,Polyommatus bellargus,Hampshire,UA,6,1999,female,15.077,85.602,1.885,5.969
-106,Celastrina argiolus,Buckinghamshire,VC,NA,1999,male,16.415,115.702,1.407,7.163
 105,Polyommatus bellargus,East Sussex,VC,7,2001,male,14.104,76.777,1.424,6.155
 111,Polyommatus bellargus,East Sussex,VC,8,2002,male,15.829,106.539,1.571,6.933
 90,Polyommatus icarus,Wiltshire,UA,8,2002,male,14.899,85.133,1.788,5.241
@@ -1119,7 +1060,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 87,Cupido minimus,Wiltshire,UA,5,2004,female,10.935,46.378,1.189,3.22
 88,Cupido minimus,Wiltshire,UA,5,2004,male,11.56,50.626,1.123,4.707
 89,Cupido minimus,Wiltshire,UA,5,2004,male,10.043,39.959,1.007,4.59
-101,Celastrina argiolus,Hampshire,UA,NA,2005,female,16.036,104.406,1.494,6.334
 88,Favonius quercus,Hampshire,UA,6,2005,male,15.531,100.377,1.863,4.967
 112,Polyommatus bellargus,Dorset,VC,9,2006,female,15.151,89.157,1.805,5.884
 113,Polyommatus bellargus,Dorset,VC,9,2006,female,14.312,75.145,1.617,5.953
@@ -1133,7 +1073,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 99,Polyommatus icarus,Outer Hebrides,VC,7,2012,female,15.228,84.486,1.747,5.857
 90,Pyronia tithonus,Essex,UA,7,1885,male,17.437,129.88,1.417,5.694
 98,Aglais io,Middlesex,VC,4,1885,NA,26.306,274.057,2.442,8.761
-9,Argynnis paphia,Kent,UA,NA,1885,female,35.517,448.604,3.033,12.433
 31,Lasiommata megera,Denbighshire,VC,8,1885,male,22.266,193.464,1.673,9.022
 32,Lasiommata megera,Denbighshire,VC,8,1885,male,20.765,168.32,1.75,8.804
 33,Lasiommata megera,Denbighshire,VC,8,1885,male,20.622,166.071,1.552,7.761
@@ -1152,29 +1091,17 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 99,Aglais io,Middlesex,VC,9,1887,NA,26.894,298.44,2.412,8.916
 48,Argynnis paphia,Hampshire,UA,7,1887,female,31.055,345.118,2.976,10.177
 49,Argynnis paphia,Hampshire,UA,7,1887,female,32.869,386.946,3.003,11.318
-35,Aglais urticae,West Sussex,VC,NA,1887,NA,25.062,235.359,2.298,7.532
-36,Aglais urticae,West Sussex,VC,NA,1887,NA,23.149,196.656,2.813,7.139
-78,Aglais urticae,West Sussex,VC,NA,1887,NA,22.84,204.772,2.062,7.737
 62,Limenitis camilla,Dorset,VC,7,1887,NA,26.828,258.624,2.351,7.206
 56,Pyronia tithonus,Hampshire,UA,8,1888,female,19.429,155.143,2.02,6.249
 57,Pyronia tithonus,Hampshire,UA,8,1888,female,18.888,136.094,1.908,5.691
 58,Pyronia tithonus,Hampshire,UA,8,1888,female,20.391,165.053,2.023,6.322
 65,Pyronia tithonus,Hampshire,UA,8,1888,male,18.331,129.17,1.27,6.957
 52,Aglais io,Berkshire,VC,8,1888,NA,24.236,226.537,1.952,7.82
-58,Aglais io,Berkshire,VC,NA,1888,NA,26.065,279.479,2.62,8.223
-59,Aglais io,Berkshire,VC,NA,1888,NA,26.669,283.888,3.293,7.735
-60,Aglais io,Berkshire,VC,NA,1888,NA,25.957,265.062,2.168,7.025
 52,Pararge aegeria,Hampshire,UA,5,1888,NA,19.98,140.496,1.775,6.373
-24,Limenitis camilla,Hampshire,UA,NA,1888,NA,27.531,279.025,2.843,7.632
-31,Polygonia c-album,Herefordshire,VC,NA,1889,NA,24.883,241.321,3.145,8.151
-32,Polygonia c-album,Herefordshire,VC,NA,1889,NA,25.314,224.458,2.323,7.937
 30,Pyronia tithonus,Devon,UA,7,1889,male,19.452,144.234,1.146,7.649
 109,Melanargia galathea,Isle of Wight,VC,7,1889,male,22.311,204.722,1.941,9.834
 42,Argynnis paphia,Hampshire,UA,7,1889,female,33.383,412.688,3.134,10.647
 43,Argynnis paphia,Hampshire,UA,8,1889,female,33.628,387.835,3.168,10.585
-71,Aglais urticae,Surrey,VC,NA,1889,NA,25.9,251.481,2.696,7.227
-72,Aglais urticae,Surrey,VC,NA,1889,NA,24.262,218.157,2.451,7.373
-73,Aglais urticae,Surrey,VC,NA,1889,NA,25.677,237.617,2.668,6.331
 68,Speyeria aglaja,County Durham,VC,6,1890,NA,26.939,276.297,3.002,8.779
 69,Speyeria aglaja,County Durham,VC,6,1890,NA,25.983,252.857,2.689,10.267
 70,Speyeria aglaja,County Durham,VC,6,1890,NA,26.493,270.221,3.059,10.635
@@ -1183,24 +1110,12 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 64,Pyronia tithonus,Hampshire,UA,8,1890,male,17.553,135.075,1.191,6.661
 67,Pyronia tithonus,Hampshire,UA,8,1890,female,20.633,177.327,1.86,6.528
 68,Pyronia tithonus,Hampshire,UA,8,1890,male,17.869,144.08,1.377,6.592
-72,Pyronia tithonus,Oxfordshire,VC,NA,1890,male,18.091,144.316,1.314,6.777
 73,Pyronia tithonus,Oxfordshire,VC,7,1890,male,17.457,129.578,1.451,7.299
-80,Pyronia tithonus,Oxfordshire,VC,NA,1890,female,19.219,157.008,2.465,6.815
 81,Pyronia tithonus,Oxfordshire,VC,7,1890,male,16.307,109.427,1.675,5.063
-1,Melanargia galathea,Oxfordshire,VC,NA,1890,male,23.766,211.689,1.907,9.409
-2,Melanargia galathea,Oxfordshire,VC,NA,1890,male,21.832,180.957,1.814,8.922
-4,Melanargia galathea,Oxfordshire,VC,NA,1890,male,24.082,223.664,1.754,9.86
 19,Maniola jurtina,Kent,UA,8,1890,female,23.482,229.796,1.94,7.567
 5,Aglais io,Devon,UA,9,1890,NA,29.443,363.613,3.443,9.317
-55,Aglais io,Oxfordshire,VC,NA,1890,NA,25.955,290.837,3.291,8.336
-56,Aglais io,Oxfordshire,VC,NA,1890,NA,26.341,287.812,2.662,8.079
-57,Aglais io,Oxfordshire,VC,NA,1890,NA,27.301,308.019,3.026,8.071
 17,Argynnis paphia,Warwickshire,VC,8,1890,female,30.989,349.261,2.965,10.344
 18,Argynnis paphia,Warwickshire,VC,8,1890,female,31.16,352.982,3.034,11.152
-44,Argynnis paphia,Hampshire,UA,NA,1890,male,32.454,374.566,3.404,11.153
-45,Argynnis paphia,Hampshire,UA,NA,1890,male,33.248,399.647,2.965,11.658
-10,Aglais urticae,Oxfordshire,VC,NA,1890,NA,21.33,185.028,2.237,6.231
-11,Aglais urticae,Oxfordshire,VC,NA,1890,NA,24.516,240.629,2.872,7.923
 53,Pararge aegeria,Hampshire,UA,8,1890,NA,20.838,156.893,1.334,7.767
 54,Pararge aegeria,Hampshire,UA,8,1890,NA,21.733,159.406,1.675,6.981
 55,Pararge aegeria,Hampshire,UA,8,1890,NA,21.741,177.208,1.756,8.042
@@ -1224,17 +1139,9 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 20,Lasiommata megera,Devon,UA,5,1891,female,21.232,190.327,2.571,7.421
 26,Lasiommata megera,Dorset,VC,9,1891,female,22.184,194.553,2.599,7.446
 28,Lasiommata megera,Glamorganshire,VC,9,1891,female,23.317,221.805,2.814,7.689
-14,Limenitis camilla,Hampshire,UA,NA,1891,NA,28.484,301.813,3.179,8.383
-20,Limenitis camilla,Hampshire,UA,NA,1891,NA,30.86,345.742,3.03,9.281
-23,Limenitis camilla,Hampshire,UA,NA,1891,NA,28.775,313.133,2.917,7.482
-25,Limenitis camilla,Hampshire,UA,NA,1891,NA,27.002,265.744,2.281,9.094
 42,Limenitis camilla,Hampshire,UA,7,1891,NA,26.785,263.511,2.02,8.91
-46,Limenitis camilla,Hampshire,UA,NA,1891,NA,29.267,323.687,2.881,8.605
-14,Polygonia c-album,Gloucestershire,UA,NA,1892,NA,25.718,235.12,2.749,8.579
-15,Polygonia c-album,Glamorganshire,VC,NA,1892,NA,23.584,223.06,2.93,7.998
 29,Polygonia c-album,Herefordshire,VC,6,1892,NA,26.919,280.482,3.907,10.473
 30,Polygonia c-album,Herefordshire,VC,6,1892,NA,25.359,230.977,2.93,8.427
-42,Pyronia tithonus,Glamorganshire,VC,NA,1892,female,20.073,170.913,2.057,6.854
 84,Coenonympha tullia,Cheshire,VC,7,1892,NA,18.78,132.265,1.9,5.209
 85,Coenonympha tullia,Cheshire,VC,7,1892,NA,18.491,129.352,1.905,5.677
 53,Melanargia galathea,Northamptonshire,VC,7,1892,male,23.246,203.324,1.815,9.877
@@ -1256,11 +1163,7 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 44,Pararge aegeria,Pembrokeshire,VC,8,1893,NA,21.819,179.279,1.681,7.798
 45,Pararge aegeria,Pembrokeshire,VC,8,1893,NA,22.618,205.837,2.521,7.425
 46,Pararge aegeria,Pembrokeshire,VC,8,1893,NA,22.119,199.437,2.36,7.424
-48,Pararge aegeria,Devon,UA,NA,1893,NA,22.944,194.367,1.567,8.732
 65,Pararge aegeria,Berkshire,VC,8,1893,NA,22.094,190.512,1.502,8.971
-22,Lasiommata megera,Devon,UA,NA,1893,male,21.337,176.359,1.682,8.61
-23,Lasiommata megera,Devon,UA,NA,1893,female,21.858,187.48,2.62,7.737
-24,Lasiommata megera,Devon,UA,NA,1893,female,23.07,211.144,2.353,6.939
 30,Lasiommata megera,Denbighshire,VC,8,1893,male,21.406,177.416,1.689,8.246
 7,Polygonia c-album,Gloucestershire,UA,8,1894,NA,23.043,190.636,2.808,6.533
 25,Pyronia tithonus,Devon,UA,8,1894,female,20.834,165.907,1.887,6.842
@@ -1289,10 +1192,8 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 36,Coenonympha tullia,Cumberland,VC,6,1895,NA,19.505,150.768,2.177,6.991
 37,Coenonympha tullia,Cumberland,VC,6,1895,NA,18.548,139.569,1.514,6.543
 44,Coenonympha tullia,Cumberland,VC,6,1895,NA,18.998,140.323,1.846,4.359
-34,Melanargia galathea,Gloucestershire,UA,NA,1895,female,26.698,270.033,3.657,9.852
 28,Maniola jurtina,Middlesex,VC,7,1895,male,20.864,169.377,2.037,8.246
 71,Maniola jurtina,Mid Perthshire,VC,8,1895,male,22.209,206.002,1.902,8.099
-39,Aglais urticae,Norfolk,UA,NA,1895,NA,26.82,269.432,2.933,7.722
 82,Pararge aegeria,Warwickshire,VC,8,1895,NA,20.916,180.675,1.951,5.675
 47,Lasiommata megera,Isle of Wight,VC,8,1895,female,25.238,258.819,2.938,7.615
 66,Speyeria aglaja,County Durham,VC,7,1896,NA,28.043,304.354,3.831,9.692
@@ -1335,7 +1236,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 78,Pyronia tithonus,Berkshire,VC,8,1897,female,19.112,163.7,2.085,6.884
 82,Pyronia tithonus,Oxfordshire,VC,7,1897,female,18.618,148.654,2.009,6.625
 53,Aglais io,Berkshire,VC,8,1897,NA,29.35,354.095,3.149,8.602
-31,Argynnis paphia,Surrey,VC,NA,1897,female,32.332,373.998,2.932,10.382
 1,Aglais urticae,Oxfordshire,VC,9,1897,NA,23.103,193.687,2.634,7.169
 4,Aglais urticae,Berkshire,VC,8,1897,NA,21.186,166.807,2.57,7.29
 23,Aglais urticae,Warwickshire,VC,7,1897,NA,26.934,271.141,2.963,7.653
@@ -1362,8 +1262,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 36,Pararge aegeria,Gloucestershire,UA,6,1898,NA,21.01,167.671,1.517,7.563
 42,Pararge aegeria,Gloucestershire,UA,6,1898,NA,22.7,200.23,1.542,8.544
 43,Pararge aegeria,Gloucestershire,UA,6,1898,NA,21.641,192.191,3.151,7.711
-58,Pararge aegeria,Hampshire,UA,NA,1898,NA,20.317,161.698,1.46,7.236
-59,Pararge aegeria,Hampshire,UA,NA,1898,NA,21.072,178.274,2.01,6.896
 21,Lasiommata megera,Devon,UA,8,1898,female,25.502,260.238,2.333,8.176
 11,Limenitis camilla,Hampshire,UA,7,1898,NA,29.144,320.531,2.656,8.343
 12,Limenitis camilla,Hampshire,UA,7,1898,NA,27.082,288.208,2.66,7.446
@@ -1377,7 +1275,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 1,Speyeria aglaja,Mid Perthshire,VC,8,1899,NA,27.158,280.342,2.716,7.947
 2,Speyeria aglaja,Mid Perthshire,VC,8,1899,NA,27.619,287.056,3.002,11.322
 3,Speyeria aglaja,Mid Perthshire,VC,8,1899,NA,27.36,288.441,3.373,11.125
-40,Pyronia tithonus,Dorset,VC,NA,1899,male,18.318,136.345,1.235,6.846
 45,Pyronia tithonus,Isle of Wight,VC,7,1899,male,17.275,128.311,1.873,6.922
 61,Coenonympha tullia,Mid Perthshire,VC,8,1899,NA,18.94,151.251,2.791,6.519
 62,Coenonympha tullia,Mid Perthshire,VC,8,1899,NA,18.595,137.79,2.345,5.535
@@ -1394,8 +1291,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 26,Argynnis paphia,Dorset,VC,7,1899,male,30.066,339.056,3.201,10.748
 60,Pararge aegeria,Oxfordshire,VC,6,1899,NA,20.132,157.678,1.524,7.256
 13,Lasiommata megera,Devon,UA,8,1899,male,22.064,190.283,1.552,8.712
-16,Limenitis camilla,Hampshire,UA,NA,1899,NA,29.492,315.737,3.03,8.156
-44,Limenitis camilla,Hampshire,UA,NA,1899,NA,29.392,322.502,2.767,9.241
 33,Speyeria aglaja,North-east Yorkshire,VC,7,1900,NA,26.895,259.995,3.06,10.863
 44,Pyronia tithonus,Isle of Wight,VC,7,1900,male,17.235,117.751,1.496,6.025
 20,Coenonympha tullia,Cheshire,VC,6,1900,NA,19.633,152.884,1.723,7.051
@@ -1406,22 +1301,14 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 48,Aglais io,Oxfordshire,VC,8,1900,NA,27.99,313.558,2.806,7.737
 49,Aglais io,Oxfordshire,VC,7,1900,NA,29.012,357.484,3.368,9.416
 38,Aglais urticae,Hampshire,UA,7,1900,NA,24.776,230.214,2.54,7.231
-40,Aglais urticae,Cumberland,VC,NA,1900,NA,19.376,142.002,2.239,5.721
-41,Aglais urticae,Cumberland,VC,NA,1900,NA,21.799,178.706,2.722,6.927
 107,Aglais urticae,Oxfordshire,VC,5,1900,NA,23.976,219.779,2.483,7.09
 33,Pararge aegeria,Gloucestershire,UA,6,1900,NA,19.164,145.606,1.307,8.31
 34,Pararge aegeria,Gloucestershire,UA,6,1900,NA,20.984,172.233,1.704,7.633
 52,Lasiommata megera,Oxfordshire,VC,8,1900,male,20.307,164.833,1.535,6.82
-7,Limenitis camilla,Hampshire,UA,NA,1900,NA,28.514,307.013,2.505,9.063
-8,Limenitis camilla,Hampshire,UA,NA,1900,NA,28.006,286.242,2.283,7.558
-10,Limenitis camilla,Hampshire,UA,NA,1900,NA,27.582,288.109,2.546,8.232
-10,Polygonia c-album,Gloucestershire,UA,NA,1901,NA,23.358,200.779,2.442,8.669
 32,Pyronia tithonus,Devon,UA,7,1901,male,18.563,136.362,1.187,6.943
 27,Maniola jurtina,Suffolk,UA,8,1901,male,22.302,210.746,2.189,7.47
 29,Maniola jurtina,Glamorganshire,VC,7,1901,female,23.572,227.254,2.377,7.349
-58,Maniola jurtina,Isles of Scilly,UA,NA,1901,female,26.095,278.796,2.43,8.587
 32,Aglais io,Gwynedd,UA,8,1901,NA,25.408,261.832,2.541,7.473
-12,Argynnis paphia,Gloucestershire,UA,NA,1901,female,35.267,452.212,3.471,11.09
 60,Argynnis paphia,Hampshire,UA,7,1901,female,33.822,407.443,2.976,9.012
 20,Aglais urticae,Berkshire,VC,6,1901,NA,23.187,204.895,2.631,7.229
 21,Aglais urticae,Berkshire,VC,6,1901,NA,25.781,245.245,2.604,7.568
@@ -1432,8 +1319,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 29,Speyeria aglaja,Mid Perthshire,VC,8,1902,NA,24.928,238.206,2.544,8.892
 30,Speyeria aglaja,Mid Perthshire,VC,8,1902,NA,26.423,275.667,2.916,9.348
 31,Speyeria aglaja,Mid Perthshire,VC,8,1902,NA,29.179,336.013,3.516,9.915
-41,Pyronia tithonus,Dorset,VC,NA,1902,female,20.375,166.335,2.356,7.006
-48,Pyronia tithonus,Dorset,VC,NA,1902,male,17.696,136.471,1.423,6.847
 63,Coenonympha tullia,Mid Perthshire,VC,8,1902,NA,17.647,133.211,1.36,6.449
 64,Coenonympha tullia,Mid Perthshire,VC,8,1902,NA,19.677,147.948,1.502,7.809
 20,Melanargia galathea,East Gloucestershire,VC,7,1902,female,26.57,255.797,3.297,8.896
@@ -1481,10 +1366,8 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 31,Coenonympha tullia,Cumberland,VC,7,1904,NA,17.753,125.935,1.239,6.656
 32,Coenonympha tullia,Cumberland,VC,7,1904,NA,18.195,121.727,2.061,5.172
 33,Coenonympha tullia,Cumberland,VC,7,1904,NA,18.16,134.552,1.181,6.472
-39,Coenonympha tullia,Cumberland,VC,NA,1904,NA,18.561,135.512,1.36,6.23
 40,Coenonympha tullia,Cumberland,VC,7,1904,NA,18.647,132.297,1.179,6.448
 41,Coenonympha tullia,Cumberland,VC,7,1904,NA,18.537,134.6,1.209,6.597
-45,Coenonympha tullia,Cumberland,VC,NA,1904,NA,18.663,152.622,1.603,6.2
 4,Maniola jurtina,Surrey,VC,8,1904,male,21.307,184.626,1.893,9.435
 18,Maniola jurtina,Kent,UA,8,1904,female,22.919,225.89,2.086,7.616
 30,Maniola jurtina,Cumberland,VC,7,1904,male,22.503,204.656,1.989,8.88
@@ -1548,11 +1431,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 10,Coenonympha tullia,Shropshire,VC,6,1909,NA,18.498,128.039,1.27,6.26
 11,Coenonympha tullia,Shropshire,VC,6,1909,NA,18.915,143.303,1.301,7.592
 12,Coenonympha tullia,Shropshire,VC,6,1909,NA,18.325,132.905,1.937,4.965
-45,Melanargia galathea,Kent,UA,NA,1909,male,23.83,222.104,1.787,10.07
-46,Melanargia galathea,Kent,UA,NA,1909,male,22.312,191.617,1.787,8.668
-47,Melanargia galathea,Kent,UA,NA,1909,female,24.76,231.875,2.613,8.671
-48,Melanargia galathea,Kent,UA,NA,1909,female,25.742,247.716,2.893,8.003
-49,Melanargia galathea,Kent,UA,NA,1909,female,25.64,239.784,3.217,9.134
 62,Maniola jurtina,East Inverness-shire,VC,8,1909,male,22.325,210.93,1.964,8.391
 43,Aglais io,Oxfordshire,VC,11,1909,NA,28.167,333.924,2.541,9.495
 44,Aglais io,Oxfordshire,VC,11,1909,NA,28.024,333.746,2.806,8.16
@@ -1560,7 +1438,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 24,Argynnis paphia,Surrey,VC,7,1909,female,33.398,405.125,2.999,11.119
 28,Argynnis paphia,Surrey,VC,7,1909,male,30.999,363.974,2.628,10.144
 29,Argynnis paphia,Surrey,VC,7,1909,male,32.556,397.583,2.765,11.759
-31,Aglais urticae,Middlesex,VC,NA,1909,NA,19.544,138.71,1.905,6.018
 37,Pararge aegeria,Isle of Wight,VC,8,1909,NA,21.64,173.07,1.775,7.354
 39,Pararge aegeria,Isle of Wight,VC,8,1909,NA,21.148,179.701,2.895,6.531
 40,Pararge aegeria,Isle of Wight,VC,8,1909,NA,21.629,175.971,1.447,7.796
@@ -1602,23 +1479,15 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 46,Lasiommata megera,Isle of Wight,VC,8,1910,female,23.157,213.287,3.032,8.1
 20,Polygonia c-album,Herefordshire,VC,7,1911,NA,24.892,214.301,2.381,8.181
 21,Polygonia c-album,Hertfordshire,VC,7,1911,NA,24.975,227.229,2.962,7.815
-85,Pyronia tithonus,Surrey,VC,NA,1911,male,17.07,127.594,1.348,6.635
 57,Coenonympha tullia,Aberdeenshire,UA,7,1911,NA,18.207,133.012,1.477,6.028
-7,Maniola jurtina,Surrey,VC,NA,1911,male,21.357,192.473,1.867,8.78
 12,Maniola jurtina,Buckinghamshire,VC,6,1911,male,21.823,201.028,1.843,8.369
 13,Maniola jurtina,Buckinghamshire,VC,6,1911,male,21.101,185.776,1.892,8.683
 25,Maniola jurtina,Kent,UA,6,1911,male,21.383,201.891,2.183,8.197
-53,Maniola jurtina,Isles of Scilly,UA,NA,1911,female,24.201,221.549,2.134,7.204
-54,Maniola jurtina,Isles of Scilly,UA,NA,1911,female,23.186,221.154,2.476,7.81
-55,Maniola jurtina,Isles of Scilly,UA,NA,1911,female,23.951,226.401,2.28,7.858
-56,Maniola jurtina,Isles of Scilly,UA,NA,1911,female,25.153,241.33,2.427,6.896
-57,Maniola jurtina,Isles of Scilly,UA,NA,1911,female,24.344,247.274,2.425,8.173
 19,Argynnis paphia,Surrey,VC,7,1911,male,33.536,398.664,2.966,12.972
 20,Argynnis paphia,Surrey,VC,7,1911,male,32.071,374.377,2.494,11.961
 21,Argynnis paphia,Surrey,VC,7,1911,male,31.84,366.839,2.561,11.591
 22,Argynnis paphia,Surrey,VC,7,1911,male,32.255,370.385,3.069,12.502
 27,Argynnis paphia,Surrey,VC,7,1911,male,33.315,398.49,2.662,11.694
-17,Aglais urticae,Surrey,VC,NA,1911,NA,24.708,227.473,2.48,7.53
 56,Aglais urticae,Fife,UA,8,1911,NA,20.674,164.561,2.097,6.655
 49,Pararge aegeria,Hampshire,UA,5,1911,NA,20.377,152.37,1.634,7.798
 51,Pararge aegeria,Hampshire,UA,5,1911,NA,21.059,179.045,2.197,7.026
@@ -1631,7 +1500,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 6,Polygonia c-album,Glamorganshire,VC,9,1912,NA,23.932,217.364,2.809,7.818
 18,Polygonia c-album,Hertfordshire,VC,7,1912,NA,25.972,231.384,2.658,8.128
 22,Polygonia c-album,Herefordshire,VC,7,1912,NA,24.943,233.099,2.35,8.517
-35,Speyeria aglaja,Aberdeenshire,UA,NA,1912,NA,30.19,350.717,3.259,11.864
 76,Pyronia tithonus,Surrey,VC,7,1912,male,16.648,120.902,1.267,6.293
 79,Coenonympha tullia,Denbighshire,VC,7,1912,NA,17.904,129.045,1.642,5.934
 80,Coenonympha tullia,Denbighshire,VC,7,1912,NA,18.88,138.879,1.387,5.912
@@ -1663,23 +1531,11 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 45,Limenitis camilla,Hampshire,UA,6,1913,NA,25.041,234.7,2.319,8.278
 16,Polygonia c-album,Hertfordshire,VC,7,1914,NA,21.856,178.382,2.229,7.607
 17,Polygonia c-album,Hertfordshire,VC,7,1914,NA,24.632,234.703,3.266,7.908
-27,Speyeria aglaja,Aberdeenshire,UA,NA,1914,NA,27.67,305.204,2.659,11.235
-28,Speyeria aglaja,Aberdeenshire,UA,NA,1914,NA,29.727,371.835,3.259,12.607
 77,Pyronia tithonus,Surrey,VC,7,1914,male,17.244,120.506,1.307,6.995
 84,Pyronia tithonus,Surrey,VC,7,1914,male,17.071,123.78,1.525,5.729
 107,Melanargia galathea,Dorset,VC,7,1914,female,24.42,231.588,2.616,7.51
 108,Melanargia galathea,Dorset,VC,7,1914,female,24.167,201.567,2.459,7.443
-9,Maniola jurtina,Surrey,VC,NA,1914,female,25.732,271.78,2.499,7.785
-45,Aglais io,Oxfordshire,VC,NA,1914,NA,29.162,363.923,3.177,9.607
-13,Aglais urticae,Surrey,VC,NA,1914,NA,21.489,171.596,2.479,5.535
-14,Aglais urticae,Surrey,VC,NA,1914,NA,24.835,224.881,2.573,7.864
-15,Aglais urticae,Surrey,VC,NA,1914,NA,26.205,248.841,3.145,7.655
 18,Aglais urticae,Surrey,VC,9,1914,NA,24.515,220.19,2.6,6.956
-26,Aglais urticae,Hertfordshire,VC,NA,1914,NA,22.76,185.109,2.237,6.959
-27,Aglais urticae,Hertfordshire,VC,NA,1914,NA,24.055,222.836,2.298,7.018
-28,Aglais urticae,Hertfordshire,VC,NA,1914,NA,24.345,225.479,2.57,6.895
-29,Aglais urticae,Hertfordshire,VC,NA,1914,NA,23.777,214.19,2.147,7.929
-30,Aglais urticae,Hertfordshire,VC,NA,1914,NA,24.856,221.456,3.054,6.171
 8,Pararge aegeria,Devon,UA,4,1914,NA,22.321,190.253,1.797,7.33
 9,Pararge aegeria,Devon,UA,4,1914,NA,20.832,178.595,1.611,7.47
 10,Pararge aegeria,Devon,UA,4,1914,NA,21.454,176.788,1.634,7.727
@@ -1691,18 +1547,12 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 12,Polygonia c-album,Worcestershire,VC,4,1915,NA,25.019,228.29,2.443,8.365
 54,Pyronia tithonus,Hampshire,UA,7,1915,male,17.368,130.544,1.272,7.146
 63,Pyronia tithonus,Hampshire,UA,7,1915,male,16.698,119.688,1.303,7.299
-3,Melanargia galathea,Oxfordshire,VC,NA,1915,male,23.014,212.591,1.936,9.769
-5,Melanargia galathea,Oxfordshire,VC,NA,1915,female,27.381,279.34,3.295,9.194
-20,Maniola jurtina,Kent,UA,NA,1915,male,22.519,201.004,1.82,8.27
-21,Maniola jurtina,Kent,UA,NA,1915,male,21.532,196.322,1.869,7.332
-22,Maniola jurtina,Kent,UA,NA,1915,male,21.707,195.998,2.014,8.541
 20,Aglais io,Worcestershire,VC,4,1915,NA,25.778,271.349,1.758,7.448
 21,Aglais io,Worcestershire,VC,4,1915,NA,27.866,308.051,2.587,9.32
 42,Lasiommata megera,Dorset,VC,8,1915,male,22.223,192.132,1.577,8.343
 43,Lasiommata megera,Dorset,VC,8,1915,female,23.703,217.853,2.959,6.985
 25,Speyeria aglaja,Kent,UA,8,1916,NA,28.794,329.972,3.888,11.292
 26,Speyeria aglaja,Kent,UA,8,1916,NA,29.899,347.448,3.602,9.348
-34,Speyeria aglaja,Aberdeenshire,UA,NA,1916,NA,28.939,327.235,3.116,13.527
 63,Melanargia galathea,Dorset,VC,12,1916,female,25.122,233.991,2.347,9.202
 42,Aglais io,Oxfordshire,VC,10,1916,NA,27.481,309.477,2.355,9.344
 38,Argynnis paphia,Hampshire,UA,7,1916,male,31.055,344.288,2.99,11.524
@@ -1809,8 +1659,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 13,Argynnis paphia,Gloucestershire,UA,7,1919,male,32.564,391.105,2.729,12.505
 14,Argynnis paphia,Gloucestershire,UA,7,1919,male,30.407,336.252,2.966,11.692
 15,Argynnis paphia,Gloucestershire,UA,7,1919,female,33.524,400.683,3.336,10.917
-43,Aglais urticae,Cheshire,VC,NA,1919,NA,22.491,190.549,2.721,6.746
-44,Aglais urticae,Cheshire,VC,NA,1919,NA,25.265,258.929,3.416,8.019
 13,Pararge aegeria,Devon,UA,8,1919,NA,21.436,170.057,1.401,8.054
 14,Pararge aegeria,Devon,UA,8,1919,NA,21.344,175.051,1.704,8.24
 15,Pararge aegeria,Devon,UA,7,1919,NA,21.411,173.117,1.566,7.051
@@ -1943,10 +1791,7 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 40,Speyeria aglaja,East Inverness-shire,VC,7,1935,NA,26.919,294.943,2.689,10.608
 41,Speyeria aglaja,East Inverness-shire,VC,7,1935,NA,26.191,259.994,2.43,9.863
 130,Pyronia tithonus,Somerset,UA,6,1935,female,6.007,20.351,2.069,6.035
-66,Melanargia galathea,Oxfordshire,VC,NA,1935,female,25.716,239.051,3.023,9.408
 16,Maniola jurtina,Oxfordshire,VC,7,1935,male,22.345,213.024,1.892,9.12
-74,Aglais urticae,Oxfordshire,VC,NA,1935,NA,26.988,280.689,3.056,8.44
-75,Aglais urticae,Oxfordshire,VC,NA,1935,NA,24.57,234.76,2.716,7.277
 5,Speyeria aglaja,East Inverness-shire,VC,8,1936,NA,28.314,280.298,3.316,10.092
 6,Speyeria aglaja,East Inverness-shire,VC,8,1936,NA,30.466,351.696,2.831,11.524
 7,Speyeria aglaja,East Inverness-shire,VC,8,1936,NA,28.346,325.374,3.574,10.406
@@ -1971,9 +1816,7 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 68,Polygonia c-album,Middlesex,VC,7,1940,NA,24.626,196.374,3.326,7.066
 4,Speyeria aglaja,Argyll,VC,8,1940,NA,29.316,329.987,3.345,11.722
 98,Melanargia galathea,East Gloucestershire,VC,7,1940,female,26.729,251.657,3.387,8.57
-84,Argynnis paphia,Oxfordshire,VC,NA,1940,male,33.644,425.756,3.674,12.318
 12,Speyeria aglaja,East Inverness-shire,VC,7,1941,NA,25.276,242.504,2.688,8.693
-63,Polygonia c-album,Hampshire,UA,NA,1942,NA,24.352,206.328,2.907,7.127
 84,Maniola jurtina,Cornwall,UA,7,1942,female,18.867,132.979,1.274,5.162
 88,Aglais urticae,Middlesex,VC,9,1942,NA,23.612,211.005,2.839,7.162
 82,Aglais urticae,Dumfriesshire,VC,8,1943,NA,26.191,254.911,3.008,7.691
@@ -1988,10 +1831,8 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 62,Aglais io,Hampshire,UA,8,1945,NA,28.045,318.509,2.778,8.731
 64,Aglais io,Hampshire,UA,8,1945,NA,30.944,396.131,2.933,10.171
 64,Aglais urticae,Kent,UA,8,1945,NA,25.48,230.252,3.25,8.295
-98,Pararge aegeria,Kent,UA,NA,1945,NA,19.696,159.956,1.967,5.884
 67,Limenitis camilla,Hampshire,UA,7,1945,NA,29.249,305.449,2.657,8.517
 57,Polygonia c-album,Hertfordshire,VC,9,1946,NA,22.418,191.06,2.251,5.416
-59,Polygonia c-album,Middlesex,VC,NA,1946,NA,21.893,158.504,2.822,7.695
 50,Pyronia tithonus,Berkshire,VC,8,1946,male,17.863,138.696,1.013,7.867
 136,Pyronia tithonus,Somerset,UA,7,1946,male,19.143,149.48,1.388,7.853
 85,Limenitis camilla,West Sussex,VC,7,1946,NA,27.876,286.534,2.503,9.707
@@ -2038,7 +1879,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 39,Speyeria aglaja,Dorset,VC,7,1951,NA,26.849,269.744,2.773,11.778
 96,Speyeria aglaja,Dumfriesshire,VC,7,1951,NA,30.878,365.107,3.616,13.564
 95,Coenonympha tullia,Mid Perthshire,VC,8,1951,NA,17.576,129.744,1.267,6.402
-61,Melanargia galathea,Dorset,VC,NA,1951,female,23.665,206.629,1.85,8.503
 76,Maniola jurtina,Dorset,VC,7,1951,male,23.861,228.943,2.03,9.414
 88,Lasiommata megera,Dumfriesshire,VC,6,1951,male,20.923,166.434,1.666,8.63
 95,Speyeria aglaja,Buckinghamshire,VC,7,1952,NA,29.286,323.959,2.929,9.919
@@ -2064,7 +1904,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 104,Coenonympha tullia,Mid Perthshire,VC,8,1956,NA,19.276,139.334,2.49,5.558
 105,Coenonympha tullia,Mid Perthshire,VC,8,1956,NA,18.12,120.345,2.465,6.522
 87,Maniola jurtina,Powys,UA,9,1956,female,23.908,228.277,2.397,6.607
-91,Polygonia c-album,Surrey,VC,NA,1957,NA,21.976,185.471,2.244,7.724
 90,Argynnis paphia,Wiltshire,UA,5,1957,female,34.371,431.849,3.198,10.345
 65,Aglais urticae,Oxfordshire,VC,9,1957,NA,24.614,225.985,3.494,6.791
 87,Pararge aegeria,Oxfordshire,VC,9,1957,NA,22.838,212.081,2.246,6.251
@@ -2073,7 +1912,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 88,Polygonia c-album,Oxfordshire,VC,5,1961,NA,22.552,182.068,2.622,7.011
 68,Aglais urticae,Hampshire,UA,6,1961,NA,24.251,228.531,2.486,7.349
 67,Aglais urticae,Hampshire,UA,9,1962,NA,26.674,264.8,3.228,7.399
-103,Aglais urticae,Shropshire,VC,NA,1962,NA,25.893,258.292,3.251,6.839
 56,Polygonia c-album,Hampshire,UA,10,1963,NA,22.57,190.687,2.621,6.952
 54,Speyeria aglaja,Lancashire,UA,7,1963,NA,27.415,286.466,3.831,10.412
 79,Melanargia galathea,Hampshire,UA,7,1963,female,25.893,257.665,3.406,7.51
@@ -2136,7 +1974,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 96,Coenonympha tullia,East Inverness-shire,VC,7,1968,NA,19.641,152.065,1.571,8.02
 107,Coenonympha tullia,Shropshire,VC,6,1968,NA,18.412,130.084,2.175,6.075
 76,Melanargia galathea,Hampshire,UA,7,1968,male,22.77,213.529,1.669,10.059
-94,Melanargia galathea,Oxfordshire,VC,NA,1968,male,22.637,203.417,2.098,9.495
 61,Argynnis paphia,Devon,UA,8,1968,female,35.835,447.275,3.17,10.817
 50,Polygonia c-album,Hampshire,UA,7,1969,NA,22.908,200.211,3.134,7.552
 83,Polygonia c-album,West Sussex,VC,8,1969,NA,22.548,177.149,2.14,6.04
@@ -2144,7 +1981,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 83,Speyeria aglaja,East Sussex,VC,7,1969,NA,26.485,266.477,3.317,13.497
 98,Speyeria aglaja,Devon,UA,7,1969,NA,26.134,259.692,2.958,9.383
 100,Speyeria aglaja,Devon,UA,7,1969,NA,26.583,264.138,3.107,11.115
-123,Pyronia tithonus,West Sussex,VC,NA,1969,male,17.942,131.285,1.388,6.855
 65,Melanargia galathea,Dorset,VC,7,1969,male,22.568,199.695,1.715,10.851
 86,Maniola jurtina,Hampshire,UA,7,1969,female,24.406,235.119,2.226,7.06
 62,Argynnis paphia,Devon,UA,7,1969,male,33.958,414.88,3.255,13.32
@@ -2174,7 +2010,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 81,Maniola jurtina,Hampshire,UA,9,1971,male,22.928,212.741,1.879,8.01
 110,Pararge aegeria,Cornwall,UA,8,1971,NA,23.374,210.039,2.22,6.367
 111,Pararge aegeria,Cornwall,UA,8,1971,NA,21.872,192.45,2.327,6.83
-73,Polygonia c-album,Middlesex,VC,NA,1972,NA,24.003,203.629,2.65,7.351
 99,Speyeria aglaja,East Sutherland,VC,7,1972,NA,28.586,322.785,2.78,10.489
 117,Pyronia tithonus,West Sussex,VC,8,1972,male,20.341,173.93,1.445,8.022
 124,Pyronia tithonus,West Sussex,VC,8,1972,female,20.92,181.737,1.558,7.167
@@ -2222,7 +2057,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 103,Pararge aegeria,Surrey,VC,7,1976,NA,21.414,175.434,1.498,6.504
 104,Pararge aegeria,Surrey,VC,7,1976,NA,17.588,115.021,1.501,6.226
 93,Lasiommata megera,Dorset,VC,7,1976,female,24.946,251.688,2.275,8.025
-72,Polygonia c-album,Middlesex,VC,NA,1977,NA,23.768,207.3,3.448,7.665
 90,Polygonia c-album,Surrey,VC,10,1977,NA,23.617,210.414,2.792,7.408
 78,Speyeria aglaja,Cumberland,VC,7,1977,NA,26.558,269.941,2.602,10.41
 81,Speyeria aglaja,Cumberland,VC,7,1977,NA,26.884,267.736,2.773,12.903
@@ -2321,7 +2155,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 74,Polygonia c-album,Wiltshire,UA,9,1989,NA,21.576,160.437,1.88,5.466
 75,Polygonia c-album,Somerset,UA,3,1989,NA,22.616,174.134,2.166,6.04
 57,Speyeria aglaja,Devon,UA,6,1989,NA,24.819,240.459,3.145,13.064
-83,Aglais urticae,Oxfordshire,VC,NA,1989,NA,26.612,263.207,3.517,8.295
 95,Melanargia galathea,Wiltshire,UA,7,1990,female,27.155,293.193,3.407,8.232
 96,Melanargia galathea,Wiltshire,UA,7,1990,male,24.53,231.355,1.782,10.578
 67,Argynnis paphia,Wiltshire,UA,7,1990,female,32.024,363.617,2.976,10.622
@@ -2381,32 +2214,18 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 130,Pararge aegeria,Middlesex,VC,4,2011,NA,21.377,178.162,2.45,6.576
 124,Pararge aegeria,Outer Hebrides,VC,7,2012,NA,21.69,191.535,1.403,8.063
 121,Pyronia tithonus,East Sussex,VC,7,2014,female,21.729,191.696,2.268,6.6
-2,Papilio machaon,Cambridgeshire,VC,NA,1890,female,38.793,514.582,5.164,10.926
-7,Papilio machaon,Cambridgeshire,VC,NA,1890,female,39.062,530.371,4.826,11.224
-12,Papilio machaon,Cambridgeshire,VC,NA,1890,female,35.923,467.231,5.946,10.027
-13,Papilio machaon,Cambridgeshire,VC,NA,1890,male,35.448,425.381,3.143,10.887
-17,Papilio machaon,Cambridgeshire,VC,NA,1890,male,37.591,475.951,4.788,10.962
-18,Papilio machaon,Cambridgeshire,VC,NA,1890,female,36.746,478.321,4.675,11.638
-22,Papilio machaon,Cambridgeshire,VC,NA,1890,female,34.705,429.407,5.315,10.775
-29,Papilio machaon,Cambridgeshire,VC,NA,1890,male,34.572,446.3,3.942,12.231
 35,Papilio machaon,Cambridgeshire,VC,6,1892,female,39.435,515.425,5.189,11.147
 31,Papilio machaon,Cambridgeshire,VC,6,1896,female,41.572,582.703,4.587,11.995
 1,Papilio machaon,Cambridgeshire,VC,6,1897,female,39.345,488.495,5.46,10.776
 6,Papilio machaon,Cambridgeshire,VC,6,1897,male,36.121,451.736,4.713,9.992
 11,Papilio machaon,Cambridgeshire,VC,6,1897,male,36.467,468.099,3.668,11.006
 16,Papilio machaon,Cambridgeshire,VC,6,1897,male,36.364,469.411,3.6,12.165
-24,Papilio machaon,Cambridgeshire,VC,NA,1897,female,38.835,522.448,5.162,13.543
 28,Papilio machaon,Cambridgeshire,VC,6,1897,female,40.44,559.937,5.964,11.691
 72,Papilio machaon,Cambridgeshire,VC,8,1899,female,40.361,577.489,5.711,12.923
 21,Papilio machaon,Cambridgeshire,VC,8,1901,male,39.122,508.197,3.628,11.224
-23,Papilio machaon,Norfolk,UA,NA,1901,male,32.647,367.887,4.566,11.115
 40,Papilio machaon,Norfolk,UA,6,1903,female,39.633,550.433,5.891,13.465
-10,Papilio machaon,Cambridgeshire,VC,NA,1905,male,37.443,471.334,4.419,10.812
-4,Papilio machaon,Cambridgeshire,VC,NA,1906,female,37.216,478.376,5.162,9.842
 15,Papilio machaon,Cambridgeshire,VC,7,1906,male,34.155,388.498,3.483,9.133
 20,Papilio machaon,Cambridgeshire,VC,7,1906,female,37.921,515.477,5.162,10.587
-25,Papilio machaon,Norfolk,UA,NA,1908,female,31.034,312.378,4.039,9.016
-27,Papilio machaon,Norfolk,UA,NA,1908,male,36.264,456.901,3.707,11.495
 32,Papilio machaon,Cambridgeshire,VC,6,1916,male,39.173,520.547,4.366,12.09
 38,Papilio machaon,Cambridgeshire,VC,6,1916,female,39.339,552.439,5.866,11.513
 39,Papilio machaon,Cambridgeshire,VC,6,1916,male,38.555,494.7,4.793,12.886
@@ -2422,7 +2241,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 51,Papilio machaon,Cambridgeshire,VC,6,1921,female,40.66,548.896,4.67,11.845
 49,Papilio machaon,Cambridgeshire,VC,5,1927,male,36.699,417.823,3.907,10.134
 58,Papilio machaon,Norfolk,UA,6,1928,female,42.543,581.347,6.38,11.671
-5,Papilio machaon,Norfolk,UA,NA,1930,male,34.937,468.827,4.002,11.432
 46,Papilio machaon,Cambridgeshire,VC,6,1930,male,37.217,443.357,4.304,10.96
 48,Papilio machaon,Cambridgeshire,VC,6,1930,male,37.474,489.106,4.611,11.051
 47,Papilio machaon,Cambridgeshire,VC,6,1931,male,38.096,484.784,4.06,11.294
@@ -2433,24 +2251,17 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 44,Papilio machaon,Cambridgeshire,VC,5,1940,male,35.887,454.277,3.511,11.585
 74,Papilio machaon,Kent,UA,7,1945,male,37.78,501.729,4.061,11.694
 73,Papilio machaon,Norfolk,UA,5,1948,female,38.759,510.872,5.129,11.996
-56,Papilio machaon,Norfolk,UA,NA,1949,male,39.009,512.381,4.061,12.18
 52,Papilio machaon,Norfolk,UA,6,1956,female,38.675,537.414,5.861,10.747
 54,Papilio machaon,Norfolk,UA,7,1956,female,41.667,556.441,4.823,11.264
 75,Papilio machaon,Hampshire,UA,5,1965,male,35.265,420.851,4.449,12.906
 77,Papilio machaon,Hampshire,UA,6,1965,male,36.537,449.887,4.599,12.509
 80,Papilio machaon,Hampshire,UA,6,1965,male,31.244,354.526,3.904,10.628
-60,Papilio machaon,Norfolk,UA,NA,1966,male,40.146,536.381,4.581,13.675
-64,Papilio machaon,Norfolk,UA,NA,1966,male,37.766,475.895,4.307,13.126
-67,Papilio machaon,Norfolk,UA,NA,1966,female,41.3,595.226,5.221,13.708
 71,Papilio machaon,Norfolk,UA,5,1966,male,35.839,443.132,3.758,12.496
 76,Papilio machaon,Hampshire,UA,5,1966,female,40.725,585.456,5.575,14.495
 78,Papilio machaon,Hampshire,UA,6,1966,male,35.83,431.815,4.147,12.788
 79,Papilio machaon,Hampshire,UA,6,1966,male,37.407,456.319,4.146,12.754
-65,Papilio machaon,Norfolk,UA,NA,1970,male,38.959,483.34,4.976,12.276
-66,Papilio machaon,Norfolk,UA,NA,1970,female,41.961,586.529,5.434,13.939
 70,Papilio machaon,Norfolk,UA,5,1970,female,40.861,568.285,4.732,12.671
 68,Papilio machaon,Norfolk,UA,5,1972,male,32.982,372.19,2.992,11.325
-62,Papilio machaon,Norfolk,UA,NA,1975,female,39.221,554.894,5.007,13.828
 45,Papilio machaon,Norfolk,UA,6,1976,female,40.443,573.41,5.343,12.529
 55,Papilio machaon,Norfolk,UA,5,1977,female,40.623,584.559,5.772,12.616
 59,Papilio machaon,Norfolk,UA,5,1977,male,38.519,512.233,3.336,12.401
@@ -2471,16 +2282,13 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 85,Leptidea sinapis,Hampshire,UA,6,1888,female,18.888,124.433,1.143,9.301
 86,Leptidea sinapis,Hampshire,UA,6,1888,male,21.124,151.709,1.142,9.571
 87,Leptidea sinapis,Hampshire,UA,6,1888,male,19.202,122.132,0.911,10.396
-1,Anthocharis cardamines,Surrey,VC,NA,1889,male,21.167,167.089,1.636,10.68
 30,Pieris brassicae,Hampshire,UA,8,1890,female,32.838,406.006,2.87,10.776
 28,Anthocharis cardamines,Cumberland,VC,6,1890,male,20.446,152.598,1.701,11.001
 29,Anthocharis cardamines,Cumberland,VC,6,1890,male,17.765,116.191,1.226,9.824
 47,Gonepteryx rhamni,Northamptonshire,VC,8,1891,male,26.862,276.115,3.206,9.927
-2,Pieris brassicae,Devon,UA,NA,1891,male,29.157,311.059,2.159,11.265
 29,Pieris brassicae,Hampshire,UA,8,1891,female,30.306,350.678,3.449,10.319
 31,Pieris brassicae,Hampshire,UA,7,1891,female,35.233,475.071,3.848,13.038
 6,Pieris brassicae,Devon,UA,8,1892,female,34.691,477.359,3.175,10.684
-36,Anthocharis cardamines,Lancashire,UA,NA,1892,male,21.926,170.393,1.665,8.712
 32,Pieris brassicae,Oxfordshire,VC,4,1893,male,30.111,338.66,3.236,10.319
 33,Pieris brassicae,Oxfordshire,VC,4,1893,female,30.691,347.093,2.992,12.67
 78,Pieris brassicae,Middlesex,VC,5,1893,female,28.748,290.323,2.739,9.587
@@ -2505,23 +2313,17 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 1,Pieris brassicae,Devon,UA,5,1897,male,29.325,288.516,2.718,10.41
 36,Pieris brassicae,Berkshire,VC,8,1897,female,33.059,423.778,3.175,10.718
 37,Pieris brassicae,Berkshire,VC,8,1897,female,32.976,405.878,2.718,12.149
-2,Anthocharis cardamines,Surrey,VC,NA,1897,female,18.125,140.486,1.405,8.218
 44,Anthocharis cardamines,Oxfordshire,VC,5,1897,female,19.371,149.643,2.579,8.158
 45,Anthocharis cardamines,Oxfordshire,VC,5,1897,female,19.707,153.075,2.507,7.738
-3,Gonepteryx rhamni,West Sussex,VC,NA,1898,male,27.115,291.979,2.492,8.5
-4,Gonepteryx rhamni,West Sussex,VC,NA,1898,male,27.346,311.766,2.077,7.281
-5,Gonepteryx rhamni,West Sussex,VC,NA,1898,female,28.227,330.177,3.074,7.974
 21,Pieris brassicae,Isle of Wight,VC,8,1898,female,28.708,299.362,2.537,11.76
 22,Pieris brassicae,Isle of Wight,VC,8,1898,female,26.428,267.592,2.474,10.257
 23,Pieris brassicae,Isle of Wight,VC,8,1898,male,29.175,317.735,2.078,10.901
 24,Pieris brassicae,Isle of Wight,VC,8,1898,male,28.658,304.154,2.444,12.699
 25,Pieris brassicae,Isle of Wight,VC,8,1898,male,24.923,229.747,2.628,11.021
 34,Pieris brassicae,Oxfordshire,VC,5,1898,male,30.146,335.283,2.595,11.63
-38,Pieris brassicae,Oxfordshire,VC,NA,1898,male,29.664,325.555,2.505,11.337
 46,Anthocharis cardamines,Oxfordshire,VC,6,1898,female,20.085,151.035,2.341,8.835
 47,Anthocharis cardamines,Oxfordshire,VC,6,1898,female,21.383,161.305,1.959,7.758
 80,Leptidea sinapis,Gloucestershire,UA,6,1898,male,19.985,133.632,1.142,10.143
-81,Leptidea sinapis,Gloucestershire,UA,NA,1898,female,22.681,167.864,1.126,11.534
 19,Pieris brassicae,Dorset,VC,7,1899,female,32.207,398.297,3.083,11.634
 25,Anthocharis cardamines,Essex,UA,6,1899,male,21.506,171.366,1.5,11.689
 29,Gonepteryx rhamni,Surrey,VC,5,1900,female,29.336,330.173,2.741,8.186
@@ -2557,7 +2359,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 35,Pieris brassicae,Berkshire,VC,5,1905,female,29.585,315.097,2.625,10.105
 4,Anthocharis cardamines,Surrey,VC,6,1905,male,20.226,152.49,1.618,9.453
 8,Anthocharis cardamines,Surrey,VC,5,1905,female,20.511,154.197,1.559,7.159
-10,Anthocharis cardamines,Kent,UA,NA,1905,male,20.734,155.304,1.752,10.026
 20,Anthocharis cardamines,Essex,UA,5,1905,female,21.067,166.235,2.425,7.026
 103,Anthocharis cardamines,Berkshire,VC,5,1905,male,19.785,144.771,1.484,9.847
 104,Anthocharis cardamines,Berkshire,VC,6,1905,female,21.28,175.58,2.248,8.183
@@ -2580,27 +2381,15 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 63,Leptidea sinapis,Cornwall,UA,6,1910,male,20.43,149.262,1.125,9.599
 64,Leptidea sinapis,Cornwall,UA,7,1910,female,20.697,154.945,1.208,9.994
 69,Leptidea sinapis,Cornwall,UA,6,1910,male,21.368,157.674,1.19,10.839
-10,Gonepteryx rhamni,Surrey,VC,NA,1911,female,27.928,319.307,3.045,9.387
-11,Gonepteryx rhamni,Surrey,VC,NA,1911,female,28.526,325.056,3.156,9.387
-42,Pieris brassicae,Surrey,VC,NA,1911,male,31.503,371.955,2.352,12.333
-43,Pieris brassicae,Surrey,VC,NA,1911,female,30.916,358.566,3.145,11.783
-44,Pieris brassicae,Surrey,VC,NA,1911,female,32.982,405.507,3.085,10.569
-45,Pieris brassicae,Surrey,VC,NA,1911,female,29.777,331.835,2.603,10.196
 15,Anthocharis cardamines,Essex,UA,5,1911,male,21.956,173.895,1.606,9.701
 16,Anthocharis cardamines,Essex,UA,5,1911,male,16.358,101.749,1.078,8.795
 24,Anthocharis cardamines,Essex,UA,5,1911,female,19.283,141.736,1.957,8.14
 35,Anthocharis cardamines,Oxfordshire,VC,5,1911,female,20.627,155.215,2.086,8.177
 31,Gonepteryx rhamni,Hampshire,UA,7,1912,female,28.45,338.72,2.523,9.195
-9,Anthocharis cardamines,Suffolk,UA,NA,1912,female,19.765,148.654,2.04,8.411
 11,Anthocharis cardamines,Surrey,VC,5,1912,female,21.663,182.271,2.484,8.78
-14,Anthocharis cardamines,Suffolk,UA,NA,1912,female,19.571,157.297,1.732,8.314
 68,Leptidea sinapis,Surrey,VC,7,1912,male,19.518,129.445,0.977,9.88
 79,Leptidea sinapis,Herefordshire,VC,5,1912,male,18.865,116.676,1.042,8.925
 65,Leptidea sinapis,Devon,UA,6,1913,male,20.716,151.349,1.142,11.666
-7,Gonepteryx rhamni,Surrey,VC,NA,1914,male,21.623,196.527,2.27,8.029
-8,Gonepteryx rhamni,Surrey,VC,NA,1914,male,28.683,331.116,3.184,10.881
-9,Gonepteryx rhamni,Surrey,VC,NA,1914,male,29.753,340.895,2.243,8.585
-13,Gonepteryx rhamni,Berkshire,VC,NA,1914,male,26.199,282.976,2.824,9.525
 27,Pieris brassicae,Hampshire,UA,5,1914,male,30.694,337.151,2.747,11.176
 17,Anthocharis cardamines,West Sussex,VC,5,1914,male,19.577,146.465,1.597,8.893
 18,Anthocharis cardamines,West Sussex,VC,5,1914,male,22.185,186.533,1.753,10.373
@@ -2619,7 +2408,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 39,Pieris brassicae,Cambridgeshire,VC,5,1917,male,29.624,315.816,2.351,10.289
 40,Pieris brassicae,Cambridgeshire,VC,5,1917,male,30.225,342.485,2.841,10.99
 41,Pieris brassicae,Cambridgeshire,VC,5,1917,male,29.797,342.989,2.244,11.691
-37,Anthocharis cardamines,Cumberland,VC,NA,1917,male,20.724,155.342,1.921,8.359
 26,Gonepteryx rhamni,Staffordshire,VC,5,1918,male,29.659,343.085,3.239,10.548
 25,Gonepteryx rhamni,Staffordshire,VC,5,1919,male,27.277,299.878,2.824,10.521
 49,Gonepteryx rhamni,Staffordshire,VC,8,1919,female,27.453,312.773,3.206,9.097
@@ -2716,7 +2504,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 103,Leptidea sinapis,Surrey,VC,6,1965,male,20.25,146.955,1.043,10.342
 104,Leptidea sinapis,West Sussex,VC,6,1965,male,19.538,123.812,1.175,10.46
 42,Gonepteryx rhamni,Hampshire,UA,8,1966,female,31.041,375.878,3.055,9.402
-67,Gonepteryx rhamni,Surrey,VC,NA,1966,female,29.663,344.167,3.214,10.653
 101,Gonepteryx rhamni,Buckinghamshire,VC,8,1966,female,27.139,291.36,2.548,9.134
 60,Pieris brassicae,Hampshire,UA,4,1967,male,28.39,281.974,2.687,10.623
 61,Pieris brassicae,Hampshire,UA,4,1967,male,29.815,310.959,2.998,10.982
@@ -2750,26 +2537,14 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 108,Anthocharis cardamines,Bedfordshire,VC,5,1973,female,20.927,164.376,1.733,8.429
 22,Leptidea sinapis,Devon,UA,8,1973,male,20.194,135.637,0.948,10.84
 117,Leptidea sinapis,Buckinghamshire,VC,5,1973,male,20.083,127.23,1.016,10.547
-65,Gonepteryx rhamni,Surrey,VC,NA,1974,female,29.105,322.272,2.961,9.188
-81,Pieris brassicae,Middlesex,VC,NA,1974,male,29.524,305.449,1.881,11.741
-12,Leptidea sinapis,West Sussex,VC,NA,1974,female,19.943,139.383,1.383,10.975
-42,Leptidea sinapis,West Sussex,VC,NA,1974,female,21.575,155.933,1.397,10.773
 86,Gonepteryx rhamni,Hampshire,UA,8,1975,female,31.349,380.761,3.206,10.898
 98,Gonepteryx rhamni,Hampshire,UA,7,1975,male,29.647,331.587,2.442,9.864
-19,Leptidea sinapis,West Sussex,VC,NA,1975,male,20.851,147.963,0.958,11.324
-36,Leptidea sinapis,West Sussex,VC,NA,1975,female,21.716,168.437,1.436,11.654
 115,Leptidea sinapis,Buckinghamshire,VC,6,1975,female,20.316,148.093,1.344,10.576
 118,Leptidea sinapis,Buckinghamshire,VC,6,1975,male,19.395,129.027,1.165,10.101
 100,Gonepteryx rhamni,Hampshire,UA,7,1976,male,29.996,335.347,3.45,9.799
 89,Pieris brassicae,Surrey,VC,7,1976,female,28.62,293.837,2.3,9.302
 91,Pieris brassicae,Surrey,VC,7,1976,female,31.481,372.465,2.871,9.948
-85,Anthocharis cardamines,East Inverness-shire,VC,NA,1976,male,19.119,130.517,1.552,10.342
 97,Anthocharis cardamines,East Inverness-shire,VC,4,1976,female,22.884,182.023,1.867,10.095
-2,Leptidea sinapis,West Sussex,VC,NA,1976,male,20.91,152.027,1.149,11.236
-4,Leptidea sinapis,West Sussex,VC,NA,1976,female,20.307,140.889,1.046,9.983
-11,Leptidea sinapis,West Sussex,VC,NA,1976,female,20.903,153.806,1.313,10.358
-25,Leptidea sinapis,West Sussex,VC,NA,1976,female,20.397,145.747,1.247,10.589
-39,Leptidea sinapis,West Sussex,VC,NA,1976,female,19.938,135.67,1.313,10.744
 113,Leptidea sinapis,Buckinghamshire,VC,6,1976,female,18.65,124.19,1.106,9.979
 116,Leptidea sinapis,Buckinghamshire,VC,6,1976,male,20.069,134.465,1.165,11.203
 5,Leptidea sinapis,West Sussex,VC,8,1977,female,20.095,140.281,1.138,10.387
@@ -2786,7 +2561,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 91,Anthocharis cardamines,Wiltshire,UA,5,1978,female,22.667,194.834,2.023,8.611
 94,Anthocharis cardamines,East Inverness-shire,VC,4,1978,female,21.199,168.821,1.979,10.958
 6,Leptidea sinapis,West Sussex,VC,6,1978,female,21.765,166.03,1.543,11.065
-13,Leptidea sinapis,West Sussex,VC,NA,1978,female,19.729,144.658,1.231,9.044
 31,Leptidea sinapis,West Sussex,VC,5,1978,male,19.619,130.262,1.115,11.29
 32,Leptidea sinapis,West Sussex,VC,6,1978,female,20.745,159.035,1.446,11.139
 37,Leptidea sinapis,West Sussex,VC,6,1978,male,19.173,114.764,0.982,10.358
@@ -2797,7 +2571,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 1,Leptidea sinapis,West Sussex,VC,8,1980,male,18.909,115.567,1.158,9.449
 33,Leptidea sinapis,West Sussex,VC,6,1980,female,19.992,146.906,1.298,9.83
 79,Gonepteryx rhamni,Hampshire,UA,8,1981,male,28.287,326.331,3.297,9.31
-77,Pieris brassicae,Warwickshire,VC,NA,1981,female,27.051,281.646,3.204,7.933
 88,Pieris brassicae,Surrey,VC,8,1981,male,29.953,341.583,2.014,11.137
 79,Anthocharis cardamines,Hampshire,UA,5,1981,male,21.909,172.522,1.551,10.814
 83,Anthocharis cardamines,Hampshire,UA,5,1981,male,21.318,167.212,1.821,11.646
@@ -2830,7 +2603,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 29,Leptidea sinapis,Northamptonshire,VC,5,1994,male,20.305,148.798,1.148,11.289
 30,Leptidea sinapis,Northamptonshire,VC,6,1994,female,20.681,151.773,1.208,10.307
 40,Leptidea sinapis,Northamptonshire,VC,5,1994,male,20.688,150.959,1.081,11.656
-14,Leptidea sinapis,Northamptonshire,VC,NA,1996,female,19.979,136.481,1.164,9.543
 15,Leptidea sinapis,Northamptonshire,VC,6,1996,female,19.569,137.27,1.164,10.807
 24,Leptidea sinapis,Northamptonshire,VC,6,1996,male,19.388,128.154,0.948,10.457
 34,Leptidea sinapis,Northamptonshire,VC,5,1996,female,20.002,142.846,1.014,10.473

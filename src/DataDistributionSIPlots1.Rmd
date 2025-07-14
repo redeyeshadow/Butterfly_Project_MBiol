@@ -104,16 +104,18 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
     #  scale_color_manual(values = c('blue', 'red', 'black')) 
     geom_smooth(method = 'lm', 
                 aes(y = Size, x = Latitude))+
+    scale_x_continuous(limits =  c(49.5, 54))+
     scale_color_viridis_c(limits = c( 4,20), option = 'C' ) -> LatvsSize3
   
     XX%>%
     ggplot()+
     geom_point(aes(y = Size,x = Month))+
-    scale_x_continuous(limits=c(1,12))-> MonthSpread
+    scale_x_continuous(limits=c(2,12), breaks = c(2:12))-> MonthSpread
     
     XX%>%
       ggplot(aes(y = Temp ,x = Year ))+
       geom_point()+
+      scale_x_continuous(limits =  c( 1886,2006))+
       geom_smooth(method = 'lm') -> Temp_year_Corr
     
   plot_grid(Map2+guides(col = 'none', shape = 'none' ),
@@ -141,7 +143,9 @@ Scales <- plot_grid(get_legend(TempvsSize1+guides(col = 'none')),
                     get_legend(LatvsSize3+guides(shape = 'none')),
                     nrow=1)
 ############################################################
+```
 
+```{r}
 
 NHM_Species<-sort(unique(NHM_ForFitting$Sp))
 
@@ -164,31 +168,6 @@ for(i in 1:7){
          WithScales, width = 8, height = 20, bg = 'white')
 }
 
-########
-### Weird low temperatures - where are they?
-
-
-NHM_ForFitting %>%
-  filter(Sp == 'Hipparchia semele',
-         Brood==1)%>%
-  ggplot()+
-  geom_polygon(data= SouthBritishIsles,
-               aes(x = long,   y = lat,  group = group, ),
-               fill = 'gray90',  color = 'black')+
-  geom_point(aes(y = Latitude,  x = Longitude,   col = Right_wing>15 ))+
-  scale_color_viridis_d( )+
-  coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
-  theme_minimal()+
-  theme(axis.title = element_blank())
-
-NHM_filter1%>%
-  filter(`Taxon Name`  == 'Hipparchia semele',
-         `right_wing (mm)` < 15) %>%
-  arrange( `right_wing (mm)` ) %>%
-  select(`Taxon Name`,`specimen number`,
-         `right_wing (mm)`, year )
-
-## https://data.nhm.ac.uk/object/29e42629-d0c4-45b1-b61a-5a4cf3a3fab5/1748251284062  # Nothing weird about the image. 
 
 ```
 
