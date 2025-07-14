@@ -77,6 +77,7 @@ OUNHM_measurements4 %>%
   filter( Year >= 1885) %>%
   filter(!is.na(Month_num) ) %>% ## only keep those with months 
   filter( Month_num >= 3) %>% ########### FILTER OUT ALL from Jan and Feb
+  filter( Location != 'Isles of Scilly') %>%
   select(Individual ,  `Taxon name`,
          Location,LocationType ,
          Month = Month_num, Year,

@@ -930,7 +930,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 64,Aricia agestis,Wiltshire,UA,7,1972,NA,11.731,50.891,1.315,4.88
 24,Celastrina argiolus,Hampshire,UA,5,1972,female,13.872,81.736,1.441,4.621
 71,Polyommatus icarus,Shetland,VC,7,1973,male,17.293,113.964,1.685,6.207
-65,Polyommatus icarus,Isles of Scilly,UA,9,1974,male,14.629,79.759,1.48,5.631
 70,Favonius quercus,Oxfordshire,VC,7,1974,female,16.1,116.811,2.638,6
 83,Polyommatus bellargus,Dorset,VC,9,1975,male,14.483,80.135,1.571,5.596
 86,Polyommatus bellargus,Dorset,VC,9,1975,female,14.175,77.155,1.404,4.741
@@ -2037,7 +2036,6 @@ Individual,Taxon name,Location,LocationType,Month,Year,Sex,Wing_Length,Forewing_
 76,Polygonia c-album,West Sussex,VC,7,1974,NA,21.673,185.686,2.45,6.667
 80,Polygonia c-album,Kent,UA,7,1974,NA,20.515,161.267,3.022,6.439
 84,Polygonia c-album,Hampshire,UA,10,1974,NA,21.902,193.48,2.821,6.809
-90,Maniola jurtina,Isles of Scilly,UA,9,1974,female,25.132,260.208,2.441,6.866
 85,Aglais io,Surrey,VC,7,1975,NA,31.926,402.523,2.688,9.891
 84,Aglais urticae,Leicestershire,VC,8,1975,NA,26.227,256.231,3.032,8.416
 93,Aglais urticae,Wiltshire,UA,9,1975,NA,24.439,225.126,3.129,8.416
