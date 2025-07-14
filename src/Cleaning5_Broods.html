@@ -412,6 +412,7 @@ NHM_data_temps%&gt;%
                             TRUE ~ NA_real_),
           Temp = round(Temp, digits = 3),
           Sex = ifelse( Sex ==&#39;N/A&#39;, &#39;undetermined&#39;, Sex)   ) %&gt;%
+    mutate(YearRescale = (Year-1800)/100) %&gt;%
   select(-ends_with(&#39;_temp&#39;)) -&gt; NHM_for_models
 
 write_csv(NHM_for_models, &#39;../data/NHM_for_models.csv&#39;)</code></pre>
@@ -460,13 +461,14 @@ write_csv(NHM_for_models, &#39;../data/NHM_for_models.csv&#39;)</code></pre>
                            TRUE ~ NA_real_),
          Temp = round(Temp, digits = 3),
          Sex = ifelse( is.na(Sex), &#39;undetermined&#39;, Sex)  ) %&gt;%
+  mutate(YearRescale = (Year-1800)/100) %&gt;%
   select(-ends_with(&#39;_temp&#39;)) </code></pre>
 </div>
 </div>
 <div id="view-and-save" class="section level1">
 <h1>View and save</h1>
 <pre class="r"><code>OUNHM_for_models</code></pre>
-<pre><code>## # A tibble: 2,137 × 9
+<pre><code>## # A tibble: 2,137 × 10
 ##    Sp       Latitude Longitude Month  Year Sex   Wing_Length BroodFocalUse  Temp
 ##    &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt;
 ##  1 Erynnis…     51.5    -1.21      6  1885 unde…        11.4 Summer_before  15.7
@@ -479,7 +481,8 @@ write_csv(NHM_for_models, &#39;../data/NHM_for_models.csv&#39;)</code></pre>
 ##  8 Erynnis…     51.3    -0.374     5  1888 unde…        11.7 Summer_before  16.3
 ##  9 Pyrgus …     51.1    -1.29      5  1888 unde…        11.6 Summer         14.1
 ## 10 Thymeli…     52.7     0.953     7  1888 male         12.9 Summer         13.9
-## # ℹ 2,127 more rows</code></pre>
+## # ℹ 2,127 more rows
+## # ℹ 1 more variable: YearRescale &lt;dbl&gt;</code></pre>
 <pre class="r"><code>write_csv(OUNHM_for_models, &quot;../data/OUNHM_for_models.csv&quot;)</code></pre>
 </div>
 

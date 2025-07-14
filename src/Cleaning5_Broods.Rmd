@@ -61,6 +61,7 @@ NHM_data_temps%>%
                             TRUE ~ NA_real_),
           Temp = round(Temp, digits = 3),
           Sex = ifelse( Sex =='N/A', 'undetermined', Sex)   ) %>%
+    mutate(YearRescale = (Year-1800)/100) %>%
   select(-ends_with('_temp')) -> NHM_for_models
 
 write_csv(NHM_for_models, '../data/NHM_for_models.csv')
@@ -104,6 +105,7 @@ OUNHM_for_models <- OUNHM_data_temps %>%
                            TRUE ~ NA_real_),
          Temp = round(Temp, digits = 3),
          Sex = ifelse( is.na(Sex), 'undetermined', Sex)  ) %>%
+  mutate(YearRescale = (Year-1800)/100) %>%
   select(-ends_with('_temp')) 
 ```
 
