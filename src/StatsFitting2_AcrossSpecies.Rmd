@@ -32,85 +32,21 @@ read_csv('../data/brood_table.csv') %>%
 #####
 ```
 
-# NHM
+# With Sex embedded as a predictor of size in each species model
 
-```{r}
-PS_NHM<- read_csv('../statsresults/NHM_Posterior_Summaries_X1.csv')
-```
-
-## Overall Plots
-
-```{r}
-PS_NHM %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
-  filter( variable %in% c( 'b_Temp',
-                           'b_Year',
-                           'b_Latitude' ) )%>%
-  ggplot( aes( y =  Sp, 
-               x = mean,
-               col = Sex))+
-  geom_point()+
-  geom_errorbarh(aes( xmin = q5, xmax = q95))+
-  geom_vline(xintercept = 0)+
-  facet_grid(Specialism~variable, scales = 'free')
-
-ggsave(filename = '../figs/NHM_AllCombos_Trends_X1.pdf', width = 8, height =8)
-
-```
-
-
-## 'meta-analysis' stats
-
-### Predictors of b_Temp 
-
-```{r}
-PS_NHM %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name'))%>%
-  filter(Specialism !='Habitat specialist and foodplant generalist') %>% ## trying excluding the two HS/FG
- # filter( sp != 'Papilio machaon') %>%
-  filter( variable =='b_Temp' ) -> bTemp_pred_NHM
-
-bTemp_pred_NHM %>%
-  brm( median|mi(sd)  ~  Sex+Specialism + (1|Sp),
-       data = ., iter = 10000)%>%
-  add_criterion( criterion = c("loo")) -> bTemp_model_NHM
-
-bTemp_pred_NHM %>%
-  brm( median|mi(sd)  ~  Sex+ (1|Sp),
-       data = ., iter = 10000)%>%
-  add_criterion(criterion = c("loo")) -> bTemp_model_NHM_NoSpec
-
-bTemp_pred_NHM %>%
-  brm( median|mi(sd)  ~ (1|Sp),
-       data = ., iter = 10000)%>%
-  add_criterion(criterion = c("loo")) -> bTemp_model_NHM_basic
-
-
-loo_compare(bTemp_model_NHM,
-            bTemp_model_NHM_NoSpec,
-            bTemp_model_NHM_basic ) ### It is worth including specialism
-
-mcmc_plot(bTemp_model_NHM, combo  = 'hist')
-
-plot(conditional_effects(bTemp_model_NHM_NoSpec, resp = "median", rug = TRUE), ask = FALSE)
-
-```
-
-
-# With Sex embedded
 
 ```{r}
 PS_NHM<- read_csv('../statsresults/NHM_Posterior_Summaries_X2.csv')
 ```
 
-## Overall Plots
+### Species-level Plots
 
 ```{r}
 PS_NHM %>%
   left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
   filter( variable %in% c( 'b_Temp',
                            'b_YearRescale',
-                           #'b_Sexmale',
+                           'b_Sexmale',
                            #'b_Sexundetermined'  ,
                            'b_Latitude') )%>%
   ggplot( aes( y =  Sp, 
@@ -126,112 +62,6 @@ ggsave(filename = '../figs/NHM_AllCombos_Trends_X2.pdf', width = 8, height =8)
 
 ```
 
-### Predictors of b_Temp 
-
-```{r}
-PS_NHM %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name'))%>%
-  filter(Specialism !='Habitat specialist and foodplant generalist') %>% ## trying excluding the two HS/FG
-  filter( variable =='b_Temp' ) -> bTemp_pred_NHM
-
-bTemp_pred_NHM %>%
-  brm( median|mi(sd)  ~  Specialism,
-       data = ., iter = 1000)%>%
-  add_criterion( criterion = c("loo")) -> bTemp_model_NHM
-
-bTemp_pred_NHM %>%
-  brm( median|mi(sd)  ~  1,
-       data = ., iter = 1000)%>%
-  add_criterion(criterion = c("loo")) -> bTemp_model_NHM_NoSpec
-
-loo_compare(bTemp_model_NHM,
-            bTemp_model_NHM_NoSpec ) ### It is worth including specialism? Can't identify a clear signal
-
-plot(conditional_effects(bTemp_model_NHM, resp = "median", rug = TRUE), ask = FALSE)
-```
-
-### Predictors of b_year
-
-```{r}
-PS_NHM %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name'))%>%
-  filter(Specialism !='Habitat specialist and foodplant generalist') %>% ## trying excluding the two HS/FG
-  filter( variable =='b_Year' ) -> bYear_pred_NHM
-
-bYear_pred_NHM %>%
-  brm( median|mi(sd)  ~  Specialism,
-       data = ., iter = 1000)%>%
-  add_criterion( criterion = c("loo")) -> bYear_model_NHM
-
-bYear_pred_NHM %>%
-  brm( median|mi(sd)  ~  1,
-       data = ., iter = 1000)%>%
-  add_criterion(criterion = c("loo")) ->bYear_model_NHM_NoSpec
-
-loo_compare(bYear_model_NHM,
-            bYear_model_NHM_NoSpec ) ### It is worth including specialism? Can't identify a clear signal
-
-plot(conditional_effects(bYear_model_NHM, resp = "median", rug = TRUE), ask = FALSE)
-```
-
-
-# OUNHM
-
-## Overall Plots
-
-```{r}
-PS_OUM<- read_csv('../statsresults/OUM_Posterior_Summaries_X1.csv')
-
-PS_OUM %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
-  filter( variable %in% c( 'b_Temp',
-                           'b_Year',
-                           'b_Latitude' ) )%>%
-  ggplot( aes( y =  Sp, 
-               x = mean,
-               col = Sex))+
-  geom_point()+
-  geom_errorbarh(aes( xmin = q5, xmax = q95))+
-  geom_vline(xintercept = 0)+
-  facet_grid(Specialism~variable, scales = 'free')
-
-ggsave(filename = '../figs/OUM_AllCombos_Trends_X1.pdf', width = 8, height =8)
-
-```
-
-
-## 'meta-analysis' stats
-
-### Predictors of b_Temp 
-
-
-```{r}
-PS_OUM %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
-  filter( variable =='b_Temp' )-> bTemp_pred_OUM
-
-bTemp_pred_OUM %>%
-  brm( median|mi(sd)  ~  Sex+Specialism+ (1|Sp),  data = .)%>%
-  add_criterion(criterion = c("loo"))-> bTemp_model_OUM
-
-bTemp_pred_OUM %>%
-  brm( median|mi(sd)  ~  Sex+ (1|Sp),  data = .)%>%
-  add_criterion(criterion = c("loo")) -> bTemp_model_OUM_NoSpec
-
-loo_compare(bTemp_model_OUM,bTemp_model_OUM_NoSpec ) ### It is worth including specialism
-
-bTemp_model_OUM
-mcmc_plot(bTemp_model_OUM , combo  = 'hist')
-
-plot(conditional_effects(bTemp_model_OUM , resp = "median", rug = TRUE), ask = FALSE)
-
-```
-
-
-## With sex embedded
-
-
-### Overall Plots
 
 ```{r}
 PS_OUM<- read_csv('../statsresults/OUM_Posterior_Summaries_X2.csv')
@@ -247,79 +77,26 @@ PS_OUM %>%
   geom_point()+
   geom_errorbarh(aes( xmin = q5, xmax = q95))+
   geom_vline(xintercept = 0)+
-  facet_grid(Specialism~variable, scales = 'free')
+  facet_grid(Specialism~variable, scales = 'free')+
+  ggtitle('OUNHM datasets, Species-level coefficients')
 
 ggsave(filename = '../figs/OUM_AllCombos_Trends_X2.pdf', width = 8, height =8)
 
 ```
 
 
-
-
-
-
-## 'meta-analysis' stats
-
-### Predictors of b_Temp 
-
-
-```{r}
-PS_OUM %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
-  filter( variable =='b_Temp' )-> bTemp_pred_OUM
-
-bTemp_pred_OUM %>%
-  brm( median|mi(sd)  ~  Specialism,  data = .)%>%
-  add_criterion(criterion = c("loo"))-> bTemp_model_OUM
-
-bTemp_pred_OUM %>%
-  brm( median|mi(sd)  ~  1,  data = .)%>%
-  add_criterion(criterion = c("loo")) -> bTemp_model_OUM_NoSpec
-
-loo_compare(bTemp_model_OUM,bTemp_model_OUM_NoSpec ) ### It is worth including specialism
-
-bTemp_model_OUM
-
-plot(conditional_effects(bTemp_model_OUM , resp = "median", rug = TRUE), ask = FALSE)
-```
-
-### Predictors of b_Year
-
-```{r}
-PS_OUM %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
-  filter( variable =='b_Year' )-> bYear_pred_OUM
-
-bYear_pred_OUM %>%
-  brm( median|mi(sd)  ~  Specialism,  data = .)%>%
-  add_criterion(criterion = c("loo"))-> bYear_model_OUM
-
-bYear_pred_OUM %>%
-  brm( median|mi(sd)  ~  1,  data = .)%>%
-  add_criterion(criterion = c("loo")) -> bYear_model_OUM_NoSpec
-
-loo_compare(bYear_model_OUM,
-            bYear_model_OUM_NoSpec ) ### It is worth including specialism
-
-bYear_model_OUM
-
-plot(conditional_effects(bTemp_model_OUM , resp = "median", rug = TRUE), ask = FALSE)
-```
-
-# Overlapping datasets
-
 ```{r}
 
 bind_rows(PS_NHM %>%
-  filter( variable %in% c( 'b_Temp',
-                           'b_YearRescale',
-                           'b_Latitude') ) %>%
-  mutate( Dataset= 'NHM'), 
-PS_OUM %>%
-  filter( variable %in% c( 'b_Temp',
-                           'b_YearRescale',
-                           'b_Latitude') )%>%
-  mutate( Dataset= 'OUNHM')) %>%
+            filter( variable %in% c( 'b_Temp',
+                                     'b_YearRescale',
+                                     'b_Latitude') ) %>%
+            mutate( Dataset= 'NHM'), 
+          PS_OUM %>%
+            filter( variable %in% c( 'b_Temp',
+                                     'b_YearRescale',
+                                     'b_Latitude') )%>%
+            mutate( Dataset= 'OUNHM')) %>%
   left_join(specialism, by =c( 'Sp'='Taxon name')) -> Joined_coefficients
 
 Joined_coefficients%>%
@@ -356,15 +133,258 @@ Joined_coefficients %>%
   theme(legend.position = 'bottom')+
   ggtitle('Correlation in Species-level coefficients')
 
+ggsave(filename = '../figs/compare_coefs_across_datasets.png', width = 10, height =6)
+
+```
+
+## NHM
+
+### Predictors of b_Temp 
+
+```{r eval = FALSE}
+PS_NHM %>%
+  left_join(specialism, by =c( 'Sp'='Taxon name'))%>%
+  filter(Specialism !='Habitat specialist and foodplant generalist') %>% ## trying excluding the two HS/FG
+  filter( variable =='b_Temp' ) -> bTemp_pred_NHM
+
+bTemp_pred_NHM %>%
+  brm( median|mi(sd)  ~  Specialism,
+       data = ., iter = 1000)%>%
+  add_criterion( criterion = c("loo")) -> bTemp_model_NHM
+
+bTemp_pred_NHM %>%
+  brm( median|mi(sd)  ~  1,
+       data = ., iter = 1000)%>%
+  add_criterion(criterion = c("loo")) -> bTemp_model_NHM_NoSpec
+
+save( bTemp_model_NHM, file = '../TopLevelModelFits/bTemp_model_NHM')
+save( bTemp_model_NHM_NoSpec,file =  '../TopLevelModelFits/bTemp_model_NHM_NoSpec')
+```
+
+```{r}
+load('../TopLevelModelFits/bTemp_model_NHM')
+load('../TopLevelModelFits/bTemp_model_NHM_NoSpec')
+
+loo_compare(bTemp_model_NHM,
+            bTemp_model_NHM_NoSpec ) ### It is worth including specialism? Can't identify a clear signal
+
+plot(conditional_effects(bTemp_model_NHM, resp = "median", rug = TRUE), ask = FALSE)
+```
+
+### Predictors of b_year
+
+```{r eval = FALSE}
+PS_NHM %>%
+  left_join(specialism, by =c( 'Sp'='Taxon name'))%>%
+  filter(Specialism !='Habitat specialist and foodplant generalist') %>% ## trying excluding the two HS/FG
+  filter( variable =='b_YearRescale' ) -> bYear_pred_NHM
+
+bYear_pred_NHM %>%
+  brm( median|mi(sd)  ~  Specialism,
+       data = ., iter = 1000)%>%
+  add_criterion( criterion = c("loo")) -> bYear_model_NHM
+
+bYear_pred_NHM %>%
+  brm( median|mi(sd)  ~  1,
+       data = ., iter = 1000)%>%
+  add_criterion(criterion = c("loo")) ->bYear_model_NHM_NoSpec
 
 
-ggsave(filename = '../figs/OUM_AllCombos_Trends_X2.pdf', width = 8, height =8)
+save( bYear_model_NHM, file = '../TopLevelModelFits/bYear_model_NHM')
+save( bYear_model_NHM_NoSpec, file = '../TopLevelModelFits/bYear_model_NHM_NoSpec')
+```
+
+```{r}
+load('../TopLevelModelFits/bYear_model_NHM')
+load('../TopLevelModelFits/bYear_model_NHM_NoSpec')
+
+loo_compare(bYear_model_NHM,
+            bYear_model_NHM_NoSpec ) ### It is worth including specialism? Can't identify a clear signal
+
+plot(conditional_effects(bYear_model_NHM, resp = "median", rug = TRUE), ask = FALSE)
+```
 
 
+## OUNHM
+
+### Predictors of b_Temp 
+
+```{r eval = FALSE}
+PS_OUM %>%
+  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
+  filter( variable =='b_Temp' )-> bTemp_model_OUM
+
+bTemp_model_OUM %>%
+  brm( median|mi(sd)  ~  Specialism,  data = .)%>%
+  add_criterion(criterion = c("loo"))-> bTemp_model_OUM
+
+bTemp_model_OUM %>%
+  brm( median|mi(sd)  ~  1,  data = .)%>%
+  add_criterion(criterion = c("loo")) -> bTemp_model_OUM_NoSpec
+
+
+save( bTemp_model_OUM, file = '../TopLevelModelFits/bTemp_model_OUM')
+save( bTemp_model_OUM_NoSpec, file = '../TopLevelModelFits/bTemp_model_OUM_NoSpec')
+```
+
+```{r}
+load('../TopLevelModelFits/bTemp_model_OUM')
+load('../TopLevelModelFits/bTemp_model_OUM_NoSpec')
+
+loo_compare(bTemp_model_OUM,bTemp_model_OUM_NoSpec ) ### It is worth including specialism
+
+bTemp_model_OUM
+
+plot(conditional_effects(bTemp_model_OUM , resp = "median", rug = TRUE), ask = FALSE)
+```
+
+### Predictors of b_Year
+
+```{r eval = FALSE}
+PS_OUM %>%
+  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
+  filter( variable =='b_YearRescale' )-> bYear_pred_OUM
+
+bYear_pred_OUM %>%
+  brm( median|mi(sd)  ~  Specialism,  data = .)%>%
+  add_criterion(criterion = c("loo"))-> bYear_model_OUM
+
+bYear_pred_OUM %>%
+  brm( median|mi(sd)  ~  1,  data = .)%>%
+  add_criterion(criterion = c("loo")) -> bYear_model_OUM_NoSpec
+
+save( bYear_model_OUM, file = '../TopLevelModelFits/bYear_model_OUM')
+save( bYear_model_OUM_NoSpec, file = '../TopLevelModelFits/bYear_model_OUM_NoSpec')
+```
+
+```{r}
+load('../TopLevelModelFits/bYear_model_OUM')
+load('../TopLevelModelFits/bYear_model_OUM_NoSpec')
+
+loo_compare(bYear_model_OUM,
+            bYear_model_OUM_NoSpec ) ### It is worth including specialism
+
+bYear_model_OUM
+
+plot(conditional_effects(bTemp_model_OUM , resp = "median", rug = TRUE), ask = FALSE)
 ```
 
 
 
+# With each sex fit seperately
 
+<!-- ```{r} -->
+<!-- PS_NHM<- read_csv('../statsresults/NHM_Posterior_Summaries_X1.csv') -->
+<!-- ``` -->
+
+
+
+<!-- ## Overall Plots -->
+
+<!-- ```{r} -->
+<!-- PS_NHM %>% -->
+<!--   left_join(specialism, by =c( 'Sp'='Taxon name')) %>% -->
+<!--   filter( variable %in% c( 'b_Temp', -->
+<!--                            'b_Year', -->
+<!--                            'b_Latitude' ) )%>% -->
+<!--   ggplot( aes( y =  Sp,  -->
+<!--                x = mean, -->
+<!--                col = Sex))+ -->
+<!--   geom_point()+ -->
+<!--   geom_errorbarh(aes( xmin = q5, xmax = q95))+ -->
+<!--   geom_vline(xintercept = 0)+ -->
+<!--   facet_grid(Specialism~variable, scales = 'free') -->
+
+<!-- ggsave(filename = '../figs/NHM_AllCombos_Trends_X1.pdf', width = 8, height =8) -->
+
+<!-- ``` -->
+
+
+<!-- ## 'meta-analysis' stats -->
+
+<!-- ### Predictors of b_Temp  -->
+
+<!-- ```{r} -->
+<!-- PS_NHM %>% -->
+<!--   left_join(specialism, by =c( 'Sp'='Taxon name'))%>% -->
+<!--   filter(Specialism !='Habitat specialist and foodplant generalist') %>% ## trying excluding the two HS/FG -->
+<!--  # filter( sp != 'Papilio machaon') %>% -->
+<!--   filter( variable =='b_Temp' ) -> bTemp_pred_NHM -->
+
+<!-- bTemp_pred_NHM %>% -->
+<!--   brm( median|mi(sd)  ~  Sex+Specialism + (1|Sp), -->
+<!--        data = ., iter = 10000)%>% -->
+<!--   add_criterion( criterion = c("loo")) -> bTemp_model_NHM -->
+
+<!-- bTemp_pred_NHM %>% -->
+<!--   brm( median|mi(sd)  ~  Sex+ (1|Sp), -->
+<!--        data = ., iter = 10000)%>% -->
+<!--   add_criterion(criterion = c("loo")) -> bTemp_model_NHM_NoSpec -->
+
+<!-- bTemp_pred_NHM %>% -->
+<!--   brm( median|mi(sd)  ~ (1|Sp), -->
+<!--        data = ., iter = 10000)%>% -->
+<!--   add_criterion(criterion = c("loo")) -> bTemp_model_NHM_basic -->
+
+
+<!-- loo_compare(bTemp_model_NHM, -->
+<!--             bTemp_model_NHM_NoSpec, -->
+<!--             bTemp_model_NHM_basic ) ### It is worth including specialism -->
+
+<!-- mcmc_plot(bTemp_model_NHM, combo  = 'hist') -->
+
+<!-- plot(conditional_effects(bTemp_model_NHM_NoSpec, resp = "median", rug = TRUE), ask = FALSE) -->
+
+<!-- ``` -->
+
+<!--  Overall Plots -->
+
+<!-- ```{r} -->
+<!-- PS_OUM<- read_csv('../statsresults/OUM_Posterior_Summaries_X1.csv') -->
+
+<!-- PS_OUM %>% -->
+<!--   left_join(specialism, by =c( 'Sp'='Taxon name')) %>% -->
+<!--   filter( variable %in% c( 'b_Temp', -->
+<!--                            'b_Year', -->
+<!--                            'b_Latitude' ) )%>% -->
+<!--   ggplot( aes( y =  Sp,  -->
+<!--                x = mean, -->
+<!--                col = Sex))+ -->
+<!--   geom_point()+ -->
+<!--   geom_errorbarh(aes( xmin = q5, xmax = q95))+ -->
+<!--   geom_vline(xintercept = 0)+ -->
+<!--   facet_grid(Specialism~variable, scales = 'free') -->
+
+<!-- ggsave(filename = '../figs/OUM_AllCombos_Trends_X1.pdf', width = 8, height =8) -->
+
+<!-- ``` -->
+
+
+<!-- ## 'meta-analysis' stats -->
+
+<!-- ### Predictors of b_Temp  -->
+
+
+<!-- ```{r} -->
+<!-- PS_OUM %>% -->
+<!--   left_join(specialism, by =c( 'Sp'='Taxon name')) %>% -->
+<!--   filter( variable =='b_Temp' )-> bTemp_pred_OUM -->
+
+<!-- bTemp_pred_OUM %>% -->
+<!--   brm( median|mi(sd)  ~  Sex+Specialism+ (1|Sp),  data = .)%>% -->
+<!--   add_criterion(criterion = c("loo"))-> bTemp_model_OUM -->
+
+<!-- bTemp_pred_OUM %>% -->
+<!--   brm( median|mi(sd)  ~  Sex+ (1|Sp),  data = .)%>% -->
+<!--   add_criterion(criterion = c("loo")) -> bTemp_model_OUM_NoSpec -->
+
+<!-- loo_compare(bTemp_model_OUM,bTemp_model_OUM_NoSpec ) ### It is worth including specialism -->
+
+<!-- bTemp_model_OUM -->
+<!-- mcmc_plot(bTemp_model_OUM , combo  = 'hist') -->
+
+<!-- plot(conditional_effects(bTemp_model_OUM , resp = "median", rug = TRUE), ask = FALSE) -->
+
+<!-- ``` -->
 
 
