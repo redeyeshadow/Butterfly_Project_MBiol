@@ -1,0 +1,258 @@
+---
+title: "Cleaning1_NHM"
+author: "Chris Terry"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r message = FALSE}
+library(tidyverse)
+library(readxl)
+```
+
+# Loading Data
+
+## Measurements 
+
+Using data from: Wilson et al https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13844
+
+Sourced from: 
+https://zenodo.org/records/5759759
+and
+https://zenodo.org/records/6066070
+
+```{r}
+
+BroodTable <- read_csv('../data/brood_table.csv')
+
+Names_table<- read_csv('../data/names_table.csv')
+
+BroodTable %>%
+  left_join(Names_table, by = 'NHM name')%>% 
+  mutate(FirstMonth = as.numeric(FirstMonthBrood_focal ),
+         LastMonth =  as.numeric(LastMonthBrood_focal )) %>%
+  filter(Include == 'TRUE' )%>%
+  select(`Taxon name` ,  BroodFocalUse, FirstMonth,LastMonth, Univoltine )-> Brood_table2
+
+```
+
+
+# Locations
+
+Gordon L J Paterson; Sara Albuquerque; Vladimir Blagoderov; Stephen J Brooks et al. (2016). iCollections [Data set]. Natural History Museum. https://doi.org/10.5519/0038559
+
+*DOI has been created for this download request: https://doi.org/10.5519/qd.tqng8ri6. Please ensure you reference this DOI when citing these data*
+
+```{r}
+
+WilsonSH3<- read_xlsx('../data/NHM/Wilson_et_al_MEE_data.xlsx', sheet = 3)
+
+Sizes<- read_csv('../data/NHM/iCollections_Nov_2021_butterflies.csv')
+
+Sizes %>% 
+  left_join(read_csv( '../data/Just_Names_Loc_and_Numbers.csv'), 
+            by = join_by(`specimen number`)) -> Joined_sizes_and_Locs
+```
+
+# Adding Brood Tables to NHM
+## Now add temperature to use column from   Brood_table_long
+```{r}
+## Which brood is each record
+read_csv('../data/NHM_w_temps.csv')%>%
+  left_join(select(Brood_table2,
+                   `Taxon name`, FirstMonth,LastMonth, Univoltine,
+                   BroodFocalUse ), 
+            by = 'Taxon name') %>%
+  mutate(InFocalBrood = ifelse(Univoltine, TRUE, 
+                               ifelse( between(Month,
+                                               FirstMonth,
+                                               LastMonth),
+                                       TRUE, FALSE))) %>%
+  filter( InFocalBrood) %>% 
+  filter(!Implausible ) %>%
+  select(filename = Individual                , 
+         Sp = `Taxon name`,
+         Latitude= decimalLatitude ,
+         Longitude= decimalLongitude  ,
+         Month, Year ,Sex  , 
+         Right_wing=`right_wing (mm)` ,
+         BroodFocalUse  ,
+         SPRING_temp,
+         SUMMER_temp,
+         SUMMER_before_temp  ) %>%
+  mutate( Temp = case_when( BroodFocalUse == 'Spring' ~ SPRING_temp,
+                            BroodFocalUse == 'Summer' ~ SUMMER_temp,
+                            BroodFocalUse == 'Summer_before' ~ SUMMER_before_temp,
+                            TRUE ~ NA_real_),
+          Temp = round(Temp, digits = 3),
+          Sex = ifelse( Sex =='N/A', 'undetermined', Sex)   ) %>%
+  mutate(YearRescale = (Year-1800)/100) %>%
+  select(-ends_with('_temp')) -> NHM_for_models
+
+
+
+
+WilsonSH3 %>%
+  select(ID, 
+         Wilson_Sex = Sex   ,
+         Wilson_Species = Species,
+         Wilson_LateTemp = LateTemp,
+         Wilson_Year =Year,
+         Wilson_LnAv = `ln(av)`,
+         Wilson_Length =average_forewing_length  ) ->Wilsonfocal
+
+### Checking duplicates
+left_join(NHM_for_models,
+          select( Sizes, `specimen number`,  filename ),  by = 'filename' )[5457,] 
+
+## NB some duplicates
+Wilsonfocal %>%
+  filter( ID ==1178561)
+
+Wilsonfocal_D <-distinct(Wilsonfocal )
+
+
+left_join(NHM_for_models,
+          select( Sizes, `specimen number`,  filename ),  by = 'filename' ) %>%
+  left_join(Wilsonfocal_D, by = c(`specimen number`  = 'ID')) -> CompareStudies
+
+```
+
+```{r}
+CompareStudies %>%
+  count(is.na(Wilson_Species))  ## something like 14k /90k  overlap
+
+CompareStudies %>%
+  filter( !is.na(Wilson_Species )) %>%
+  ggplot( aes( Temp , Wilson_LateTemp ))+
+  geom_point()+
+  facet_wrap(~Sp)+
+  coord_fixed()
+
+## somewhat positive correlation in temperatures used
+
+## Wilson has more variation due to month specificity
+## We have more variation due to different regions
+
+
+## just to check essentially same data 
+CompareStudies %>%
+  ggplot( aes( x = log(Right_wing), y = Wilson_LnAv, col = Sp))+
+  geom_point()
+
+
+
+```
+
+## Does including 'year' remove Wilson's Temperature effects?
+
+```{r}
+
+Fits <- distinct(Wilsonfocal_D, Wilson_Sex, Wilson_Species)
+
+
+for( i in 1: nrow( Fits)){
+  
+  CompareStudies %>% 
+    filter(Wilson_Species == Fits$Wilson_Species[i], 
+           Wilson_Sex     == Fits$Wilson_Sex[i] ) -> focal_data
+  ### Wilson Data fits
+  temp_model      <- summary(lm(Wilson_LnAv  ~ Wilson_LateTemp, data = focal_data))
+  temp_year_model <- summary(lm(Wilson_LnAv  ~ Wilson_LateTemp + Wilson_Year, data = focal_data))
+  
+  Fits$Temp_p_solo[i] <- temp_model$coefficients[2,4] 
+  Fits$Temp_p_wYear[i] <- temp_year_model$coefficients[2,4] 
+  
+  Fits$Temp_coef_solo[i] <- temp_model$coefficients[2,1] 
+  Fits$Temp_coef_wYear[i] <- temp_year_model$coefficients[2,1] 
+  
+  Fits$WilsonR2_temp[i] = temp_model$r.squared
+
+  
+ ## Comparison with same data using Oxford temps
+  temp_model      <- summary(lm(Wilson_LnAv  ~  Temp , data = focal_data))
+  temp_year_model <- summary(lm(Wilson_LnAv ~  Temp  + Year , data = focal_data))
+  
+  Fits$OX_Temp_p_solo[i] <- temp_model$coefficients[2,4] 
+  Fits$OX_Temp_p_wYear[i] <- temp_year_model$coefficients[2,4] 
+  
+  Fits$OX_Temp_coef_solo[i] <- temp_model$coefficients[2,1] 
+  Fits$OX_Temp_coef_wYear[i] <- temp_year_model$coefficients[2,1] 
+  
+  
+  Fits$OxR2_temp[i] = temp_model$r.squared
+  
+  
+  Fits$N[i] <- nrow( focal_data)
+}
+
+
+
+
+
+
+Fits %>%
+  ggplot( aes( x = Temp_p_solo,y= Temp_p_wYear))+
+  geom_point()
+
+Fits %>%
+  ggplot( aes( x = Temp_coef_solo,y= Temp_coef_wYear))+
+  geom_point()
+
+Fits %>%
+  ggplot( aes( x = WilsonR2_temp ,y= OxR2_temp , col = log10(N)))+
+  geom_point()
+
+Fits %>%
+  arrange( desc(OxR2_temp))
+
+## Strongest signal of oxford temperature is with male H semele
+
+ CompareStudies %>% 
+    filter(Wilson_Species ==  'H semele'    , 
+           Wilson_Sex     == 'M') %>%
+   ggplot(aes( x = Temp, y = Right_wing, col = Latitude))+
+   geom_point()
+ 
+ ### but very correlated with latitude:
+  CompareStudies %>% 
+    filter(Wilson_Species ==  'H semele'    , 
+           Wilson_Sex     == 'M') %>%
+   ggplot(aes( x = Latitude , y = Right_wing, col = Temp))+
+   geom_point()
+
+  
+  
+  ## not seen in Wilson data
+  
+   CompareStudies %>% 
+    filter(Wilson_Species ==  'H semele'    , 
+           Wilson_Sex     == 'M') %>%
+   ggplot(aes( x = Wilson_LateTemp, y = Right_wing, col = Latitude))+
+   geom_point()
+  
+## But they do report in their table, but opposing trends depending on stage
+#                                Change in size with temperature in:
+#Species	     Sex  Late larval stage (%)	Early larval stage (%) Pupal stage (%)
+#H. semele 	Male     	0.40	                  -0.39                 	0.85
+
+   
+   
+   
+  
+  
+  
+
+
+Fits %>%
+  ggplot( aes( x = OX_Temp_coef_solo,y= Temp_coef_solo))+
+  geom_point()
+
+
+Fits %>%
+  ggplot( aes( x = OX_Temp_coef_wYear,y= Temp_coef_wYear))+
+  geom_point()
+
+```
