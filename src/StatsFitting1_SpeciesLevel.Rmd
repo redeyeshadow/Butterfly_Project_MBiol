@@ -344,6 +344,24 @@ write_csv(Posterior_Summaries_OUM2, '../statsresults/OUM_Posterior_Summaries_X2.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```{R}
 sessionInfo()
 

@@ -127,9 +127,11 @@ CompareStudies %>%
 CompareStudies %>%
   filter( !is.na(Wilson_Species )) %>%
   ggplot( aes( Temp , Wilson_LateTemp ))+
-  geom_point()+
+  geom_point(aes(col = Latitude ), size = 0.1)+
   facet_wrap(~Sp)+
-  coord_fixed()
+  coord_fixed()+
+  geom_abline(slope=1, intercept=0)+
+  scale_color_viridis_c(option = 'A')
 
 ## somewhat positive correlation in temperatures used
 
@@ -160,26 +162,26 @@ for( i in 1: nrow( Fits)){
            Wilson_Sex     == Fits$Wilson_Sex[i] ) -> focal_data
   ### Wilson Data fits
   temp_model      <- summary(lm(Wilson_LnAv  ~ Wilson_LateTemp, data = focal_data))
-  temp_year_model <- summary(lm(Wilson_LnAv  ~ Wilson_LateTemp + Wilson_Year, data = focal_data))
+  temp_Latyear_model <- summary(lm(Wilson_LnAv  ~ Wilson_LateTemp + Wilson_Year+ Latitude, data = focal_data))
   
   Fits$Temp_p_solo[i] <- temp_model$coefficients[2,4] 
-  Fits$Temp_p_wYear[i] <- temp_year_model$coefficients[2,4] 
+  Fits$Temp_p_wYear[i] <- temp_Latyear_model$coefficients[2,4] 
   
   Fits$Temp_coef_solo[i] <- temp_model$coefficients[2,1] 
-  Fits$Temp_coef_wYear[i] <- temp_year_model$coefficients[2,1] 
+  Fits$Temp_coef_wYear[i] <- temp_Latyear_model$coefficients[2,1] 
   
   Fits$WilsonR2_temp[i] = temp_model$r.squared
-
   
- ## Comparison with same data using Oxford temps
+  
+  ## Comparison with same data using Oxford temps
   temp_model      <- summary(lm(Wilson_LnAv  ~  Temp , data = focal_data))
-  temp_year_model <- summary(lm(Wilson_LnAv ~  Temp  + Year , data = focal_data))
+  temp_Latyear_model <- summary(lm(Wilson_LnAv ~  Temp  + Year + Latitude, data = focal_data))
   
   Fits$OX_Temp_p_solo[i] <- temp_model$coefficients[2,4] 
-  Fits$OX_Temp_p_wYear[i] <- temp_year_model$coefficients[2,4] 
+  Fits$OX_Temp_p_wYear[i] <- temp_Latyear_model$coefficients[2,4] 
   
   Fits$OX_Temp_coef_solo[i] <- temp_model$coefficients[2,1] 
-  Fits$OX_Temp_coef_wYear[i] <- temp_year_model$coefficients[2,1] 
+  Fits$OX_Temp_coef_wYear[i] <- temp_Latyear_model$coefficients[2,1] 
   
   
   Fits$OxR2_temp[i] = temp_model$r.squared
@@ -208,51 +210,142 @@ Fits %>%
 Fits %>%
   arrange( desc(OxR2_temp))
 
+
+Fits %>%
+  ggplot( aes( x = WilsonR2_temp ,y= OxR2_temp , col = log10(N)))+
+  geom_point()
+
+
+
 ## Strongest signal of oxford temperature is with male H semele
 
- CompareStudies %>% 
-    filter(Wilson_Species ==  'H semele'    , 
-           Wilson_Sex     == 'M') %>%
-   ggplot(aes( x = Temp, y = Right_wing, col = Latitude))+
-   geom_point()
- 
- ### but very correlated with latitude:
-  CompareStudies %>% 
-    filter(Wilson_Species ==  'H semele'    , 
-           Wilson_Sex     == 'M') %>%
-   ggplot(aes( x = Latitude , y = Right_wing, col = Temp))+
-   geom_point()
+CompareStudies %>% 
+  filter(Wilson_Species ==  'H semele'    , 
+         Wilson_Sex     == 'M') %>%
+  ggplot(aes( x = Temp, y = log(Right_wing), col = Latitude))+
+  geom_point()+
+  geom_smooth(method='lm')
 
-  
-  
-  ## not seen in Wilson data
-  
-   CompareStudies %>% 
-    filter(Wilson_Species ==  'H semele'    , 
-           Wilson_Sex     == 'M') %>%
-   ggplot(aes( x = Wilson_LateTemp, y = Right_wing, col = Latitude))+
-   geom_point()
-  
+## but in Wilson data 
+CompareStudies %>% 
+  filter(Wilson_Species ==  'H semele'    , 
+         Wilson_Sex     == 'M') %>%
+  ggplot(aes( x = Wilson_LateTemp, y = Wilson_LnAv, col = Latitude))+
+  geom_point()+
+  geom_smooth(method='lm')
+
+CompareStudies %>% 
+  filter(Wilson_Species ==  'H semele'    , 
+         Wilson_Sex     == 'M') %>%
+  ggplot(aes( x = Latitude, y = Wilson_LnAv, col =Wilson_LateTemp ))+
+  geom_point()+
+  geom_smooth(method='lm')
+
+
+
+### but very correlated with latitude:
+CompareStudies %>% 
+  filter(Wilson_Species ==  'H semele'    , 
+         Wilson_Sex     == 'M') %>%
+  ggplot(aes( x = Latitude , y = Right_wing, col = Temp))+
+  geom_point()
+
+## not seen in Wilson data
+
+CompareStudies %>% 
+  filter(Wilson_Species ==  'H semele'    , 
+         Wilson_Sex     == 'M') %>%
+  ggplot(aes( x = Wilson_LateTemp, y = Right_wing, col = Latitude))+
+  geom_point()
+
 ## But they do report in their table, but opposing trends depending on stage
 #                                Change in size with temperature in:
 #Species	     Sex  Late larval stage (%)	Early larval stage (%) Pupal stage (%)
 #H. semele 	Male     	0.40	                  -0.39                 	0.85
 
-   
-   
-   
-  
-  
-  
-
-
 Fits %>%
   ggplot( aes( x = OX_Temp_coef_solo,y= Temp_coef_solo))+
-  geom_point()
+  geom_point()+
+  geom_vline(xintercept = 0)+
+  geom_hline(yintercept = 0)
 
 
 Fits %>%
   ggplot( aes( x = OX_Temp_coef_wYear,y= Temp_coef_wYear))+
-  geom_point()
+  geom_point()+
+  geom_vline(xintercept = 0)+
+  geom_hline(yintercept = 0)
+```
+
+
+
+
+# Fitting Equivilent models with Wilson Temp data 
+
+```{r}
+
+## Build unique Name for each brood
+Batches<- CompareStudies%>%
+  filter(!is.na(Wilson_LateTemp)) %>%
+  count(Sp)%>%
+  arrange( desc(n))
+
+Batches %>%
+  filter(n >=40 ) -> TableOfModels_Wilson
+
+Set2 = paste0('Sp.', TableOfModels_Wilson$Sp)
+```
+
+```{r eval = FALSE}
+### Define and compile model when sexes are differentiated 
+
+
+CoreModel_WL<-   CompareStudies %>%
+  filter(!is.na(Wilson_LateTemp)) %>% 
+  filter(Sp == TableOfModels_Wilson$Sp[1]) %>% 
+  brm( log(Right_wing )   ~ YearRescale + Wilson_LateTemp  + Latitude + Sex,
+       data = ., refresh = 0)
+
+## Refit model to each set of data, saving each time
+for( i in 1:nrow( TableOfModels_Wilson)){
+  print(Set2[i])
+  CompareStudies %>%
+    filter(!is.na(Wilson_LateTemp)) %>% 
+    filter(Sp == TableOfModels_Wilson$Sp[i]) -> batchDATA
+  update( CoreModel_WL, newdata = batchDATA, refresh = 0) -> MODEL_FIT
+  
+  save(MODEL_FIT, file = paste('../WIL_modelfitsX2/',Set2[i]  ))
+}
+
+
+map_df(1:nrow( TableOfModels_Wilson), function(i){
+  load(file = paste('../WIL_modelfitsX2/',Set2[i]  )) 
+  MODEL_FIT %>%
+    as_draws_array %>%
+    summarise_draws -> Fit_df
+  Fit_df$Sp = TableOfModels_Wilson$Sp[i]
+  return(Fit_df)
+})-> Posterior_Summaries_WIL2
+
+write_csv(Posterior_Summaries_WIL2,
+          '../statsresults/WIL_Posterior_Summaries_X2.csv')
+
 
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
