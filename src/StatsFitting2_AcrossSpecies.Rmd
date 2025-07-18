@@ -47,7 +47,7 @@ PS_NHM %>%
   filter( variable %in% c( 'b_Temp',
                            'b_YearRescale',
                            'b_Sexmale',
-                           #'b_Sexundetermined'  ,
+                           'b_Sexundetermined'  ,
                            'b_Latitude') )%>%
   ggplot( aes( y =  Sp, 
                x = mean))+
@@ -129,7 +129,6 @@ Joined_coefficients %>%
  geom_hline(yintercept = 0)+
   facet_wrap(~variable, scales = 'free')+
   #coord_fixed()+
-  geom_smooth(method = 'lm')+
   theme(legend.position = 'bottom')+
   ggtitle('Correlation in Species-level coefficients')
 

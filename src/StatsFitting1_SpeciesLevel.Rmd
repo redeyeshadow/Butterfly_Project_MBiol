@@ -93,7 +93,7 @@ Set = paste0('Sp.', TableOfModels_NHM$Sp,
 CoreModel <-   NHM_ForFitting %>%
     filter(Sp == TableOfModels_NHM$Sp[1],
            Sex     == TableOfModels_NHM$Sex[1]) %>%
-    brm( Right_wing  ~ YearRescale + Temp  + Latitude,
+    brm( log(Right_wing)  ~ YearRescale + Temp  + Latitude,
          data = ., refresh = 0)
 
 ## Refit model to each set of data, saving each time
@@ -155,7 +155,7 @@ Set2 = paste0('Sp.', TableOfModels_NHM$Sp)
 ### Define and compile model
 CoreModel2 <-   NHM_ForFitting %>%
     filter(Sp == TableOfModels_NHM$Sp[1]) %>%
-    brm( Right_wing  ~ YearRescale + Temp  + Latitude + Sex,
+    brm( log(Right_wing)  ~ YearRescale + Temp  + Latitude + Sex,
          data = ., refresh = 0)
 
 ## Refit model to each set of data, saving each time
@@ -296,12 +296,12 @@ Set2 = paste0('Sp.', TableOfModels_OUNHM$Sp)
 ### Define and compile model when sexes are differentiated 
 CoreModel_OU_splitSex <-   OUM_ForFitting %>%
     filter(Sp == TableOfModels_OUNHM$Sp[4]) %>%
-    brm( Wing_Length   ~ YearRescale + Temp  + Latitude + Sex,
+    brm( log(Wing_Length)   ~ YearRescale + Temp  + Latitude + Sex,
          data = ., refresh = 0)
 
 CoreModel_OU_jointSex <-   OUM_ForFitting %>%
     filter(Sp == TableOfModels_OUNHM$Sp[2]) %>%
-    brm( Wing_Length   ~ YearRescale + Temp  + Latitude ,
+    brm( log(Wing_Length)   ~ YearRescale + Temp  + Latitude ,
          data = ., refresh = 0)
 
  undetermined_sp<- distinct(OUM_ForFitting, Sp, Sex) %>% filter( Sex == 'undetermined') %>% pluck('Sp')
