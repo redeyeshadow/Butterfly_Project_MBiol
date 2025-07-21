@@ -1,0 +1,33 @@
+---
+title: "Monthly Data"
+output: html_document
+date: "2025-07-21"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+
+/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.1.ceda/25km/tas/mon/v20250415
+
+
+
+'/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.1.ceda/25km/tas/mon/v20250415'
+
+
+ wget -e robots=off --mirror --no-parent -r https://dap.ceda.ac.uk/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.1.ceda/25km/tas/mon/  
+
+
+
+url <- "ftp://yourServer"
+userpwd <- "yourUser:yourPass"
+filenames <- getURL(url, userpwd = userpwd,
+             ftp.use.epsv = FALSE,dirlistonly = TRUE)
+
+
+
+
+```
