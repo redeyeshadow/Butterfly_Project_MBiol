@@ -81,93 +81,7 @@ write_csv(Posterior_Summaries_NHM2, '../statsresults/NHM_Posterior_Summaries_M1.
 
 ```
 
-# OUNHM
-
-## How much data per species/sex/brood?
-
-For now just taking those with at least 40 measurememts. 
-```{r}
-## Cycle through each species to fit models 
-
-Batches<- count(OUM_ForFitting,
-                Sp ,Sex)%>%
-  arrange( desc(n))
-
-Batches$n  %>% plot; abline(h = 40) # almost perfect log-normal plot
-sum(Batches$n  >=40) 
-
-OUM_ForFitting%>%
-  group_by(Year) %>%
-  summarise(FracUndetermined = mean(Sex=='undetermined')) %>%
-  ggplot(aes(y= FracUndetermined, x = Year ))+
-  geom_point()
-
-### For spotting weirdnesses
-OUM_ForFitting %>%
-  group_by(Sp) %>%
-  summarise( signif(mean(Year),1), 
-             min(Year), 
-             quantile(Year, 0.1), 
-             quantile(Year, 0.9),
-             max(Year), 
-             n = n())%>%
-  mutate(EightyQuantileRange = `quantile(Year, 0.9)`-`quantile(Year, 0.1)` ) %>%
-  arrange( EightyQuantileRange)%>%
-  arrange(Sp) -> OUM_Brood_data_spread
-
-# NHM_Brood_data_spread %>%
-#   left_join(PercentageUndetermined) %>%
-# write_csv('../data/NHM_Brood_data_spread.csv')
-
-```
-
-## Build unique Name for each brood
-```{r}
-Batches %>%
-  filter( n >=40 ) -> TableOfModels_OUNHM
-
-Set = paste0('Sp.', TableOfModels_OUNHM$Sp,
-             '_Sex.',TableOfModels_OUNHM$Sex)
-```
-
-```{r eval = FALSE}
-### Define and compile model
-CoreModel_OU <-   OUM_ForFitting %>%
-    filter(Sp == TableOfModels_OUNHM$Sp[1],
-           Sex     == TableOfModels_OUNHM$Sex[1]) %>%
-    brm( Wing_Length   ~ YearRescale + Temp  + Latitude,
-         data = ., refresh = 0)
-
-## Refit model to each set of data, saving each time
-for( i in 1:nrow( TableOfModels_OUNHM)){
-  print(Set[i])
-  OUM_ForFitting %>%
-    filter(Sp == TableOfModels_OUNHM$Sp[i],
-           Sex     == TableOfModels_OUNHM$Sex[i]) -> batchDATA
-  update( CoreModel_OU, newdata = batchDATA, refresh = 0) -> MODEL_FIT
-  save(MODEL_FIT, file = paste('../OUM_modelfitsX1/',Set[i]  ))
-}
-
-```
-
-### Collating model outputs into a df
-
-```{r eval = FALSE}
-map_df(1:nrow( TableOfModels_OUNHM), function(i){
-  load(file = paste('../OUM_modelfitsX1/',Set[i]  )) 
-  MODEL_FIT %>%
-    as_draws_array %>%
-    summarise_draws -> Fit_df
-  Fit_df$Sp = TableOfModels_OUNHM$Sp[i]
-  Fit_df$Sex = TableOfModels_OUNHM$Sex[i] 
-  return(Fit_df)
-})-> Posterior_Summaries_OUM
-
-write_csv(Posterior_Summaries_OUM, '../statsresults/OUM_Posterior_Summaries_X1.csv')
-
-```
-
-## Repeating with sex embedded
+# OUNHM with sex embedded
 
 ```{r}
 ## Cycle through each species to fit models 
@@ -191,32 +105,32 @@ Set2 = paste0('Sp.', TableOfModels_OUNHM$Sp)
 ```{r eval = FALSE}
 ### Define and compile model when sexes are differentiated 
 CoreModel_OU_splitSex <-   OUM_ForFitting %>%
-    filter(Sp == TableOfModels_OUNHM$Sp[4]) %>%
-    brm( log(Wing_Length)   ~ YearRescale + Temp  + Latitude + Sex,
-         data = ., refresh = 0)
+  filter(Sp == TableOfModels_OUNHM$Sp[4]) %>%
+  brm( log(Wing_Length)   ~ YearRescale + Temp  + Latitude + Sex,
+       data = ., refresh = 0)
 
 CoreModel_OU_jointSex <-   OUM_ForFitting %>%
-    filter(Sp == TableOfModels_OUNHM$Sp[2]) %>%
-    brm( log(Wing_Length)   ~ YearRescale + Temp  + Latitude ,
-         data = ., refresh = 0)
+  filter(Sp == TableOfModels_OUNHM$Sp[2]) %>%
+  brm( log(Wing_Length)   ~ YearRescale + Temp  + Latitude ,
+       data = ., refresh = 0)
 
- undetermined_sp<- distinct(OUM_ForFitting, Sp, Sex) %>% filter( Sex == 'undetermined') %>% pluck('Sp')
+undetermined_sp<- distinct(OUM_ForFitting, Sp, Sex) %>% filter( Sex == 'undetermined') %>% pluck('Sp')
 
- ## Refit model to each set of data, saving each time
- for( i in 1:nrow( TableOfModels_OUNHM)){
-   print(Set2[i])
-   if(TableOfModels_OUNHM$Sp[i] %in% undetermined_sp ){
-     OUM_ForFitting %>%
-       filter(Sp == TableOfModels_OUNHM$Sp[i]) -> batchDATA
-     update( CoreModel_OU_jointSex, newdata = batchDATA, refresh = 0) -> MODEL_FIT
-     
-   }else{
-     OUM_ForFitting %>%
-       filter(Sp == TableOfModels_OUNHM$Sp[i]) -> batchDATA
-     update( CoreModel_OU_splitSex, newdata = batchDATA, refresh = 0) -> MODEL_FIT
-   }
-   save(MODEL_FIT, file = paste('../OUM_modelfitsX2/',Set2[i]  ))
- }
+## Refit model to each set of data, saving each time
+for( i in 1:nrow( TableOfModels_OUNHM)){
+  print(Set2[i])
+  if(TableOfModels_OUNHM$Sp[i] %in% undetermined_sp ){
+    OUM_ForFitting %>%
+      filter(Sp == TableOfModels_OUNHM$Sp[i]) -> batchDATA
+    update( CoreModel_OU_jointSex, newdata = batchDATA, refresh = 0) -> MODEL_FIT
+    
+  }else{
+    OUM_ForFitting %>%
+      filter(Sp == TableOfModels_OUNHM$Sp[i]) -> batchDATA
+    update( CoreModel_OU_splitSex, newdata = batchDATA, refresh = 0) -> MODEL_FIT
+  }
+  save(MODEL_FIT, file = paste('../OUM_modelfitsM1/',Set2[i]  ))
+}
  
  
 
@@ -226,7 +140,7 @@ CoreModel_OU_jointSex <-   OUM_ForFitting %>%
 
 ```{r eval = FALSE}
 map_df(1:nrow( TableOfModels_OUNHM), function(i){
-  load(file = paste('../OUM_modelfitsX2/',Set2[i]  )) 
+  load(file = paste('../OUM_modelfitsM1/',Set2[i]  )) 
   MODEL_FIT %>%
     as_draws_array %>%
     summarise_draws -> Fit_df
@@ -234,7 +148,7 @@ map_df(1:nrow( TableOfModels_OUNHM), function(i){
   return(Fit_df)
 })-> Posterior_Summaries_OUM2
 
-write_csv(Posterior_Summaries_OUM2, '../statsresults/OUM_Posterior_Summaries_X2.csv')
+write_csv(Posterior_Summaries_OUM2, '../statsresults/OUM_Posterior_Summaries_M1.csv')
 
 ```
 

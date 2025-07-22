@@ -63,7 +63,7 @@ ggsave(filename = '../figs/NHM_AllCombos_Trends_M1.pdf', width = 8, height =8)
 
 
 ```{r}
-PS_OUM<- read_csv('../statsresults/OUM_Posterior_Summaries_X2.csv')
+PS_OUM<- read_csv('../statsresults/OUM_Posterior_Summaries_M1.csv')
 
 PS_OUM %>%
   left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
@@ -79,7 +79,7 @@ PS_OUM %>%
   facet_grid(Specialism~variable, scales = 'free')+
   ggtitle('OUNHM datasets, Species-level coefficients')
 
-ggsave(filename = '../figs/OUM_AllCombos_Trends_X2.pdf', width = 8, height =8)
+ggsave(filename = '../figs/OUM_AllCombos_Trends_M2.pdf', width = 8, height =8)
 
 ```
 
@@ -91,17 +91,17 @@ PS_WIL <- read_csv('../statsresults/WIL_Posterior_Summaries_X2.csv')
 
 bind_rows(PS_NHM %>%
             filter( variable %in% c( 'b_Temp',
-                                    # 'b_Latitude',
+                                     'b_Latitude',
                                      'b_YearRescale') ) %>%
             mutate( Dataset= 'NHM'), 
            PS_WIL %>%
             filter( variable %in% c( 'b_Wilson_LateTemp',
-                                    # 'b_Latitude',
+                                 #    'b_Latitude',
                                      'b_YearRescale') )%>%
             mutate( Dataset= 'Wilson'),
           PS_OUM %>%
             filter( variable %in% c( 'b_Temp',
-                                    # 'b_Latitude',
+                                     'b_Latitude',
                                      'b_YearRescale') )%>%
             mutate( Dataset= 'OUNHM')) %>%
   left_join(specialism, by =c( 'Sp'='Taxon name')) -> Joined_coefficients
@@ -119,11 +119,11 @@ Joined_coefficients%>%
   geom_errorbarh(aes( xmin = q5, xmax = q95))+
   geom_vline(xintercept = 0)+
   scale_y_discrete(limits = ORDER)+
-  facet_grid(Dataset~variable, scales = 'free')+
+  facet_grid(.~variable, scales = 'free')+
   ggtitle('Species-level coefficients')
 
 
-ggsave(filename = '../figs/compare_coefs_across_three_datasets.png', width = 10, height =6)
+ggsave(filename = '../figs/compare_coefs_across_three_datasetsM1.png', width = 10, height =6)
 
 
 
