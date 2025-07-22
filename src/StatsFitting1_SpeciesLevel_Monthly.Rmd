@@ -18,120 +18,16 @@ library(posterior)
 ```
 
 ```{r}
-NHM_ForFitting <- read_csv(  '../data/NHM_for_models.csv')
-OUM_ForFitting <- read_csv(  '../data/OUNHM_for_models.csv')
+NHM_ForFitting <- read_csv(  '../data/NHM_for_models_monthly.csv')
+OUM_ForFitting <- read_csv(  '../data/OUNHM_for_models_monthly.csv')
 ```
 
-# NHM
-
-## How much data per species/sex/brood?
-
-For now just taking those with at least 100 measurements. 
-
-Already filterred 
-
-```{r}
-## Cycle through each species to fit models 
-
-Batches<- count(NHM_ForFitting,
-                Sp ,Sex)%>%
-  arrange( n)
-
-## 200 potential models to fit:
-Batches$n %>% log10 %>% plot; abline(h = 2) # almost perfect log-normal plot
-sum(Batches$n >100) # 154 have over 100, 
-```
-
-```{r eval = FALSE}
-
-### 
-Batches %>%
-  pivot_wider(values_from = 'n',  names_from = 'Sex', values_fill = 0) %>%
-  mutate( Perc_Undetermined = 100* undetermined / ( male+undetermined+female)  ) -> PercentageUndetermined
-
-PercentageUndetermined %>%
-  ggplot( aes( x =Perc_Undetermined))+
-  geom_histogram()
-
-NHM_ForFitting%>%
-  group_by(Year) %>%
-  summarise(FracUndetermined = mean(Sex=='undetermined')) %>%
-  ggplot(aes(y= FracUndetermined, x = Year ))+
-  geom_point()
-
-### For spotting weirdnesses
-NHM_ForFitting %>%
-  group_by(Sp) %>%
-  summarise( signif(mean(Year),1), 
-             min(Year), 
-             quantile(Year, 0.1), 
-             quantile(Year, 0.9),
-             max(Year), 
-             n = n())%>%
-  mutate(EightyQuantileRange = `quantile(Year, 0.9)`-`quantile(Year, 0.1)` ) %>%
-  arrange( EightyQuantileRange)%>%
-  arrange(Sp) -> NHM_Brood_data_spread
-
-# NHM_Brood_data_spread %>%
-#   left_join(PercentageUndetermined) %>%
-# write_csv('../data/NHM_Brood_data_spread.csv')
-
-```
-
-## Build unique Name for each brood
-```{r}
-## Exclude all of brood 2:
-Batches %>%
-  filter( n >100 ) -> TableOfModels_NHM
-
-Set = paste0('Sp.', TableOfModels_NHM$Sp,
-             '_Sex.',TableOfModels_NHM$Sex)
-```
-
-```{r eval = FALSE}
-### Define and compile model
-CoreModel <-   NHM_ForFitting %>%
-    filter(Sp == TableOfModels_NHM$Sp[1],
-           Sex     == TableOfModels_NHM$Sex[1]) %>%
-    brm( log(Right_wing)  ~ YearRescale + Temp  + Latitude,
-         data = ., refresh = 0)
-
-## Refit model to each set of data, saving each time
-for( i in 1:nrow( TableOfModels_NHM)){
-  print(Set[i])
-  NHM_ForFitting %>%
-    filter(Sp == TableOfModels_NHM$Sp[i],
-           Sex     == TableOfModels_NHM$Sex[i]) -> batchDATA
-  update( CoreModel, newdata = batchDATA, refresh = 0) -> MODEL_FIT
-  save(MODEL_FIT, file = paste('../NHM_modelfitsX1/',Set[i]  ))
-}
-
-```
-
-### Collating model outputs into a df
-
-```{r eval = FALSE}
-map_df(1:nrow( TableOfModels_NHM), function(i){
-  load(file = paste('../NHM_modelfitsX1/',Set[i]  )) 
-  MODEL_FIT %>%
-    as_draws_array %>%
-    summarise_draws -> Fit_df
-  Fit_df$Sp = TableOfModels_NHM$Sp[i]
-  Fit_df$Sex = TableOfModels_NHM$Sex[i] 
-  return(Fit_df)
-})-> Posterior_Summaries_NHM
-
-write_csv(Posterior_Summaries_NHM, '../statsresults/NHM_Posterior_Summaries_X1.csv')
-
-```
-
-# Alternative Fit with sex as an offset for each species
+# NHM Fit with sex as an offset for each species
 
 This allows easier analysis down the line. 
 
 ```{r}
 ## Cycle through each species to fit models 
-
 Batches<- count(NHM_ForFitting,
                 Sp)%>%
   arrange( n)
@@ -164,7 +60,7 @@ for( i in 1:nrow( TableOfModels_NHM)){
   NHM_ForFitting %>%
     filter(Sp == TableOfModels_NHM$Sp[i]) -> batchDATA
   update( CoreModel2, newdata = batchDATA, refresh = 0) -> MODEL_FIT
-  save(MODEL_FIT, file = paste('../NHM_modelfitsX2/',Set2[i]  ))
+  save(MODEL_FIT, file = paste('../NHM_modelfitsM1/',Set2[i]  ))
 }
 
 ```
@@ -181,7 +77,7 @@ map_df(1:nrow( TableOfModels_NHM), function(i){
   return(Fit_df)
 })-> Posterior_Summaries_NHM2
 
-write_csv(Posterior_Summaries_NHM2, '../statsresults/NHM_Posterior_Summaries_X2.csv')
+write_csv(Posterior_Summaries_NHM2, '../statsresults/NHM_Posterior_Summaries_M1.csv')
 
 ```
 
