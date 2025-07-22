@@ -1,5 +1,5 @@
 ---
-title: "Cleaning5_Broods"
+title: "Cleaning5_Broods_Monthly"
 author: "Chris Terry"
 date: '`r Sys.Date()`'
 output: html_document
@@ -11,9 +11,9 @@ editor_options:
 library(tidyverse)
 library(readxl)
 
-OUNHM_data_temps<- read_csv('../data/OUNHM_data_temps.csv')
-NHM_data_temps <- read_csv('../data/NHM_w_temps.csv')
-BroodTable <- read_csv('../data/brood_table.csv')
+OUNHM_data_temps<- read_csv('../data/OUNHM_data_temps_Monthly.csv')
+NHM_data_temps <- read_csv('../data/NHM_w_temps_Monthly.csv')
+BroodTable <- read_csv('../data/brood_table_CTupdates.csv')
 ```
 
 # Tidying Brood Table
@@ -22,11 +22,10 @@ BroodTable <- read_csv('../data/brood_table.csv')
 Names_table<- read_csv('../data/names_table.csv')
 
 BroodTable %>%
-  left_join(Names_table, by = 'NHM name')%>% 
   mutate(FirstMonth = as.numeric(FirstMonthBrood_focal ),
          LastMonth =  as.numeric(LastMonthBrood_focal )) %>%
   filter(Include == 'TRUE' )%>%
-  select(`Taxon name` ,  BroodFocalUse, FirstMonth,LastMonth, Univoltine )-> Brood_table2
+  select(`Taxon name` ,  FocalMonthLateLarval , FirstMonth,LastMonth, Univoltine )-> Brood_table2
 
 ```
 
@@ -35,9 +34,7 @@ BroodTable %>%
 ```{r}
 ## Which brood is each record
 NHM_data_temps%>%
-  left_join(select(Brood_table2,
-                   `Taxon name`, FirstMonth,LastMonth, Univoltine,
-                   BroodFocalUse ), 
+  left_join(Brood_table2, 
             by = 'Taxon name') %>%
   mutate(InFocalBrood = ifelse(Univoltine, TRUE, 
                                ifelse( between(Month,
@@ -46,28 +43,31 @@ NHM_data_temps%>%
                                        TRUE, FALSE))) %>%
   filter( InFocalBrood) %>% 
   filter(!Implausible ) %>%
+  mutate( Temp = case_when( FocalMonthLateLarval == 'August'       ~ T_August      ,
+                            FocalMonthLateLarval == 'July'         ~ T_July        ,
+                            FocalMonthLateLarval == 'June'         ~ T_June        ,  
+                            FocalMonthLateLarval == 'May'          ~ T_May         ,
+                            FocalMonthLateLarval == 'April'        ~ T_April       ,  
+                            FocalMonthLateLarval == 'March'        ~ T_March       ,  
+                            FocalMonthLateLarval == 'SeptBefore'   ~ T_SeptBefore  ,  
+                            FocalMonthLateLarval == 'AugustBefore' ~ T_AugustBefore,  
+                            FocalMonthLateLarval == 'JulyBefore'   ~ T_JulyBefore  ,  
+                            FocalMonthLateLarval == 'JuneBefore'   ~ T_JuneBefore  ,  
+                            TRUE ~ NA_real_),
+          Temp = round(Temp, digits = 3),
+          Sex = ifelse( Sex =='N/A', 'undetermined', Sex)  ,
+          YearRescale = (Year-1800)/100)%>%
   select(Sp = `Taxon name`,
          Latitude= decimalLatitude ,
          Longitude= decimalLongitude  ,
-         Month, Year ,Sex  , 
+         Month, Year ,YearRescale,Sex  , 
          Right_wing=`right_wing (mm)` ,
-         BroodFocalUse  ,
-         SPRING_temp,
-         SUMMER_temp,
-         SUMMER_before_temp  ) %>%
-  mutate( Temp = case_when( BroodFocalUse == 'Spring' ~ SPRING_temp,
-                            BroodFocalUse == 'Summer' ~ SUMMER_temp,
-                            BroodFocalUse == 'Summer_before' ~ SUMMER_before_temp,
-                            TRUE ~ NA_real_),
-          Temp = round(Temp, digits = 3),
-          Sex = ifelse( Sex =='N/A', 'undetermined', Sex)   ) %>%
-    mutate(YearRescale = (Year-1800)/100) %>%
-  select(-ends_with('_temp')) -> NHM_for_models
+         FocalMonthLateLarval,
+         Temp  ) -> NHM_for_models
 
-write_csv(NHM_for_models, '../data/NHM_for_models.csv')
+write_csv(NHM_for_models, '../data/NHM_for_models_monthly.csv')
 
 ```
-
 
 # Adding Brood Tables and Lats to OUNHM
 
@@ -82,36 +82,41 @@ OUNHM_for_models <- OUNHM_data_temps %>%
   left_join(combined_locations,
             by = c("Location","LocationType")) %>%
   left_join( select(Brood_table2,
-                    `Taxon name`, FirstMonth,LastMonth, Univoltine,
-                    BroodFocalUse ),
+                    `Taxon name`, FirstMonth,LastMonth,
+                    Univoltine,
+                    FocalMonthLateLarval ),
              by = 'Taxon name') %>%
-  
   mutate(InFocalBrood = ifelse(Univoltine, TRUE, 
                                ifelse( between(Month,
                                                FirstMonth,
                                                LastMonth),
                                        TRUE, FALSE))) %>%
   filter( InFocalBrood) %>% 
+  mutate(Temp = case_when(FocalMonthLateLarval == 'August'       ~ T_August      ,
+                          FocalMonthLateLarval == 'July'         ~ T_July        ,
+                          FocalMonthLateLarval == 'June'         ~ T_June        ,
+                          FocalMonthLateLarval == 'May'          ~ T_May         ,
+                          FocalMonthLateLarval == 'April'        ~ T_April       ,
+                          FocalMonthLateLarval == 'March'        ~ T_March       ,
+                          FocalMonthLateLarval == 'SeptBefore'   ~ T_SeptBefore  ,
+                          FocalMonthLateLarval == 'AugustBefore' ~ T_AugustBefore,
+                          FocalMonthLateLarval == 'JulyBefore'   ~ T_JulyBefore  ,
+                          FocalMonthLateLarval == 'JuneBefore'   ~ T_JuneBefore  ,
+                          TRUE ~ NA_real_),
+         Temp = round(Temp, digits = 3),
+         Sex = ifelse( is.na(Sex), 'undetermined', Sex) ,
+         YearRescale = (Year-1800)/100) %>%
   select(Sp = `Taxon name`,
          Latitude  = latitude,
          Longitude = longitude,
-         Month,Year,Sex  , 
+         Month,Year,YearRescale, Sex  , 
          Wing_Length,
-         BroodFocalUse,
-         SPRING_temp, SUMMER_temp, SUMMER_before_temp) %>%
-  mutate(Temp = case_when( BroodFocalUse == 'Spring' ~ SPRING_temp,
-                           BroodFocalUse == 'Summer' ~ SUMMER_temp,
-                           BroodFocalUse == 'Summer_before' ~ SUMMER_before_temp,
-                           TRUE ~ NA_real_),
-         Temp = round(Temp, digits = 3),
-         Sex = ifelse( is.na(Sex), 'undetermined', Sex)  ) %>%
-  mutate(YearRescale = (Year-1800)/100) %>%
-  select(-ends_with('_temp')) 
+         FocalMonthLateLarval)
 ```
 
 # View and save
 ```{r}
 OUNHM_for_models
-write_csv(OUNHM_for_models, "../data/OUNHM_for_models.csv")
+write_csv(OUNHM_for_models, "../data/OUNHM_for_models_monthly.csv")
 ```
 
