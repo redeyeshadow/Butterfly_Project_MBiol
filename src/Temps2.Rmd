@@ -164,17 +164,15 @@ for(i in WeirdCoastal_Numbs){   ## takes a little while to run (~1 minute)
                        search_radius=50000) ## up to 50km to nearest box
     XX[m]<- x[1,2]
   }
-  Long_Lats_Years[i, 11:20] <- XX
+  Long_Lats_Years[i, 14:23] <- XX
 }
-
-
 
 Long_Lats_Years<- as_tibble(Long_Lats_Years) ## to allow slotting of values
 
-
-
 ### Checking all good now:
 which(is.na(Long_Lats_Years$T_April))
+which(is.na(Long_Lats_Years$T_JulyBefore))
+
 
 ```
 
@@ -188,6 +186,7 @@ write_csv(Long_Lats_Years,
 
 
 ```{r}
+Long_Lats_Years <- read_csv(  '../data/NHM_Long_Lats_Years.csv')
 
 NHM_records %>%
   left_join(select( Long_Lats_Years,
