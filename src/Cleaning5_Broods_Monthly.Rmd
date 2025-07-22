@@ -111,7 +111,8 @@ OUNHM_for_models <- OUNHM_data_temps %>%
          Longitude = longitude,
          Month,Year,YearRescale, Sex  , 
          Wing_Length,
-         FocalMonthLateLarval)
+         FocalMonthLateLarval,
+         Temp  )
 ```
 
 # View and save
