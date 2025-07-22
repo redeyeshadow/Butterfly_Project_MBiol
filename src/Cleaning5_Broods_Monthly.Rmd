@@ -1,0 +1,117 @@
+---
+title: "Cleaning5_Broods"
+author: "Chris Terry"
+date: '`r Sys.Date()`'
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{R message = FALSE}
+library(tidyverse)
+library(readxl)
+
+OUNHM_data_temps<- read_csv('../data/OUNHM_data_temps.csv')
+NHM_data_temps <- read_csv('../data/NHM_w_temps.csv')
+BroodTable <- read_csv('../data/brood_table.csv')
+```
+
+# Tidying Brood Table
+
+```{r}
+Names_table<- read_csv('../data/names_table.csv')
+
+BroodTable %>%
+  left_join(Names_table, by = 'NHM name')%>% 
+  mutate(FirstMonth = as.numeric(FirstMonthBrood_focal ),
+         LastMonth =  as.numeric(LastMonthBrood_focal )) %>%
+  filter(Include == 'TRUE' )%>%
+  select(`Taxon name` ,  BroodFocalUse, FirstMonth,LastMonth, Univoltine )-> Brood_table2
+
+```
+
+# Adding Brood Tables to NHM
+## Now add temperature to use column from   Brood_table_long
+```{r}
+## Which brood is each record
+NHM_data_temps%>%
+  left_join(select(Brood_table2,
+                   `Taxon name`, FirstMonth,LastMonth, Univoltine,
+                   BroodFocalUse ), 
+            by = 'Taxon name') %>%
+  mutate(InFocalBrood = ifelse(Univoltine, TRUE, 
+                               ifelse( between(Month,
+                                               FirstMonth,
+                                               LastMonth),
+                                       TRUE, FALSE))) %>%
+  filter( InFocalBrood) %>% 
+  filter(!Implausible ) %>%
+  select(Sp = `Taxon name`,
+         Latitude= decimalLatitude ,
+         Longitude= decimalLongitude  ,
+         Month, Year ,Sex  , 
+         Right_wing=`right_wing (mm)` ,
+         BroodFocalUse  ,
+         SPRING_temp,
+         SUMMER_temp,
+         SUMMER_before_temp  ) %>%
+  mutate( Temp = case_when( BroodFocalUse == 'Spring' ~ SPRING_temp,
+                            BroodFocalUse == 'Summer' ~ SUMMER_temp,
+                            BroodFocalUse == 'Summer_before' ~ SUMMER_before_temp,
+                            TRUE ~ NA_real_),
+          Temp = round(Temp, digits = 3),
+          Sex = ifelse( Sex =='N/A', 'undetermined', Sex)   ) %>%
+    mutate(YearRescale = (Year-1800)/100) %>%
+  select(-ends_with('_temp')) -> NHM_for_models
+
+write_csv(NHM_for_models, '../data/NHM_for_models.csv')
+
+```
+
+
+# Adding Brood Tables and Lats to OUNHM
+
+## Load lats for each location
+```{r}
+combined_locations <- read_csv("../data/combined_midpoints.csv")
+```
+
+## Add all tables including location_midpoints
+```{r}
+OUNHM_for_models <- OUNHM_data_temps %>%
+  left_join(combined_locations,
+            by = c("Location","LocationType")) %>%
+  left_join( select(Brood_table2,
+                    `Taxon name`, FirstMonth,LastMonth, Univoltine,
+                    BroodFocalUse ),
+             by = 'Taxon name') %>%
+  
+  mutate(InFocalBrood = ifelse(Univoltine, TRUE, 
+                               ifelse( between(Month,
+                                               FirstMonth,
+                                               LastMonth),
+                                       TRUE, FALSE))) %>%
+  filter( InFocalBrood) %>% 
+  select(Sp = `Taxon name`,
+         Latitude  = latitude,
+         Longitude = longitude,
+         Month,Year,Sex  , 
+         Wing_Length,
+         BroodFocalUse,
+         SPRING_temp, SUMMER_temp, SUMMER_before_temp) %>%
+  mutate(Temp = case_when( BroodFocalUse == 'Spring' ~ SPRING_temp,
+                           BroodFocalUse == 'Summer' ~ SUMMER_temp,
+                           BroodFocalUse == 'Summer_before' ~ SUMMER_before_temp,
+                           TRUE ~ NA_real_),
+         Temp = round(Temp, digits = 3),
+         Sex = ifelse( is.na(Sex), 'undetermined', Sex)  ) %>%
+  mutate(YearRescale = (Year-1800)/100) %>%
+  select(-ends_with('_temp')) 
+```
+
+# View and save
+```{r}
+OUNHM_for_models
+write_csv(OUNHM_for_models, "../data/OUNHM_for_models.csv")
+```
+

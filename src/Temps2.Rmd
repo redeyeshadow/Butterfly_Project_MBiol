@@ -203,9 +203,7 @@ NHM_records %>%
 
 ## Oxford records
 
-
 # OUNHM
-
 
 ## Formatting Climate Data
 
@@ -256,7 +254,8 @@ VC_Seasonal_Temps %>%
   separate(MidDate     ,
            into = c('Year', 'Month', 'MidDay' ),
            convert = TRUE, remove = FALSE)%>%
-  select( VCNUMBER,VCNAME, Year, Month, MeanTemp ) -> VC_Monthly_Temps_Long
+  select( VCNUMBER,VCNAME, Year, Month, MeanTemp ) %>%
+  mutate( MeanTemp = round( MeanTemp, 6)) -> VC_Monthly_Temps_Long
 
 write_csv(VC_Monthly_Temps_Long, 
           '../data/VC_Monthly_Temps_Long.csv')
@@ -290,7 +289,8 @@ UA_Monthly_Temps %>%
                names_prefix = 'mean.MONTH_') %>%
   separate(MidDate     ,
            into = c('Year', 'Month', 'MidDay' ),
-           convert = TRUE, remove = FALSE)  -> UA_Monthly_Temps_Long
+           convert = TRUE, remove = FALSE) %>%
+  mutate( MeanTemp = round( MeanTemp, 6)) -> UA_Monthly_Temps_Long
 
 write_csv(UA_Monthly_Temps_Long, 
           '../data/UA_Monthly_Temps_Long.csv')
@@ -351,12 +351,15 @@ Both_Temps %>%
 ## Calculating YearBefore
 
 MonthlyTemps %>%
-  select(SeptBefore = `9`)%>%
-  mutate(Year = Year+1) -> SeptBefore
+  select(SeptBefore = `9`,
+         AugustBefore = `8`,
+         JulyBefore   = `7`,
+         JuneBefore   = `6`)%>%
+  mutate(Year = Year+1) -> BeforeMonths
 
 
 MonthlyTemps %>% 
-  left_join(SeptBefore,
+  left_join(BeforeMonths,
             by = c('Location', 'LocationType', 'Year')) %>%
   filter( !is.na(SeptBefore))%>%
   select( T_August   =   `8` ,
@@ -365,7 +368,10 @@ MonthlyTemps %>%
           T_May  =     `5`,
           T_April    =  `4`,
           T_March    =   `3`  ,
-          T_SeptBefore = SeptBefore )-> Temps_perLocYear
+          T_SeptBefore = SeptBefore ,
+          T_AugustBefore = AugustBefore,
+          T_JulyBefore   = JulyBefore  ,
+          T_JuneBefore   = JuneBefore  )-> Temps_perLocYear
 
 
 OUNHM_data %>%
