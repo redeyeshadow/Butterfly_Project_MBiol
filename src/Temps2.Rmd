@@ -12,26 +12,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
-
-/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.1.ceda/25km/tas/mon/v20250415
-
-
-
 '/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.1.ceda/25km/tas/mon/v20250415'
+wget -O -q https://dap.ceda.ac.uk/badc/ARCHIVE_INFO/ACCESS_TEST/RESTRICTED/TOKEN_CHECK --header "Authorization: Bearer TOKEN"
 
 ## token from 
-
- wget -e robots=off --mirror --no-parent -r https://dap.ceda.ac.uk/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.1.ceda/25km/tas/mon/ --header "Authorization: Bearer TOKEN"
-   
-   
- wget -O -q https://dap.ceda.ac.uk/badc/ARCHIVE_INFO/ACCESS_TEST/RESTRICTED/TOKEN_CHECK --header "Authorization: Bearer TOKEN"
- 
+wget -e robots=off --mirror --no-parent -r https://dap.ceda.ac.uk/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.1.ceda/25km/tas/mon/ --header "Authorization: Bearer TOKEN"
 
 ```
 
-
 ```{r}
-
 library(tidyverse)
 library(sf) # for polygons
 library(tidyverse) # for general manipulation
@@ -51,7 +40,6 @@ Identify dates and locations that need to be crossreferenced:
 ```{r }
 NHM_records %>%
   distinct(decimalLatitude, decimalLongitude, Year  ) -> Long_Lats_Years  # unique locations and year
-  
 ```
 
 ### Loading Temps 
@@ -92,48 +80,55 @@ RecordTemps<- terra::extract(x = Collated_MonthlyTemps,
 # plot(Collated_SeasonalTemps[[1]] )
 # points( UKGRID_COORDS) 
 
-## There will be some points that just miss a box. For them can setsearch_radius = 100, but not with multilayers
-## Need to pull out RecordTemps
-
-
-August     <- rep(NA, nrow( RecordTemps))
-July       <- rep(NA, nrow( RecordTemps))
-June       <- rep(NA, nrow( RecordTemps))
-May        <- rep(NA, nrow( RecordTemps))
-April      <- rep(NA, nrow( RecordTemps))
-March      <- rep(NA, nrow( RecordTemps))
-SeptBefore <- rep(NA, nrow( RecordTemps))
-
+August      <- rep(NA, nrow( RecordTemps))
+July        <- rep(NA, nrow( RecordTemps))
+June        <- rep(NA, nrow( RecordTemps))
+May         <- rep(NA, nrow( RecordTemps))
+April       <- rep(NA, nrow( RecordTemps))
+March       <- rep(NA, nrow( RecordTemps))
+SeptBefore  <- rep(NA, nrow( RecordTemps))
+AugustBefore<- rep(NA, nrow( RecordTemps))
+JulyBefore  <- rep(NA, nrow( RecordTemps))
+JuneBefore  <- rep(NA, nrow( RecordTemps))
 
 ## Build Names of columns to pluck:
 
-Long_Lats_Years$August    <-paste0('MONTH_', Long_Lats_Years$Year  , '-08-16' ) 
-Long_Lats_Years$July      <-paste0('MONTH_', Long_Lats_Years$Year  , '-07-16' )
-Long_Lats_Years$June      <-paste0('MONTH_', Long_Lats_Years$Year  , '-06-16' )
-Long_Lats_Years$May       <-paste0('MONTH_', Long_Lats_Years$Year  , '-05-16' )
-Long_Lats_Years$April     <-paste0('MONTH_', Long_Lats_Years$Year  , '-04-16' )
-Long_Lats_Years$March     <-paste0('MONTH_', Long_Lats_Years$Year  , '-03-16' )
-Long_Lats_Years$SeptBefore<-paste0('MONTH_', Long_Lats_Years$Year-1, '-09-16' )
+Long_Lats_Years$August      <-paste0('MONTH_', Long_Lats_Years$Year  , '-08-16' ) 
+Long_Lats_Years$July        <-paste0('MONTH_', Long_Lats_Years$Year  , '-07-16' )
+Long_Lats_Years$June        <-paste0('MONTH_', Long_Lats_Years$Year  , '-06-16' )
+Long_Lats_Years$May         <-paste0('MONTH_', Long_Lats_Years$Year  , '-05-16' )
+Long_Lats_Years$April       <-paste0('MONTH_', Long_Lats_Years$Year  , '-04-16' )
+Long_Lats_Years$March       <-paste0('MONTH_', Long_Lats_Years$Year  , '-03-16' )
+Long_Lats_Years$SeptBefore  <-paste0('MONTH_', Long_Lats_Years$Year-1, '-09-16' )
+Long_Lats_Years$AugustBefore<-paste0('MONTH_', Long_Lats_Years$Year-1, '-08-16' )
+Long_Lats_Years$JulyBefore  <-paste0('MONTH_', Long_Lats_Years$Year-1, '-07-16' )
+Long_Lats_Years$JuneBefore  <-paste0('MONTH_', Long_Lats_Years$Year-1, '-06-16' )
+
 
 for( i in 1:nrow(RecordTemps)){
   ## dumb but not that slow way to get numbers out of matrix
-August    [i]<-    RecordTemps[i ,Long_Lats_Years$August    [i]]
-July      [i]<-    RecordTemps[i ,Long_Lats_Years$July      [i]]
-June      [i]<-    RecordTemps[i ,Long_Lats_Years$June      [i]]
-May       [i]<-    RecordTemps[i ,Long_Lats_Years$May       [i]]
-April     [i]<-    RecordTemps[i ,Long_Lats_Years$April     [i]]
-March     [i]<-    RecordTemps[i ,Long_Lats_Years$March     [i]]
-SeptBefore[i]<-    RecordTemps[i ,Long_Lats_Years$SeptBefore[i]]
-
+  August      [i]<-    RecordTemps[i ,Long_Lats_Years$August      [i]]
+  July        [i]<-    RecordTemps[i ,Long_Lats_Years$July        [i]]
+  June        [i]<-    RecordTemps[i ,Long_Lats_Years$June        [i]]
+  May         [i]<-    RecordTemps[i ,Long_Lats_Years$May         [i]]
+  April       [i]<-    RecordTemps[i ,Long_Lats_Years$April       [i]]
+  March       [i]<-    RecordTemps[i ,Long_Lats_Years$March       [i]]
+  SeptBefore  [i]<-    RecordTemps[i ,Long_Lats_Years$SeptBefore  [i]]
+  AugustBefore[i]<-    RecordTemps[i ,Long_Lats_Years$AugustBefore[i]]
+  JulyBefore  [i]<-    RecordTemps[i ,Long_Lats_Years$JulyBefore  [i]]
+  JuneBefore  [i]<-    RecordTemps[i ,Long_Lats_Years$JuneBefore  [i]]
 }
 
-Long_Lats_Years$T_August     <- August     
-Long_Lats_Years$T_July       <- July       
-Long_Lats_Years$T_June       <- June       
-Long_Lats_Years$T_May        <- May        
-Long_Lats_Years$T_April      <- April      
-Long_Lats_Years$T_March      <- March      
-Long_Lats_Years$T_SeptBefore <- SeptBefore 
+Long_Lats_Years$T_August      <- August     
+Long_Lats_Years$T_July        <- July       
+Long_Lats_Years$T_June        <- June       
+Long_Lats_Years$T_May         <- May        
+Long_Lats_Years$T_April       <- April      
+Long_Lats_Years$T_March       <- March      
+Long_Lats_Years$T_SeptBefore  <- SeptBefore
+Long_Lats_Years$T_AugustBefore<- AugustBefore
+Long_Lats_Years$T_JulyBefore  <- JulyBefore  
+Long_Lats_Years$T_JuneBefore  <- JuneBefore  
 
 ```
 
@@ -143,23 +138,24 @@ Long_Lats_Years$T_SeptBefore <- SeptBefore
 Long_Lats_Years %>%
   ggplot()+
   geom_point(aes( x = decimalLongitude, y = decimalLatitude,
-                  col = is.na(July)))  ## Just weird coastal ones.
+                  col = is.na(T_July)))  ## Just weird coastal ones.
 ```
 
 Fixing these using nearest neighbour temperatures
 
 ```{r eval = FALSE}
 which(is.na(Long_Lats_Years$T_May)) -> WeirdCoastal_Numbs
-Months<- c('August','July','June','May' ,'April','March','SeptBefore')
+Months<- c('August','July','June','May' ,'April','March',
+           'SeptBefore','AugustBefore','JulyBefore','JuneBefore'  )
 
 Long_Lats_Years<- as.data.frame(Long_Lats_Years) ## to allow slotting of values
 
 for(i in WeirdCoastal_Numbs){   ## takes a little while to run (~1 minute)
   print(i)
   
-  XX<- rep(NA, 7)
+  XX<- rep(NA, length(Months))
   
-  for(m in 1:7){
+  for(m in 1:length(Months)){
     SeasonLayer = Long_Lats_Years[[i,Months[m]] ]
     
     x<- terra::extract(x =subset(Collated_MonthlyTemps,
@@ -168,7 +164,7 @@ for(i in WeirdCoastal_Numbs){   ## takes a little while to run (~1 minute)
                        search_radius=50000) ## up to 50km to nearest box
     XX[m]<- x[1,2]
   }
-  Long_Lats_Years[i, 11:17] <- XX
+  Long_Lats_Years[i, 11:20] <- XX
 }
 
 
@@ -176,10 +172,9 @@ for(i in WeirdCoastal_Numbs){   ## takes a little while to run (~1 minute)
 Long_Lats_Years<- as_tibble(Long_Lats_Years) ## to allow slotting of values
 
 
-  
 
 ### Checking all good now:
-which(is.na(Long_Lats_Years$SPRING_temp))
+which(is.na(Long_Lats_Years$T_April))
 
 ```
 
@@ -244,8 +239,8 @@ ViceCounties %>%
 
 ```{r echo=TRUE, include=FALSE, eval = FALSE}
 VC_Seasonal_Temps<- exactextractr::exact_extract(Collated_MonthlyTemps,
-                                                ViceCounties, fun = 'mean', weights ='area',
-                                                append_cols = c( 'VCNUMBER','VCNAME' ))
+                                                 ViceCounties, fun = 'mean', weights ='area',
+                                                 append_cols = c( 'VCNUMBER','VCNAME' ))
 
 write_csv(VC_Seasonal_Temps, '../data/VC_Monthly_Temps.csv' )
 ```
@@ -294,7 +289,7 @@ UA_Monthly_Temps %>%
                values_to = 'MeanTemp',
                names_prefix = 'mean.MONTH_') %>%
   separate(MidDate     ,
-            into = c('Year', 'Month', 'MidDay' ),
+           into = c('Year', 'Month', 'MidDay' ),
            convert = TRUE, remove = FALSE)  -> UA_Monthly_Temps_Long
 
 write_csv(UA_Monthly_Temps_Long, 
@@ -337,12 +332,12 @@ VC_temps <- read_csv('../data/VC_Monthly_Temps_Long.csv')
 
 UA_temps %>%
   select(Location =  CTYUA23NM  , Year, Month, MeanTemp ) %>%
-    mutate(LocationType= 'UA') -> UA_tidy
+  mutate(LocationType= 'UA') -> UA_tidy
 
 
 VC_temps %>%
   select(Location =  VCNAME         , Year, Month, MeanTemp ) %>%
-    mutate(LocationType= 'VC') -> VC_tidy
+  mutate(LocationType= 'VC') -> VC_tidy
 
 bind_rows(UA_tidy, VC_tidy) -> Both_Temps
 
@@ -416,11 +411,11 @@ write_csv(OUNHM_data_temps, '../data/OUNHM_data_temps_Monthly.csv')
 
 
 
- BroodTable <- read_csv('../data/brood_table_CTupdates.csv')
+BroodTable <- read_csv('../data/brood_table_CTupdates.csv')
 
 BroodTable %>%
   filter( Include) %>%
-count(BroodFocalUse, FocalMonthLateLarval)
+  count(BroodFocalUse, FocalMonthLateLarval)
 
 
 
