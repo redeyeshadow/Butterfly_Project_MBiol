@@ -69,7 +69,7 @@ for( i in 1:nrow( TableOfModels_NHM)){
 
 ```{r eval = FALSE}
 map_df(1:nrow( TableOfModels_NHM), function(i){
-  load(file = paste('../NHM_modelfitsX2/',Set2[i]  )) 
+  load(file = paste('../NHM_modelfitsM1/',Set2[i]  )) 
   MODEL_FIT %>%
     as_draws_array %>%
     summarise_draws -> Fit_df
