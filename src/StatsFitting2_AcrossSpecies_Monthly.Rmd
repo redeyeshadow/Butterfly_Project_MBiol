@@ -17,7 +17,12 @@ library(posterior)
 
 ```{r}
 # Predictors
-specialism <- read_csv( '../data/specialism_with_nhm.csv')
+specialism <- read_csv( '../data/specialism_with_nhm.csv')%>%
+  mutate(Label = case_match(Specialism, 
+                            'Habitat and foodplant generalist' ~ 'Habitat generalist\n&\nfoodplant generalist',
+                            'Habitat and foodplant specialist'~ 'Habitat specialist\n&\nfoodplant specialist',
+                            'Habitat generalist and foodplant specialist'~ 'Habitat generalist\n&\nfoodplant specialist',
+                            'Habitat specialist and foodplant generalist'~  'Habitat specialist \n&\nfoodplant generalist'))
 
 #######  Which Seasons?
 read_csv('../data/brood_table_CTupdates.csv') %>%
@@ -169,6 +174,70 @@ ggsave(filename = '../figs/compare_coefs_across_datasets.png', width = 10, heigh
 
 ## NHM
 
+### Figure For paper
+
+```{r}
+
+ORDER_f2 <- PS_NHM %>%
+  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
+  distinct(Specialism, Sp ) %>%
+  arrange(Specialism, desc(Sp)) %>%pluck('Sp')
+
+PS_NHM %>%
+  mutate(Sp  = factor(Sp, levels = ORDER_f2)) %>% 
+  mutate( q5 = if_else(variable== 'b_Latitude' & Sp =='Melitaea cinxia',
+                      -Inf, q5)) %>% ## filter(Sp == 'Melitaea cinxia') 
+  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
+  filter( variable %in% c( 'b_Temp',
+                           'b_YearRescale',
+                           'b_Sexmale',
+                           'b_Sexundetermined'  ,
+                           'b_Latitude') )%>%
+  mutate(Response = case_match(variable, 
+                               'b_Temp'~ 'b. Temperature',
+                               'b_YearRescale'~'c. Year',
+                               'b_Sexmale'~'d. Male Offset',
+                               'b_Sexundetermined'~'e. Undetermined Sex Offset',
+                               'b_Latitude'~'a. Latitude') )%>%
+  #filter(Sp != 'Melitaea cinxia') %>%
+  ggplot( aes( y =  Sp, 
+               x = mean))+
+  geom_point()+
+  geom_errorbarh(aes( xmin = q5, xmax = q95))+
+  geom_vline(xintercept = 0)+
+  facet_grid(Label~Response, scales = 'free', space = "free_y")+
+  ggtitle('((NHM datasets, Species-level coefficients, Monthly))',
+          'Colours are currrently random, but will be family')+
+  theme_bw()+
+  ylab('')+
+  xlab('Fitted Coefficient')+
+  theme(axis.text.y = element_text(colour = c("gold", "blue", 'darkgreen')))
+
+ggsave('../figs/NHM_Monthly_MainSpResults.png', width = 10, height = 7, bg = 'white')
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### Predictors of b_Temp 
 
 ```{r eval = FALSE}
@@ -200,6 +269,19 @@ loo_compare(bTemp_model_NHM,
 
 plot(conditional_effects(bTemp_model_NHM, resp = "median", rug = TRUE), ask = FALSE)
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Predictors of b_year
 
@@ -233,6 +315,48 @@ loo_compare(bYear_model_NHM,
 
 plot(conditional_effects(bYear_model_NHM, resp = "median", rug = TRUE), ask = FALSE)
 ```
+
+### Sample Size vs confidence
+
+```{r}
+
+
+PS_NHM
+
+NHM_ForFitting <- read_csv(  '../data/NHM_for_models_monthly.csv')
+
+
+
+PS_NHM %>%
+  filter( variable %in% c('b_YearRescale' , 'b_Temp'   , 'b_Latitude')) %>%
+  left_join(count(NHM_ForFitting, Sp)) %>%
+  ggplot(aes( x = n, y = sd))+
+  geom_point()+
+  scale_x_sqrt()+
+  facet_wrap(~variable, scales = 'free')+
+  ylab('SD of posterior of fitted coefficents')+
+  xlab('Sample size (NB Square-root scale)')+
+  ggtitle('Relationship between data size for each species and uncertainty in coefficent')
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## OUNHM
