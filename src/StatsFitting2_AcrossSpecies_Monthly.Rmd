@@ -73,7 +73,7 @@ PS_OUM<- read_csv('../statsresults/OUM_Posterior_Summaries_M1.csv')
 PS_OUM %>%
   left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
   filter( variable %in% c( 'b_Temp',
-                           'b_Year',
+                           'b_YearRescale',
                            'b_Latitude',
                            'b_Sexmale'  ) )%>%
   ggplot( aes( y =  Sp, 

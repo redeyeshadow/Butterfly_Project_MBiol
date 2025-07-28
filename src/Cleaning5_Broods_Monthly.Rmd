@@ -77,6 +77,9 @@ combined_locations <- read_csv("../data/combined_midpoints.csv")
 ```
 
 ## Add all tables including location_midpoints
+
+Also add location filterring
+
 ```{r}
 OUNHM_for_models <- OUNHM_data_temps %>%
   left_join(combined_locations,
@@ -106,6 +109,8 @@ OUNHM_for_models <- OUNHM_data_temps %>%
          Temp = round(Temp, digits = 3),
          Sex = ifelse( is.na(Sex), 'undetermined', Sex) ,
          YearRescale = (Year-1800)/100) %>%
+  filter(between(latitude, 49.5, 54),
+         between(longitude, -5.5,4)) %>% ### southerly GB core box (latitude 49.5:54, longitude -5.5:4)
   select(Sp = `Taxon name`,
          Latitude  = latitude,
          Longitude = longitude,

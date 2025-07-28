@@ -11,7 +11,7 @@
 
 <meta name="author" content="Chris Terry" />
 
-<meta name="date" content="2025-07-22" />
+<meta name="date" content="2025-07-28" />
 
 <title>Cleaning5_Broods_Monthly</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Cleaning5_Broods_Monthly</h1>
 <h4 class="author">Chris Terry</h4>
-<h4 class="date">2025-07-22</h4>
+<h4 class="date">2025-07-28</h4>
 
 </div>
 
@@ -435,6 +435,7 @@ write_csv(NHM_for_models, &#39;../data/NHM_for_models_monthly.csv&#39;)</code></
 </div>
 <div id="add-all-tables-including-location_midpoints" class="section level2">
 <h2>Add all tables including location_midpoints</h2>
+<p>Also add location filterring</p>
 <pre class="r"><code>OUNHM_for_models &lt;- OUNHM_data_temps %&gt;%
   left_join(combined_locations,
             by = c(&quot;Location&quot;,&quot;LocationType&quot;)) %&gt;%
@@ -463,18 +464,21 @@ write_csv(NHM_for_models, &#39;../data/NHM_for_models_monthly.csv&#39;)</code></
          Temp = round(Temp, digits = 3),
          Sex = ifelse( is.na(Sex), &#39;undetermined&#39;, Sex) ,
          YearRescale = (Year-1800)/100) %&gt;%
+  filter(between(latitude, 49.5, 54),
+         between(longitude, -5.5,4)) %&gt;% ### southerly GB core box (latitude 49.5:54, longitude -5.5:4)
   select(Sp = `Taxon name`,
          Latitude  = latitude,
          Longitude = longitude,
          Month,Year,YearRescale, Sex  , 
          Wing_Length,
-         FocalMonthLateLarval)</code></pre>
+         FocalMonthLateLarval,
+         Temp  )</code></pre>
 </div>
 </div>
 <div id="view-and-save" class="section level1">
 <h1>View and save</h1>
 <pre class="r"><code>OUNHM_for_models</code></pre>
-<pre><code>## # A tibble: 2,137 × 9
+<pre><code>## # A tibble: 1,961 × 10
 ##    Sp               Latitude Longitude Month  Year YearRescale Sex   Wing_Length
 ##    &lt;chr&gt;               &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;
 ##  1 Erynnis tages        51.5    -1.21      6  1885        0.85 unde…        11.4
@@ -487,8 +491,8 @@ write_csv(NHM_for_models, &#39;../data/NHM_for_models_monthly.csv&#39;)</code></
 ##  8 Erynnis tages        51.3    -0.374     5  1888        0.88 unde…        11.7
 ##  9 Pyrgus malvae        51.1    -1.29      5  1888        0.88 unde…        11.6
 ## 10 Thymelicus sylv…     52.7     0.953     7  1888        0.88 male         12.9
-## # ℹ 2,127 more rows
-## # ℹ 1 more variable: FocalMonthLateLarval &lt;chr&gt;</code></pre>
+## # ℹ 1,951 more rows
+## # ℹ 2 more variables: FocalMonthLateLarval &lt;chr&gt;, Temp &lt;dbl&gt;</code></pre>
 <pre class="r"><code>write_csv(OUNHM_for_models, &quot;../data/OUNHM_for_models_monthly.csv&quot;)</code></pre>
 </div>
 
