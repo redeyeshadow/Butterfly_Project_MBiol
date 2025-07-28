@@ -330,13 +330,27 @@ NHM_ForFitting <- read_csv(  '../data/NHM_for_models_monthly.csv')
 PS_NHM %>%
   filter( variable %in% c('b_YearRescale' , 'b_Temp'   , 'b_Latitude')) %>%
   left_join(count(NHM_ForFitting, Sp)) %>%
+  mutate(ConfidentTrend =  sign(q5)== sign(q95)) %>%
   ggplot(aes( x = n, y = sd))+
-  geom_point()+
+  geom_point(aes(col = ConfidentTrend))+
   scale_x_sqrt()+
   facet_wrap(~variable, scales = 'free')+
   ylab('SD of posterior of fitted coefficents')+
   xlab('Sample size (NB Square-root scale)')+
   ggtitle('Relationship between data size for each species and uncertainty in coefficent')
+
+ggsave('../figs/Corr_sample_size_trends_NHM.png', width = 9, height = 3)
+
+
+PS_NHM %>%
+  filter( variable %in% c('b_YearRescale' , 'b_Temp'   , 'b_Latitude')) %>%
+  left_join(count(NHM_ForFitting, Sp)) %>%
+  mutate(ConfidentTrend =  sign(q5)== sign(q95)) %>%
+  ggplot(aes( x = ConfidentTrend, y = sqrt(n)))+
+  geom_boxplot(aes(fill = ConfidentTrend))+
+  geom_point()+
+  facet_wrap(~variable, scales = 'free')
+
 
 
 ```
