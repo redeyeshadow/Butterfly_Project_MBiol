@@ -1,8 +1,10 @@
 ---
 title: "Pretty Species Info Table for Paper"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 date: "2025-07-30"
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -10,8 +12,9 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{R}
+```{R message=FALSE, warning=FALSE}
 library(tidyverse)
+
 
 Species_info <- left_join(read_csv('../data/brood_table.csv'),
                           read_csv('../data/names_table.csv'))%>%
@@ -19,10 +22,13 @@ Species_info <- left_join(read_csv('../data/brood_table.csv'),
           maximum_plausible,
           minimum_plausible)
 
-
 NHM_ForFitting <- read_csv(  '../data/NHM_for_models_monthly.csv')%>%
   left_join(Species_info)
 OUM_ForFitting <- read_csv(  '../data/OUNHM_for_models_monthly.csv')
+SpeciesToInclude<-   unique(read_csv('../statsresults/NHM_Posterior_Summaries_M1.csv')$Sp)
+
+UKRedList <- read_csv('../data/ButterflyRedlistUK.csv')
+specialism <- read_csv( '../data/specialism_with_nhm.csv')
 
 ```
 
@@ -31,10 +37,6 @@ OUM_ForFitting <- read_csv(  '../data/OUNHM_for_models_monthly.csv')
 Table summarising each species. Might end up in SI
 
 ```{r}
-SpeciesToInclude<-   unique(read_csv('../statsresults/NHM_Posterior_Summaries_M1.csv')$Sp)
-
-UKRedList <- read_csv('../data/ButterflyRedlistUK.csv')
-specialism <- read_csv( '../data/specialism_with_nhm.csv')
 
 left_join(NHM_ForFitting %>% group_by(Sp) %>%
             count(name = 'NHM_n') , 
@@ -42,7 +44,7 @@ left_join(NHM_ForFitting %>% group_by(Sp) %>%
             count(name = 'OUM_n') ) -> CountsUsedInModels
 
 
-left_join(read_csv('../data/brood_table.csv'),
+left_join(read_csv('../data/brood_table_CTupdates.csv'),
           read_csv('../data/names_table.csv'))%>%
   left_join(specialism) %>%
   filter(`Taxon name`  %in%  SpeciesToInclude) %>%
@@ -60,8 +62,10 @@ left_join(read_csv('../data/brood_table.csv'),
                                          month.abb[FirstMonthBrood_focal],'-',
                                          month.abb[LastMonthBrood_focal]))) %>%
   arrange(Univoltine,`Taxon name` ) %>%
+  mutate(`Common Name` = ifelse( !is.na(EnglishName),EnglishName,
+                                 ifelse( !is.na(`Elsa name` ),`Elsa name` ,'TO BE ADDED') )) %>%
   select(Species =`Taxon name`,
-         `Common Name`=  `Elsa name` ,
+         `Common Name`,
          Habitat,
          Foodplant,
          NHM_n,
