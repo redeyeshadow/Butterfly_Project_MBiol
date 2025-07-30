@@ -72,7 +72,8 @@ map_df(1:nrow( TableOfModels_NHM), function(i){
   load(file = paste('../NHM_modelfitsM1/',Set2[i]  )) 
   MODEL_FIT %>%
     as_draws_array %>%
-    summarise_draws -> Fit_df
+    summarise_draws( "mean","median","sd","mad","quantile2",
+                    ~quantile2(.x, probs = c(0.167, 0.833))) -> Fit_df
   Fit_df$Sp = TableOfModels_NHM$Sp[i]
   return(Fit_df)
 })-> Posterior_Summaries_NHM2
@@ -143,7 +144,8 @@ map_df(1:nrow( TableOfModels_OUNHM), function(i){
   load(file = paste('../OUM_modelfitsM1/',Set2[i]  )) 
   MODEL_FIT %>%
     as_draws_array %>%
-    summarise_draws -> Fit_df
+    summarise_draws("mean","median","sd","mad","quantile2",
+                    ~quantile2(.x, probs = c(0.167, 0.833))) -> Fit_df
   Fit_df$Sp = TableOfModels_OUNHM$Sp[i]
   return(Fit_df)
 })-> Posterior_Summaries_OUM2

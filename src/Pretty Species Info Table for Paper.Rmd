@@ -1,0 +1,74 @@
+---
+title: "Pretty Species Info Table for Paper"
+output: html_document
+date: "2025-07-30"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{R}
+library(tidyverse)
+
+Species_info <- left_join(read_csv('../data/brood_table.csv'),
+                          read_csv('../data/names_table.csv'))%>%
+  select( Sp = `Taxon name`,
+          maximum_plausible,
+          minimum_plausible)
+
+
+NHM_ForFitting <- read_csv(  '../data/NHM_for_models_monthly.csv')%>%
+  left_join(Species_info)
+OUM_ForFitting <- read_csv(  '../data/OUNHM_for_models_monthly.csv')
+
+```
+
+# Making Table 1
+
+Table summarising each species. Might end up in SI
+
+```{r}
+SpeciesToInclude<-   unique(read_csv('../statsresults/NHM_Posterior_Summaries_M1.csv')$Sp)
+
+UKRedList <- read_csv('../data/ButterflyRedlistUK.csv')
+specialism <- read_csv( '../data/specialism_with_nhm.csv')
+
+left_join(NHM_ForFitting %>% group_by(Sp) %>%
+            count(name = 'NHM_n') , 
+          OUM_ForFitting %>%group_by(Sp) %>%
+            count(name = 'OUM_n') ) -> CountsUsedInModels
+
+
+left_join(read_csv('../data/brood_table.csv'),
+          read_csv('../data/names_table.csv'))%>%
+  left_join(specialism) %>%
+  filter(`Taxon name`  %in%  SpeciesToInclude) %>%
+  left_join(UKRedList, by =c('Taxon name'='Species') ) %>%
+  left_join(CountsUsedInModels, by = c('Taxon name' ='Sp')) %>%
+  mutate( Habitat = ifelse( Specialism %in% c('Habitat and foodplant generalist' ,
+                                              'Habitat generalist and foodplant specialist'),
+                            'G', 'S'),
+          Foodplant = ifelse( Specialism %in% c('Habitat and foodplant generalist' ,
+                                                'Habitat specialist and foodplant generalist'),
+                              'G', 'S')) %>%
+  mutate( `Focal Brood` = ifelse(Univoltine,
+                                 'Univoltine',
+                                 paste0( FocalBrood,': ',
+                                         month.abb[FirstMonthBrood_focal],'-',
+                                         month.abb[LastMonthBrood_focal]))) %>%
+  arrange(Univoltine,`Taxon name` ) %>%
+  select(Species =`Taxon name`,
+         `Common Name`=  `Elsa name` ,
+         Habitat,
+         Foodplant,
+         NHM_n,
+         OUM_n,
+         `Focal Brood`,
+         FocalMonthLateLarval ,
+         `GB Red List category` ) %>%
+  knitr::kable()
+
+```

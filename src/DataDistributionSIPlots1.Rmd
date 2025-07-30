@@ -30,7 +30,6 @@ NHM_ForFitting <- read_csv(  '../data/NHM_for_models_monthly.csv')%>%
   left_join(Species_info)
 OUM_ForFitting <- read_csv(  '../data/OUNHM_for_models_monthly.csv')
 
-NHM_ForFitting
 
 SouthBritishIsles<- map_data('worldHires') 
 

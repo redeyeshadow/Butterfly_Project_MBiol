@@ -12,6 +12,22 @@ library(tidyverse)
 OUNHM_measurements <- read_csv('../data/OUNHM_Measurements.csv' )
 ```
 
+## Correlation between measurements
+
+```{r}
+OUNHM_measurements %>%
+  group_by(Species, Sex) %>%
+  summarise( Corr_Length_Area = cor(  Wing_Length,Forewing_Area)) %>%
+  arrange(Corr_Length_Area) -> Corr_Length_Area
+  
+  Corr_Length_Area
+  
+  Corr_Length_Area$Corr_Length_Area %>% mean(na.rm=TRUE)
+    Corr_Length_Area$Corr_Length_Area %>% range(na.rm=TRUE)
+ 
+   Corr_Length_Area$Corr_Length_Area %>% quantile(na.rm = TRUE, probs = c(0.05, 0.95))
+
+```
 
 ## Consolidating names
 
