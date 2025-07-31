@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 
 
-Species_info <- left_join(read_csv('../data/brood_table.csv'),
+Species_info <- left_join(read_csv('../data/brood_table_CTupdates.csv'),
                           read_csv('../data/names_table.csv'))%>%
   select( Sp = `Taxon name`,
           maximum_plausible,
@@ -63,9 +63,15 @@ left_join(read_csv('../data/brood_table_CTupdates.csv'),
                                          month.abb[LastMonthBrood_focal]))) %>%
   arrange(Univoltine,`Taxon name` ) %>%
   mutate(`Common Name` = ifelse( !is.na(EnglishName),EnglishName,
-                                 ifelse( !is.na(`Elsa name` ),`Elsa name` ,'TO BE ADDED') )) %>%
+                                 ifelse( !is.na(`Elsa name` ),
+                                         `Elsa name` ,
+                                         'TO BE ADDED') )) %>% 
+  mutate(`GB Red List category` = ifelse( is.na(`GB Red List category`),
+                                          'Not Listed',
+                                          `GB Red List category`) ) %>%
   select(Species =`Taxon name`,
          `Common Name`,
+         Family,
          Habitat,
          Foodplant,
          NHM_n,

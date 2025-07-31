@@ -2,9 +2,9 @@ Elsa name,Taxon name,NHM name,Family,Include,Univoltine,Month egg layed,Month la
 Small tortoiseshell,Aglais urticae,Aglais urticae,Nymphaliidae,TRUE,FALSE,May,May-June,July,July-August,NA,Spring,May,May,1,6,8,27,16
 Brown argus,Aricia agestis,Aricia agestis,Lycaenidae,TRUE,FALSE,May-July,June-July,August-September,August-April,overwinters as larva,Summer,NA,July,2,8,10,14,9
 Holly blue,Celastrina argiolus,Celastrina argiolus,Lycaenidae,TRUE,FALSE,April-June,May-July,July-August,August-September,"ovrwinter as pupae, but here targetting brood 2",Spring,NA,June,2,8,10,17,12
-Wall,Lasiommata megera,Lasiommata megera,Nymphalidae ,TRUE,FALSE,May-June,June,August-September,August-September,"overwinter as larvae, here targetting brood 2. (June.very early july s larvae)",Summer,NA,June,2,8,10,25,16
+Wall,Lasiommata megera,Lasiommata megera,Nymphalidae,TRUE,FALSE,May-June,June,August-September,August-September,"overwinter as larvae, here targetting brood 2. (June.very early july s larvae)",Summer,NA,June,2,8,10,25,16
 Wood white,Leptidea sinapis,Leptidea sinapis,Pieridae,TRUE,FALSE,June-July,July-August,NA,NA,only second gen at some sites. Overwinters as pupae,Summer_before,NA,JulyBefore,1,3,6,23,16
-Small copper,Lycaena phlaeas,Lycaena phlaeas,Lycaenids ,TRUE,FALSE,May-June,June-July,August,August-September,will include possible brood 3+. Could be june/july for brood 2,Summer,NA,June,2,7,10,16,10
+Small copper,Lycaena phlaeas,Lycaena phlaeas,Lycaenidae,TRUE,FALSE,May-June,June-July,August,August-September,will include possible brood 3+. Could be june/july for brood 2,Summer,NA,June,2,7,10,16,10
 Adonis blue,Polyommatus bellargus,Lysandra bellargus,Lycaenidae,TRUE,FALSE,May-July,June-August,August-October,September-May,NA,Summer,July,July,2,8,9,17,13
 Speckled wood,Pararge aegeria,Pararge aegeria,Nymphalidae,TRUE,FALSE,April-June,May-June,July-August,July-August,excluding possible third broods (larvae in summer not spring). Targetting second flight that are larvae May-June,Spring,NA,June,2,7,8,23,18
 Large white,Pieris brassicae,Pieris brassicae,Pieridae,TRUE,FALSE,May-June,May-July,July-September,August-September,"Overwinter as pupae, targetting seconf light that are larve May/June/ start of july",Summer,NA,June,2,7,9,33,27
@@ -55,47 +55,47 @@ Brown hairstreak,Thecla betulae,Thecla betulae,Lycaenidae,TRUE,TRUE,August-May,A
 Lulworth skipper,Thymelicus acteon,Thymelicus acteon,Hesperiidae,TRUE,TRUE,June-September,July-June,NA,NA,overwinters as 1st stage larva,Summer_before,NA,May,NA,3,NA,13,9
 Essex skipper,Thymelicus lineola,Thymelicus lineola,Hesperiidae,TRUE,TRUE,July-August,April-June,NA,NA,Overwinter as egg,Spring,NA,May,NA,3,NA,15,10
 Small skipper,Thymelicus sylvestris,Thymelicus sylvestris,Hesperiidae,TRUE,TRUE,July-August,August-June,NA,NA,overwinters as early larva,Summer,May,May,NA,3,NA,14,11
-NA,NA,Araschnia levana,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Arethusana arethusa,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Argynnis niobe,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Boloria dia,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Cacyreus marshalli,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Colias alfacariensis,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Colias croceus,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Colias hyale,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Colias phicomone,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Colobura dirce,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Cyaniris semiargus,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Danaus plexippus,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Deudorix antalus,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Dryas julia,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Erebia ligea,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Everes argiades,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Glaucopsyche alexis,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Gonepteryx cleopatra,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Heliconius charithonia,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Hipparchia fagi,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Hypanartia lethe,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Iphiclides podalirius,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Issoria lathonia,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Junonia oenone,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Lampides boeticus,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Leptidea reali,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Lycaena dispar,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Lycaena hippothoe,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Lycaena virgaureae,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Maculinea alcon,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Maculinea arion,,FALSE,NA,NA,NA,NA,NA,odd as went extinct,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Nymphalis antiopa,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Nymphalis xanthomelas,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Papilio xuthus,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Parthenos sylvia,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Polyommatus dorylas,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Pontia daplidice,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Pyrgus armoricanus,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Pyrgus serratulae,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Rapala schistacea,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Vanessa atalanta,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Vanessa cardui,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Vanessa indica,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA,Vanessa virginiensis,,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Araschnia levana,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Arethusana arethusa,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Argynnis niobe,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Boloria dia,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Cacyreus marshalli,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Colias alfacariensis,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Colias croceus,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Colias hyale,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Colias phicomone,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Colobura dirce,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Cyaniris semiargus,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Danaus plexippus,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Deudorix antalus,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Dryas julia,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Erebia ligea,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Everes argiades,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Glaucopsyche alexis,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Gonepteryx cleopatra,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Heliconius charithonia,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Hipparchia fagi,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Hypanartia lethe,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Iphiclides podalirius,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Issoria lathonia,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Junonia oenone,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Lampides boeticus,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Leptidea reali,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Lycaena dispar,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Lycaena hippothoe,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Lycaena virgaureae,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Maculinea alcon,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Maculinea arion,NA,FALSE,NA,NA,NA,NA,NA,odd as went extinct,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Nymphalis antiopa,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Nymphalis xanthomelas,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Papilio xuthus,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Parthenos sylvia,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Polyommatus dorylas,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Pontia daplidice,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Pyrgus armoricanus,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Pyrgus serratulae,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Rapala schistacea,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Vanessa atalanta,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Vanessa cardui,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Vanessa indica,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,Vanessa virginiensis,NA,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
