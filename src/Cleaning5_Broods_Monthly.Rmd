@@ -57,6 +57,8 @@ NHM_data_temps%>%
           Temp = round(Temp, digits = 3),
           Sex = ifelse( Sex =='N/A', 'undetermined', Sex)  ,
           YearRescale = (Year-1800)/100)%>%
+  ### Also filter out erratic Glanville Fritillary observations outside of core population (probably migrants so can't link temperatures)
+  filter( `Taxon name` != 'Melitaea cinxia'    |  decimalLongitude < -0.05   )%>%
   select(Sp = `Taxon name`,
          Latitude= decimalLatitude ,
          Longitude= decimalLongitude  ,
@@ -118,6 +120,10 @@ OUNHM_for_models <- OUNHM_data_temps %>%
          Wing_Length,
          FocalMonthLateLarval,
          Temp  )
+## remove 
+
+
+
 ```
 
 # View and save
