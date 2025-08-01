@@ -16,6 +16,8 @@ library(tidyverse)
 library(brms)
 library(posterior)
 library(forcats)
+library(bayesplot)
+library(cowplot)
 ```
 
 ```{r}
@@ -27,6 +29,8 @@ PS_OUM<- read_csv('../statsresults/OUM_Posterior_Summaries_M1.csv')
 
 ```{r}
 # Predictors
+
+# Specialism 
 specialism <- read_csv( '../data/specialism_with_nhm.csv')%>%
   mutate(Label = case_match(Specialism, 
                             'Habitat and foodplant generalist' ~ 'Habitat generalist\n&\nfoodplant generalist',
@@ -34,12 +38,11 @@ specialism <- read_csv( '../data/specialism_with_nhm.csv')%>%
                             'Habitat generalist and foodplant specialist'~ 'Habitat generalist\n&\nfoodplant specialist',
                             'Habitat specialist and foodplant generalist'~  'Habitat specialist \n&\nfoodplant generalist'))
 
-#######  Which Seasons?
+
 read_csv('../data/brood_table_CTupdates.csv') %>%
-  mutate(FirstMonthBrood_focal = as.numeric(FirstMonthBrood_focal),
-         LastMonthBrood_focal  = as.numeric(LastMonthBrood_focal ) ) %>%
   filter(Include == 'TRUE' )%>%
-  select(Sp = `Taxon name` ,FirstMonthBrood_focal, LastMonthBrood_focal)-> Seasons
+  select(Sp = `Taxon name` ,Family )-> SpFamily
+
 
 
 ## Butterfly Red List https://resjournals.onlinelibrary.wiley.com/doi/10.1111/icad.12582
@@ -49,14 +52,33 @@ UKRedList <- read_csv('../data/ButterflyRedlistUK.csv')
 ```
 
 # NHM
+
 ## Figure For paper
+
+### Prepping data
 
 ```{r}
 
-ORDER_f2 <- PS_NHM %>%
+PS_NHM %>%
   left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
-  distinct(Specialism, Sp ) %>%
-  arrange(Specialism, Sp) %>%pluck('Sp')
+  left_join(SpFamily) %>%
+  distinct(Specialism, Sp, Family ) %>%
+  arrange(Specialism, Sp) -> OrderTable
+
+
+ORDER_f2 <-pluck(OrderTable,'Sp')
+
+OrderTable$Family_Cols <- c( 'darkgreen',"blue",  'orange',"gold", 'darkgrey', '#800020')[factor(pluck(OrderTable,'Family'))]
+
+
+## Colour legend
+
+Legend_plot<- OrderTable %>%
+  ggplot(aes(x = Family))+
+  geom_point( aes( col = Family), y = 1, size = 3, shape =15)+
+  scale_color_manual(values =  c( 'darkgreen',"blue",  'orange',
+                                  "gold", 'darkgrey', '#800020'))+
+  theme(legend.position = 'bottom')
 
 PS_NHM %>%
   mutate(Sp  = factor(Sp, levels = ORDER_f2)) %>% 
@@ -65,18 +87,46 @@ PS_NHM %>%
   mutate( q16.7 = if_else(variable== 'b_Latitude' & Sp =='Melitaea cinxia',
                           -Inf, q16.7)) %>%
   left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
+  left_join(SpFamily) %>%
+  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
   filter( variable %in% c( 'b_Temp',
                            'b_YearRescale',
                            'b_Sexmale',
-                           # 'b_Sexundetermined'  ,
                            'b_Latitude') )%>%
   mutate(Response = case_match(variable, 
                                'b_Temp'~ 'b. Temperature',
                                'b_YearRescale'~'c. Year',
                                'b_Sexmale'~'d. Male Offset',
-                               #  'b_Sexundetermined'~'e. Undetermined Sex Offset',
-                               'b_Latitude'~'a. Latitude') )%>%
-  #filter(Sp != 'Melitaea cinxia') %>%
+                               'b_Latitude'~'a. Latitude') ) -> DataForMainNHMPlot
+
+
+```
+
+### Main Text Figure
+```{r}
+DataForMainNHMPlot%>%
+  mutate(Redlist = ifelse( is.na(`GB Red List category`),
+                           'Unlisted', 'Listed')) %>%
+  ggplot( aes( y =  fct_rev(Sp),
+               x = mean))+
+  geom_errorbarh(aes( xmin = q5, xmax = q95), linewidth = 1, height = 0, col = 'grey')+
+  geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
+  geom_point(shape = 4)+
+  geom_vline(xintercept = 0)+
+  facet_grid(Redlist~Response, scales = 'free', space = "free_y")+
+  ggtitle('((NHM datasets, Species-level coefficients, Monthly, Facetted by Redlist)')+
+  theme_bw()+
+  ylab('')+
+  xlab('Fitted Coefficient')
+
+ggsave('../figs/NHM_Monthly_MainSpResults_byRedlist.png', width = 10, height = 7, bg = 'white')
+
+```
+
+### SI Figures
+
+```{r}
+DataForMainNHMPlot%>%
   ggplot( aes( y =  fct_rev(Sp),
                x = mean))+
   geom_errorbarh(aes( xmin = q5, xmax = q95), linewidth = 1, height = 0, col = 'grey')+
@@ -84,31 +134,166 @@ PS_NHM %>%
   geom_point(shape = 4)+
   geom_vline(xintercept = 0)+
   facet_grid(Label~Response, scales = 'free', space = "free_y")+
-  ggtitle('((NHM datasets, Species-level coefficients, Monthly))',
-          'Colours are currrently random, but will be family')+
+  ggtitle('((NHM datasets, Species-level coefficients, Monthly, Facetted by Generalism cat))')+
   theme_bw()+
   ylab('')+
-  xlab('Fitted Coefficient')+
-  theme(axis.text.y = element_text(colour = c("gold", "blue", 'darkgreen')))
+  xlab('Fitted Coefficient')
 
-ggsave('../figs/NHM_Monthly_MainSpResults.png', width = 10, height = 7, bg = 'white')
+ggsave('../figs/NHM_Monthly_MainSpResults_by4wayGeneralism.png', width = 10, height = 7, bg = 'white')
+
+DataForMainNHMPlot%>%
+  mutate(Generalist = ifelse(Specialism== 'Habitat and foodplant generalist',
+                             'GENERALIST', 'SPECIALIST')) %>%
+  ggplot( aes( y =  fct_rev(Sp),
+               x = mean))+
+  geom_errorbarh(aes( xmin = q5, xmax = q95), linewidth = 1, height = 0, col = 'grey')+
+  geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
+  geom_point(shape = 4)+
+  geom_vline(xintercept = 0)+
+  facet_grid(Generalist~Response, scales = 'free', space = "free_y")+
+  ggtitle('((NHM datasets, Species-level coefficients, Monthly, Facetted by Generalism cat))')+
+  theme_bw()+
+  ylab('')+
+  xlab('Fitted Coefficient')
+
+ggsave('../figs/NHM_Monthly_MainSpResults_by2wayGeneralism.png', width = 10, height = 7, bg = 'white')
+
+
+DataForMainNHMPlot%>%
+  ggplot( aes( y =  fct_rev(Sp),
+               x = mean))+
+  geom_errorbarh(aes( xmin = q5, xmax = q95), linewidth = 1, height = 0, col = 'grey')+
+  geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
+  geom_point(shape = 4)+
+  geom_vline(xintercept = 0)+
+  facet_grid(Family~Response, scales = 'free', space = "free_y")+
+  ggtitle('((NHM datasets, Species-level coefficients, Monthly, Facetted by Family)')+
+  theme_bw()+
+  ylab('')+
+  xlab('Fitted Coefficient')
+
+ggsave('../figs/NHM_Monthly_MainSpResults_byFamily.png', width = 10, height = 7, bg = 'white')
+
+
+PS_NHM %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  brm( mean|mi(sd)  ~  1 ,
+       data = .) -> AverageYearEffect
+
+AverageYearEffect %>% posterior_summary()
+
+# OrderTable$Family_Cols
+# 
+# plot_grid( SpNHMResultsPlot,
+#            get_legend(Legend_plot),
+#            rel_heights = c(10,1) , ncol = 1)
 
 ```
 
-## Tests grouping by specialism or red list status
+## Tests of predictors
+
+### Prepping data
 
 ```{r}
+NHM_for_fitting <- read_csv('../data/NHM_for_models_monthly.csv')
+NHM_for_fitting %>%
+  group_by(Sp)%>%
+  summarise(MeanRightWing = signif(mean(Right_wing),4) ,
+            SD_RightWing = signif(sd(Right_wing),4),
+            CV_RightWing = signif(sd(Right_wing)/mean(Right_wing),4)) -> SpeciesSizeProps
+
 PS_NHM %>%
   left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
   left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
-  mutate(RedListListed = ifelse(is.na( `GB Red List category`), 'Listed',  'Unlisted')) %>%
+  left_join(SpeciesSizeProps) %>%
+  left_join(SpFamily) %>%
+  mutate(RedListListed = ifelse(is.na( `GB Red List category`),
+                                'Unlisted',
+                                'Listed')) %>% 
   filter( variable %in% c( 'b_Temp',
                            'b_YearRescale') )%>%
   mutate(ConfidentTrend =  sign(q5)== sign(q95),
          TrendSign = ifelse(ConfidentTrend, sign(mean), 0)) %>%
-  select(variable,Sp, Specialism , RedListListed , TrendSign ) -> Trends
+  mutate( Generalist = Specialism == 'Habitat and foodplant generalist') %>%
+  select(variable,Sp, Specialism , Family, RedListListed , TrendSign, Generalist,
+         mean, sd, MeanRightWing,SD_RightWing ,CV_RightWing) -> Trends
 
-## Tables with Red List Status 
+```
+
+### Correlations Between Three Predictors
+
+```{R}
+Trends %>%
+  filter( variable == 'b_Temp') %>%
+  mutate( RedListListed = RedListListed== 'Listed') %>%
+  select(RedListListed, MeanRightWing, Generalist ) %>%
+  as.matrix() %>%cor %>%
+  corrplot::corrplot.mixed(lower.col = 'black') 
+
+Trends %>% 
+  filter( variable == 'b_Temp') %>%
+  group_by(RedListListed)%>%
+  count( Generalist) ->redlist_generalist_table
+
+redlist_generalist_table
+
+redlist_generalist_table%>%
+  pluck('n') %>%
+  matrix(.,ncol = 2) %>%
+  chisq.test()
+
+cor(Trends$Generalist, Trends$RedListListed=='Listed' )  # same as phi
+
+```
+
+### Predictors by Family
+
+```{R}
+Trends %>%
+  filter( variable == 'b_Temp') %>%
+  select( Sp, Family, RedListListed, TrendSign, Generalist, MeanRightWing)->x
+
+FamilyCorrelates_a <- ggplot(x, aes( x = Family, fill = RedListListed))+
+  geom_bar()+theme_bw()+theme(legend.position="bottom")
+FamilyCorrelates_b <- ggplot(x, aes( x = Family, y = MeanRightWing))+
+  geom_boxplot()+geom_point()+theme_bw()+theme(legend.position="bottom")
+FamilyCorrelates_c <- ggplot(x, aes( x = Family, fill = Generalist))+
+  geom_bar()+theme_bw()+theme(legend.position="bottom")
+FamilyCorrelates_d <- ggplot(x, aes( x = Family, fill = factor(TrendSign)))+
+  geom_bar()+theme_bw()+theme(legend.position="bottom")
+
+plot_grid( FamilyCorrelates_a,
+           FamilyCorrelates_b,
+           FamilyCorrelates_c,
+           FamilyCorrelates_d, ncol = 1)
+
+```
+
+## Predictors of Trends
+
+TrendSign = just taking the three-way split of coefficients - positive, indeterminate, negative. 
+
+### Red List Status 
+
+```{r}
+
+Trends %>%
+  ggplot(aes( x = RedListListed, y= mean))+
+  geom_boxplot()+
+  geom_point(aes(col = factor(TrendSign)))+
+  facet_wrap(~variable, scales = 'free_y')+
+  geom_text(aes(label = Sp), size = 2 ,hjust=-0.15 )+
+  theme_bw()
+
+Trends %>%
+  filter( variable == 'b_Temp' ) %>%
+  ggplot(aes( x = RedListListed, y= mean))+
+  geom_boxplot()+
+  geom_point(aes(col = factor(TrendSign)))+
+  geom_text(aes(label = Sp), size = 2 ,hjust=-0.15 )+
+  theme_bw()+
+  ylab('Temperature Coefficent')
+
 Trends %>% 
   group_by(variable, RedListListed)%>%
   count( TrendSign) %>%
@@ -125,11 +310,40 @@ chisq.test(matrix(c(10,5,
                     12,9,
                     4,12),3,2, byrow = TRUE))
 
+PS_NHM %>%
+  filter( variable == 'b_Temp' ) %>%
+  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
+  mutate(RedListListed = ifelse(is.na( `GB Red List category`),
+                                'Unlisted', 'Listed')) %>%
+  brm( mean|mi(sd)  ~  RedListListed ,
+       data = .) -> RedList_TempEffect_Model
+
+RedList_TempEffect_Model %>% posterior_summary()
+
+
+PS_NHM %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
+  mutate(RedListListed = ifelse(is.na( `GB Red List category`),
+                                'Unlisted', 'Listed')) %>%
+  brm( mean|mi(sd)  ~  RedListListed ,
+       data = .) -> RedList_YearEffect_Model
+
+RedList_YearEffect_Model %>% posterior_summary()
 ```
 
+### Generalism
+
 ```{r}
+
 Trends %>%
-  mutate( Generalist = Specialism == 'Habitat and foodplant generalist') %>%
+  ggplot(aes( x = Generalist, y= mean))+
+  geom_boxplot()+
+  geom_point(aes(col = factor(TrendSign)))+
+  facet_wrap(~variable, scales = 'free_y')+
+  geom_text(aes(label = Sp), size = 2 ,hjust=-0.15 )
+
+Trends %>%
   group_by(variable, Generalist)%>%
   count( TrendSign) %>%
   pivot_wider(names_from = Generalist,
@@ -147,7 +361,123 @@ chisq.test(matrix(c(7,8,
                     14,7,
                     13,3),3,2, byrow = TRUE))
 
+## Year Pattern
+chisq.test(matrix(c(5,0,16,11),2,2, byrow = TRUE))
+
+chisq.test(matrix(c(5,0,
+                    13,7,
+                    16,11),3,2, byrow = TRUE))
+
+Trends %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  brm( mean|mi(sd)  ~   Generalist     ,
+       data = .) -> Generalist_YearEffect_Model
+
+Generalist_YearEffect_Model %>% posterior_summary()
+
+
+Trends %>%
+  filter( variable == 'b_Temp' ) %>%
+  brm( mean|mi(sd)  ~   Generalist     ,
+       data = .) -> Generalist_TempEffect_Model
+
+Generalist_TempEffect_Model %>% posterior_summary()
+
+
 ```
+
+### Size
+
+```{r}
+Trends %>%
+  ggplot(aes( x = factor(TrendSign), y = MeanRightWing))+
+  geom_boxplot()+
+  geom_point()+
+  facet_wrap(~variable)
+
+PS_NHM %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  left_join(SpeciesSizeProps) %>%
+  brm( mean|mi(sd)  ~  MeanRightWing ,
+       data = .) -> Size_YearEffect_Model
+
+Size_YearEffect_Model %>% posterior_summary() %>% as.data.frame()-> SizeEffectSummary
+SizeEffectSummary
+
+mcmc_hist(Size_YearEffect_Model,
+          pars = 'b_MeanRightWing')+
+  xlab('Slope of Average Size vs bYear Coefficient,\naccounting for uncertainty')+
+  theme_bw()-> PosteriorSizevsYear
+
+Trends %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  ggplot(aes( x = MeanRightWing, y= mean))+
+  geom_abline(intercept = SizeEffectSummary$Estimate[1],
+              slope = SizeEffectSummary$Estimate[2])+
+  geom_point()+
+  geom_text(aes(label = Sp), size = 2)+
+  theme_bw()+
+  xlab('Butterfly Average Size,\n(Mean Right Wing)')+
+  ylab('Species_level Posterior Mean of\nProportional Size Response to Year') -> SizevsTrendWithYear
+
+plot_grid(SizevsTrendWithYear, PosteriorSizevsYear, rel_widths = c(2,1))
+
+ggsave('../figs/SizeEffectOnTemproralTrend.png', height = 4, width = 8)
+
+
+### Testing if effect can be explained as well just by family
+PS_NHM %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  left_join(SpeciesSizeProps) %>%
+  left_join(SpFamily) %>%
+  brm( mean|mi(sd)  ~  Family ,
+       data = .) -> FamilyGroup_YearEffect_Model 
+
+MS <- add_criterion(Size_YearEffect_Model, criterion = 'loo')
+MF <- add_criterion(FamilyGroup_YearEffect_Model, criterion = 'loo')
+
+loo_compare(MS, MF)  # Can't differentate 
+```
+
+### Family
+
+Excluding families with only one member
+
+```{r}
+Trends %>%
+  #filter( !Sp %in%  c('Papilio machaon', 'Hamearis lucina' )) %>%
+  group_by(variable, Family)%>%
+  count( TrendSign) %>%
+  pivot_wider(names_from = Family,
+              id_cols =c(variable,TrendSign),
+              values_from = n ,
+              values_fill = 0) ->FamilyDataForChiSq
+
+FamilyDataForChiSq%>%
+  t %>%
+  knitr::kable()
+
+Trends %>%
+  ggplot(aes( x = Family, y = mean))+
+  geom_boxplot()+
+  geom_point()+
+  facet_wrap(~variable, scales = 'free_y')
+
+
+FamilyDataForChiSq %>%
+  filter( variable == 'b_Temp' ) %>%
+  ungroup()%>%
+  select(Hesperiidae,Lycaenidae,Nymphalidae,Pieridae ) %>%
+  as.matrix() %>%
+  chisq.test()
+
+```
+
+
+
+
+# Quantiative Estimates of Responses
+
 
 ## Predictors of b_Temp 
 
@@ -250,14 +580,16 @@ PS_NHM %>%
 ## Figure for paper main text
 
 ```{r}
-ORDER_f3 <- PS_OUM %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
-  distinct(Specialism, Sp ) %>%
-  arrange(Specialism, Sp) %>%pluck('Sp')
+# ORDER_f3 <- PS_OUM %>%
+#   left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
+#   distinct(Specialism, Sp ) %>%
+#   arrange(Specialism, Sp) %>%pluck('Sp')
 
 PS_OUM %>%
   mutate(Sp  = factor(Sp, levels = ORDER_f3)) %>% 
   left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
+  left_join(SpFamily) %>%
+  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
   filter( variable %in% c( 'b_Temp',
                            'b_YearRescale',
                            'b_Sexmale',
@@ -273,13 +605,15 @@ PS_OUM %>%
   geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
   geom_point(shape = 4)+
   geom_vline(xintercept = 0)+
-  facet_grid(Label~Response, scales = 'free', space = "free_y")+
+  facet_grid(~Response, scales = 'free', space = "free_y")+
   ggtitle('((OUNHM datasets, Species-level coefficients, Monthly))',
           'Colours are currrently random, but will be family')+
   theme_bw()+
   ylab('')+
-  xlab('Fitted Coefficient')+
-  theme(axis.text.y = element_text(colour = c("gold", "blue", 'darkgreen')))
+  xlab('Fitted Coefficient')
+
+
+##  theme(axis.text.y = element_text(colour = c("gold", "blue", 'darkgreen')))
 
 ggsave('../figs/OUNHM_Monthly_MainSpResults.png', width = 10, height = 5, bg = 'white')
 ```
@@ -289,7 +623,20 @@ ggsave('../figs/OUNHM_Monthly_MainSpResults.png', width = 10, height = 5, bg = '
 ```{r eval = FALSE}
 PS_OUM %>%
   left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
+  left_join(SpFamily) %>%
+  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
+  left_join(SpeciesSizeProps)%>%
+  mutate(RedListListed = ifelse(is.na( `GB Red List category`),
+                                'Unlisted',
+                                'Listed')) %>%
   filter( variable =='b_Temp' )-> bTemp_model_OUM
+
+
+bTemp_model_OUM %>%
+  ggplot(aes( x = MeanRightWing , y =mean     ))+
+  geom_point()+
+  geom_smooth(method = 'lm')
+
 
 bTemp_model_OUM %>%
   brm( median|mi(sd)  ~  Specialism,  data = .)%>%
@@ -300,8 +647,18 @@ bTemp_model_OUM %>%
   add_criterion(criterion = c("loo")) -> bTemp_model_OUM_NoSpec
 
 
+bTemp_model_OUM %>%
+  brm( median|mi(sd)  ~ RedListListed ,  data = .)%>%
+  add_criterion(criterion = c("loo"))-> RedList_bTemp_model_OUM
+
+RedList_bTemp_model_OUM %>% summarise_draws()
+
+
+
 save( bTemp_model_OUM, file = '../TopLevelModelFits/bTemp_model_OUM')
 save( bTemp_model_OUM_NoSpec, file = '../TopLevelModelFits/bTemp_model_OUM_NoSpec')
+save( RedList_bTemp_model_OUM, file = '../TopLevelModelFits/RedList_bTemp_model_OUM')
+
 ```
 
 ```{r}
@@ -318,9 +675,13 @@ plot(conditional_effects(bTemp_model_OUM , resp = "median", rug = TRUE), ask = F
 ## Predictors of b_Year
 
 ```{r eval = FALSE}
+
 PS_OUM %>%
   left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
-  filter( variable =='b_YearRescale' )-> bYear_pred_OUM
+  left_join(SpFamily) %>%
+  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
+  left_join(SpeciesSizeProps)%>%
+  filter( variable =='b_YearRescale' )-> bYear_model_OUM
 
 bYear_pred_OUM %>%
   brm( median|mi(sd)  ~  Specialism,  data = .)%>%
@@ -329,6 +690,8 @@ bYear_pred_OUM %>%
 bYear_pred_OUM %>%
   brm( median|mi(sd)  ~  1,  data = .)%>%
   add_criterion(criterion = c("loo")) -> bYear_model_OUM_NoSpec
+
+
 
 save( bYear_model_OUM, file = '../TopLevelModelFits/bYear_model_OUM')
 save( bYear_model_OUM_NoSpec, file = '../TopLevelModelFits/bYear_model_OUM_NoSpec')
@@ -342,6 +705,10 @@ loo_compare(bYear_model_OUM,
             bYear_model_OUM_NoSpec ) ### It is worth including specialism
 
 bYear_model_OUM
+
+bYear_model_OUM_NoSpec %>% summarise_draws()
+
+
 
 plot(conditional_effects(bTemp_model_OUM , resp = "median", rug = TRUE), ask = FALSE)
 ```

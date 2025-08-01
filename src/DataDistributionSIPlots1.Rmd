@@ -41,22 +41,10 @@ SouthBritishIsles<- map_data('worldHires')
 Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
   data %>%
     filter(Sp == species)-> XX 
-  ### 
   
-  if(dataset == 'NHM'){
-    XX$Size <- XX$Right_wing
-  }else{
-    XX$Size <- XX$Wing_Length 
-  }
-  
-  
-  XX%>%
-    ggplot()+
-    geom_point(aes(y = Size, x = Temp, 
-                   col = Year, shape = Sex))+
-    geom_smooth(method = 'lm', 
-                aes(y = Size, x = Temp, group=Sex))+
-    scale_color_viridis_c(limits = c( 1880,2020) ) -> TempvsSize1
+  if(dataset == 'NHM'){XX$Size <- XX$Right_wing
+  }else{ XX$Size <- XX$Wing_Length }
+
   
   if(dataset == 'NHM'){
     maximum_plausible <- XX$maximum_plausible[1]
@@ -94,8 +82,18 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
       coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
       theme_minimal()+
       theme(axis.title = element_blank())+
-      ggtitle(paste(dataset, '\n',species ))-> Map2
+      ggtitle(paste(species ))-> Map2
   }
+  
+  XX%>%
+    ggplot()+
+    geom_point(aes(y = Size, x = Temp, 
+                   col = Year, shape = Sex))+
+    geom_smooth(method = 'lm', 
+                aes(y = Size, x = Temp))+
+    xlab('Temperature')+
+    theme_bw()+
+    scale_color_viridis_c(limits = c( 1880,2020) ) -> TempvsSize1
   
   XX%>%
     ggplot()+
@@ -105,24 +103,36 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
     geom_smooth(method = 'lm', 
                 aes(y = Size, x = Latitude))+
     scale_x_continuous(limits =  c(49.5, 54))+
+    theme_bw()+
     scale_color_viridis_c(limits = c( 4,20), option = 'C' ) -> LatvsSize3
   
+  # XX%>%
+  #   ggplot()+
+  #   geom_point(aes(y = Size,x = Month))+
+  #   scale_x_continuous(limits=c(2,12), breaks = c(2:12))-> MonthSpread
+   
   XX%>%
-    ggplot()+
-    geom_point(aes(y = Size,x = Month))+
-    scale_x_continuous(limits=c(2,12), breaks = c(2:12))-> MonthSpread
+    ggplot(aes(y = Size ,x = Year ))+
+    geom_point()+
+    scale_x_continuous(limits =  c( 1880,2020) )+
+    theme_bw()+
+    geom_smooth(method = 'lm') -> Size_Year_Corr
   
   XX%>%
     ggplot(aes(y = Temp ,x = Year ))+
     geom_point()+
     scale_x_continuous(limits =  c( 1880,2020) )+
+    ylab('Temperature')+
+    theme_bw()+
     geom_smooth(method = 'lm') -> Temp_year_Corr
   
   plot_grid(Map2+guides(col = 'none', shape = 'none' ),
-            TempvsSize1+guides(col = 'none', shape = 'none' ),
+            TempvsSize1+guides(col = 'none', shape = 'none', linetype='none' ),
             LatvsSize3+guides(col = 'none', shape = 'none' ),
-            MonthSpread, 
+            #MonthSpread, 
+            Size_Year_Corr,
             Temp_year_Corr,
+            rel_widths = c( 2,1,1,1,1),
             nrow=1)-> GroupedFigure
   return(GroupedFigure)
 }
