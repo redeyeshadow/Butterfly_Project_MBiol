@@ -230,6 +230,14 @@ Trends %>%
   as.matrix() %>%cor %>%
   corrplot::corrplot.mixed(lower.col = 'black') 
 
+Trends %>%
+  ggplot(aes( x = RedListListed, y = MeanRightWing))+
+  geom_boxplot()+
+  geom_point()+
+  geom_label(aes( label = Sp))+
+  scale_y_log10()
+
+
 Trends %>% 
   filter( variable == 'b_Temp') %>%
   group_by(RedListListed)%>%
