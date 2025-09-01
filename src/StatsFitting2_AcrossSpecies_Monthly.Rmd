@@ -1,13 +1,15 @@
 ---
-title: "StatsFitting2_AcrossSpecies"
+title: "StatsFitting2_AcrossSpecies_NHM"
 author: "Chris Terry"
 date: "`r Sys.Date()`"
-output: html_document
+output: 
+  html_document: 
+    toc: true
 editor_options: 
   chunk_output_type: console
 ---
 
-Main document for making main text results
+Main document for making main text results for the NHM data. 
 
 With Sex embedded as a predictor of size in each species model
 
@@ -22,15 +24,12 @@ library(ggrepel)
 ```
 
 ```{r}
-## Summaries of posteriors of each model
-
+## Summaries of posteriors of each species-level model
 PS_NHM<- read_csv('../statsresults/NHM_Posterior_Summaries_M1.csv')
-PS_OUM<- read_csv('../statsresults/OUM_Posterior_Summaries_M1.csv')
+NHM_ForFitting <- read_csv(  '../data/NHM_for_models_monthly.csv')
 ```
 
 ```{r}
-# Predictors
-
 # Specialism 
 specialism <- read_csv( '../data/specialism_with_nhm.csv')%>%
   mutate(Label = case_match(Specialism, 
@@ -38,7 +37,6 @@ specialism <- read_csv( '../data/specialism_with_nhm.csv')%>%
                             'Habitat and foodplant specialist'~ 'Habitat specialist\n&\nfoodplant specialist',
                             'Habitat generalist and foodplant specialist'~ 'Habitat generalist\n&\nfoodplant specialist',
                             'Habitat specialist and foodplant generalist'~  'Habitat specialist \n&\nfoodplant generalist'))
-
 
 read_csv('../data/brood_table_CTupdates.csv') %>%
   filter(Include == 'TRUE' )%>%
@@ -49,24 +47,17 @@ UKRedList <- read_csv('../data/ButterflyRedlistUK.csv')
 
 ```
 
-# NHM
-
-## Figure Results1
-
-### Prepping data
+# Prepping data
 ```{r}
-
 PS_NHM %>%
   left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
   left_join(SpFamily) %>%
   distinct(Specialism, Sp, Family ) %>%
   arrange(Specialism, Sp) -> OrderTable
 
-
 ORDER_f2 <-pluck(OrderTable,'Sp')
 
 OrderTable$Family_Cols <- c( 'darkgreen',"blue",  'orange',"gold", 'darkgrey', '#800020')[factor(pluck(OrderTable,'Family'))]
-
 
 ## Colour legend
 
@@ -95,103 +86,7 @@ PS_NHM %>%
                                'b_YearRescale'~'c. Year',
                                'b_Sexmale'~'d. Male Offset',
                                'b_Latitude'~'a. Latitude') ) -> DataForMainNHMPlot
-
-
 ```
-
-### Main Text Figure
-```{r}
-DataForMainNHMPlot%>%
-  mutate(Redlist = ifelse( is.na(`GB Red List category`),
-                           'Unlisted', 'Listed')) %>%
-  ggplot( aes( y =  fct_rev(Sp),
-               x = mean))+
-  geom_errorbarh(aes( xmin = q5, xmax = q95), linewidth = 1, height = 0, col = 'grey')+
-  geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
-  geom_point(shape = 4)+
-  geom_vline(xintercept = 0)+
-  facet_grid(Family ~Response, scales = 'free', space = "free_y")+
-  ggtitle('')+
-  theme_bw()+
-  ylab('')+
-  xlab('Fitted Coefficient')+
-  theme(strip.text.y.right = element_text(angle = 0),
-        axis.text.y = element_text(face =  "italic"),
-        strip.background = element_rect(fill = 'grey80', colour = NA))
-
-ggsave('../figs/NHM_Monthly_MainSpResults_byFamily.png', width = 10, height = 7, bg = 'white')
-```
-
-### SI Figures
-
-```{r}
-DataForMainNHMPlot%>%
-  ggplot( aes( y =  fct_rev(Sp),
-               x = mean))+
-  geom_errorbarh(aes( xmin = q5, xmax = q95), linewidth = 1, height = 0, col = 'grey')+
-  geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
-  geom_point(shape = 4)+
-  geom_vline(xintercept = 0)+
-  facet_grid(Label~Response, scales = 'free', space = "free_y")+
-  ggtitle('((NHM datasets, Species-level coefficients, Monthly, Facetted by Generalism cat))')+
-  theme_bw()+
-  ylab('')+
-  xlab('Fitted Coefficient')
-
-ggsave('../figs/NHM_Monthly_MainSpResults_by4wayGeneralism.png', width = 10, height = 7, bg = 'white')
-
-DataForMainNHMPlot%>%
-  mutate(Generalist = ifelse(Specialism== 'Habitat and foodplant generalist',
-                             'GENERALIST', 'SPECIALIST')) %>%
-  ggplot( aes( y =  fct_rev(Sp),
-               x = mean))+
-  geom_errorbarh(aes( xmin = q5, xmax = q95), linewidth = 1, height = 0, col = 'grey')+
-  geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
-  geom_point(shape = 4)+
-  geom_vline(xintercept = 0)+
-  facet_grid(Generalist~Response, scales = 'free', space = "free_y")+
-  ggtitle('((NHM datasets, Species-level coefficients, Monthly, Facetted by Generalism cat))')+
-  theme_bw()+
-  ylab('')+
-  xlab('Fitted Coefficient')
-
-ggsave('../figs/NHM_Monthly_MainSpResults_by2wayGeneralism.png', width = 10, height = 7, bg = 'white')
-
-
-DataForMainNHMPlot%>%
-  ggplot( aes( y =  fct_rev(Sp),
-               x = mean))+
-  geom_errorbarh(aes( xmin = q5, xmax = q95), linewidth = 1, height = 0, col = 'grey')+
-  geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
-  geom_point(shape = 4)+
-  geom_vline(xintercept = 0)+
-  facet_grid(Family~Response, scales = 'free', space = "free_y")+
-  ggtitle('((NHM datasets, Species-level coefficients, Monthly, Facetted by Family)')+
-  theme_bw()+
-  ylab('')+
-  xlab('Fitted Coefficient')
-
-ggsave('../figs/NHM_Monthly_MainSpResults_byFamily.png', width = 10, height = 7, bg = 'white')
-
-
-PS_NHM %>%
-  filter( variable == 'b_YearRescale' ) %>%
-  brm( mean|mi(sd)  ~  1 ,
-       data = .) -> AverageYearEffect
-
-AverageYearEffect %>% posterior_summary()
-
-# OrderTable$Family_Cols
-# 
-# plot_grid( SpNHMResultsPlot,
-#            get_legend(Legend_plot),
-#            rel_heights = c(10,1) , ncol = 1)
-
-```
-
-## Tests of predictors
-
-### Prepping data
 
 ```{r}
 NHM_for_fitting <- read_csv('../data/NHM_for_models_monthly.csv')
@@ -219,71 +114,230 @@ PS_NHM %>%
 
 ```
 
-### Correlations Between Three Predictors
+# Species-level Results (Main Text Figure)
+```{r}
+DataForMainNHMPlot%>%
+  mutate(Redlist = ifelse( is.na(`GB Red List category`),
+                           'Unlisted', 'Listed')) %>%
+  ggplot( aes( y =  fct_rev(Sp),
+               x = mean))+
+  geom_errorbarh(aes( xmin = q5, xmax = q95), linewidth = 1, height = 0, col = 'grey')+
+  geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
+  geom_point(shape = 4)+
+  geom_vline(xintercept = 0)+
+  facet_grid(Family ~Response, scales = 'free', space = "free_y")+
+  ggtitle('')+
+  theme_bw()+
+  ylab('')+
+  xlab('Fitted Coefficient')+
+  theme(strip.text.y.right = element_text(angle = 0),
+        axis.text.y = element_text(face =  "italic"),
+        strip.background = element_rect(fill = 'grey80', colour = NA))
 
-```{R}
-Trends %>%
-  filter( variable == 'b_Temp') %>%
-  mutate( RedListListed = RedListListed== 'Listed') %>%
-  select(RedListListed, MeanRightWing, Generalist ) %>%
-  as.matrix() %>%cor %>%
-  corrplot::corrplot.mixed(lower.col = 'black') 
-
-Trends %>%
-  ggplot(aes( x = RedListListed, y = MeanRightWing))+
-  geom_boxplot()+
-  geom_point()+
-  geom_label(aes( label = Sp))+
-  scale_y_log10()
-
-
-Trends %>% 
-  filter( variable == 'b_Temp') %>%
-  group_by(RedListListed)%>%
-  count( Generalist) ->redlist_generalist_table
-
-redlist_generalist_table
-
-redlist_generalist_table%>%
-  pluck('n') %>%
-  matrix(.,ncol = 2) %>%
-  chisq.test()
-
-cor(Trends$Generalist, Trends$RedListListed=='Listed' )  # same as phi
-
+ggsave('../figs/NHM_Monthly_MainSpResults_byFamily.png', width = 10, height = 7, bg = 'white')
 ```
 
-### Predictors by Family
-
-```{R}
-Trends %>%
-  filter( variable == 'b_Temp') %>%
-  select( Sp, Family, RedListListed, TrendSign, Generalist, MeanRightWing)->x
-
-FamilyCorrelates_a <- ggplot(x, aes( x = Family, fill = RedListListed))+
-  geom_bar()+theme_bw()+theme(legend.position="bottom")
-FamilyCorrelates_b <- ggplot(x, aes( x = Family, y = MeanRightWing))+
-  geom_boxplot()+geom_point()+theme_bw()+theme(legend.position="bottom")
-FamilyCorrelates_c <- ggplot(x, aes( x = Family, fill = Generalist))+
-  geom_bar()+theme_bw()+theme(legend.position="bottom")
-FamilyCorrelates_d <- ggplot(x, aes( x = Family, fill = factor(TrendSign)))+
-  geom_bar()+theme_bw()+theme(legend.position="bottom")
-
-plot_grid( FamilyCorrelates_a,
-           FamilyCorrelates_b,
-           FamilyCorrelates_c,
-           FamilyCorrelates_d, ncol = 1)
-
-```
-
-## Predictors of Trends
-
-TrendSign = just taking the three-way split of coefficients - positive, indeterminate, negative. 
-
-### Red List Status 
+## Sample Size vs confidence
 
 ```{r}
 
+PS_NHM %>%
+  filter( variable %in% c('b_YearRescale' , 'b_Temp'   , 'b_Latitude')) %>%
+  left_join(count(NHM_ForFitting, Sp)) %>%
+  mutate(ConfidentTrend =  sign(q5)== sign(q95)) %>%
+  ggplot(aes( x = n, y = sd))+
+  geom_point(aes(col = ConfidentTrend))+
+  scale_colour_manual( values = c( 'brown', 'skyblue'),
+                       name = 'Confident Trend?')+
+  scale_x_sqrt()+
+  facet_wrap(~variable, scales = 'free')+
+  ylab('SD of posterior of fitted coefficients')+
+  xlab('Sample size (NB Square-root scale)')+
+  theme_bw()
+
+ggsave('../figs/Corr_sample_size_trends_NHM.png', width = 9, height = 3)
+
+```
+
+# Predictors of Year Effect
+
+## Size
+
+### Model Fitting
+```{r eval = FALSE}
+PS_NHM %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  brm( mean|mi(sd)  ~  1 ,
+       data = .) -> AverageYearEffect
+
+save(AverageYearEffect,file= '../TopLevelModelFits/Average_YearEffect_Model')
+
+PS_NHM %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  left_join(SpeciesSizeProps) %>%
+  brm( mean|mi(sd)  ~  MeanRightWing ,
+       data = .) -> Size_YearEffect_Model
+
+### Testing if effect can be explained as well just by family
+PS_NHM %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  left_join(SpeciesSizeProps) %>%
+  left_join(SpFamily) %>%
+  brm( mean|mi(sd)  ~  Family ,
+       data = .) -> FamilyGroup_YearEffect_Model
+
+MS <- add_criterion(Size_YearEffect_Model, criterion = 'loo')
+MF <- add_criterion(FamilyGroup_YearEffect_Model, criterion = 'loo')
+
+save(MS, file='../TopLevelModelFits/Size_YearEffect_Model')
+save(MF, file='../TopLevelModelFits/FamilyGroup_YearEffect_Model')
+```
+
+```{r}
+load('../TopLevelModelFits/Size_YearEffect_Model')
+load('../TopLevelModelFits/FamilyGroup_YearEffect_Model')
+load('../TopLevelModelFits/Average_YearEffect_Model')
+```
+
+###  What is average effect of 'Year_rescale'
+
+```{r}
+AverageYearEffect %>% posterior_summary()
+```
+
+### How does Size compare as a predictor to family?
+
+```{r}
+loo_compare(MS, MF)  # Can't differentiate 
+```
+
+### Plot For Figure R2a
+
+```{r}
+MS %>% posterior_summary() %>% as.data.frame()-> SizeEffectSummary
+SizeEffectSummary
+
+mcmc_hist(MS,
+          pars = 'b_MeanRightWing')+
+  xlab('Slope of Average Size vs bYear Coefficient,\naccounting for uncertainty')+
+  theme_bw()
+
+
+Trends %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  ggplot(aes( x = MeanRightWing, y= mean))+
+  geom_abline(intercept = SizeEffectSummary$Estimate[1],
+              slope = SizeEffectSummary$Estimate[2])+
+  geom_point(aes(col = Family))+
+  theme_bw()+
+  scale_color_manual(values =  c( 'darkgreen',"blue",  'orange',
+                                  "gold", 'darkgrey', '#800020'))+
+  theme(legend.position = 'bottom')+
+  xlab('Butterfly Average Size,\n(Mean Right Wing)')+
+  ylab('"Year" Coefficient') ->YearEffect_Size_Plot_nolabels
+
+YearEffect_Size_Plot_nolabels
+```
+
+### Other non-significant predictors (Conservation status + specialism)
+
+```{r eval = FALSE}
+Trends %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  brm( mean|mi(sd)  ~   Generalist     ,
+       data = .) -> Generalist_YearEffect_Model
+
+Trends %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  brm( mean|mi(sd)  ~   RedListListed      ,
+       data = .) -> RedListListed_YearEffect_Model
+
+save(Generalist_YearEffect_Model, file = '../TopLevelModelFits/Generalist_YearEffect_Model')
+save(RedListListed_YearEffect_Model, file = '../TopLevelModelFits/RedListListed_YearEffect_Model')
+```
+
+```{r}
+load('../TopLevelModelFits/Generalist_YearEffect_Model')
+load('../TopLevelModelFits/RedListListed_YearEffect_Model')
+
+Generalist_YearEffect_Model %>% posterior_summary()
+RedListListed_YearEffect_Model %>% posterior_summary()
+
+```
+
+# Predictors of Effect of Late-Larval Temperature:
+
+## Figure R2b
+
+```{r}
+
+Trends %>%
+  filter( variable == 'b_Temp' ) %>%
+  ggplot(aes( x = RedListListed, y= mean))+
+  geom_boxplot(colour = 'grey80', fill = 'grey90', linewidth = 2)+
+  geom_point(aes(shape = factor(TrendSign), col = Family))+
+  scale_color_manual(values =  c( 'darkgreen',"blue",  'orange',
+                                  "gold", 'darkgrey', '#800020'))+
+  scale_shape_manual(values  = c(6,1,2))+
+  theme_bw()+
+  theme(legend.position = 'bottom')+
+  xlab('UK RedList\nStatus')+
+  ylab('"Temperature" Coefficient')  -> TempEffect_RedList_Plot_nolabels
+
+TempEffect_RedList_Plot_nolabels
+```
+
+## Models for Redlist
+
+```{R eval = FALSE}
+PS_NHM %>%
+  filter( variable == 'b_Temp' ) %>%
+  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
+  mutate(RedListListed = ifelse(is.na( `GB Red List category`),
+                                'Unlisted', 'Listed')) %>%
+  brm( mean|mi(sd)  ~  RedListListed ,
+       data = .) -> RedList_TempEffect_Model
+
+save( RedList_TempEffect_Model, file = '../TopLevelModelFits/RedList_TempEffect_Model')
+
+```
+
+```{r}
+load( '../TopLevelModelFits/RedList_TempEffect_Model')
+
+RedList_TempEffect_Model %>% posterior_summary()
+
+```
+
+## Other non-significant predictors size (/family)  + specialism
+
+```{r eval = FALSE}
+Trends %>%
+  filter( variable == 'b_Temp' ) %>%
+  brm( mean|mi(sd)  ~   Generalist     ,
+       data = .) -> Generalist_TempEffect_Model
+
+Trends %>%
+  filter( variable == 'b_Temp' ) %>%
+  brm( mean|mi(sd)  ~   MeanRightWing      ,
+       data = .) -> Size_TempEffect_Model
+
+save(Generalist_TempEffect_Model, file = '../TopLevelModelFits/Generalist_TempEffect_Model')
+save(Size_TempEffect_Model, file = '../TopLevelModelFits/Size_TempEffect_Model')
+```
+
+```{r}
+load('../TopLevelModelFits/Generalist_TempEffect_Model')
+load('../TopLevelModelFits/Size_TempEffect_Model')
+
+Generalist_TempEffect_Model %>% posterior_summary()
+Size_TempEffect_Model %>% posterior_summary()
+
+```
+
+# Repeating Tests with a Chi-Squared (largely excluded from paper for simplicilty)
+
+```{r}
 Trends %>%
   ggplot(aes( x = RedListListed, y= mean))+
   geom_boxplot()+
@@ -316,33 +370,13 @@ chisq.test(matrix(c(10,5,
 chisq.test(matrix(c(10,5,
                     12,9,
                     4,12),3,2, byrow = TRUE))
-
-PS_NHM %>%
-  filter( variable == 'b_Temp' ) %>%
-  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
-  mutate(RedListListed = ifelse(is.na( `GB Red List category`),
-                                'Unlisted', 'Listed')) %>%
-  brm( mean|mi(sd)  ~  RedListListed ,
-       data = .) -> RedList_TempEffect_Model
-
-RedList_TempEffect_Model %>% posterior_summary()
-
-
-PS_NHM %>%
-  filter( variable == 'b_YearRescale' ) %>%
-  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
-  mutate(RedListListed = ifelse(is.na( `GB Red List category`),
-                                'Unlisted', 'Listed')) %>%
-  brm( mean|mi(sd)  ~  RedListListed ,
-       data = .) -> RedList_YearEffect_Model
-
-RedList_YearEffect_Model %>% posterior_summary()
 ```
+
+N.B. TrendSign = just taking the three-way split of coefficients - positive, indeterminate, negative. 
 
 ### Generalism
 
 ```{r}
-
 Trends %>%
   ggplot(aes( x = Generalist, y= mean))+
   geom_boxplot()+
@@ -374,84 +408,6 @@ chisq.test(matrix(c(5,0,16,11),2,2, byrow = TRUE))
 chisq.test(matrix(c(5,0,
                     13,7,
                     16,11),3,2, byrow = TRUE))
-
-Trends %>%
-  filter( variable == 'b_YearRescale' ) %>%
-  brm( mean|mi(sd)  ~   Generalist     ,
-       data = .) -> Generalist_YearEffect_Model
-
-Generalist_YearEffect_Model %>% posterior_summary()
-
-
-Trends %>%
-  filter( variable == 'b_Temp' ) %>%
-  brm( mean|mi(sd)  ~   Generalist     ,
-       data = .) -> Generalist_TempEffect_Model
-
-Generalist_TempEffect_Model %>% posterior_summary()
-
-
-```
-
-### Size
-
-```{r eval = FALSE}
-PS_NHM %>%
-  filter( variable == 'b_YearRescale' ) %>%
-  left_join(SpeciesSizeProps) %>%
-  brm( mean|mi(sd)  ~  MeanRightWing ,
-       data = .) -> Size_YearEffect_Model
-
-### Testing if effect can be explained as well just by family
-PS_NHM %>%
-  filter( variable == 'b_YearRescale' ) %>%
-  left_join(SpeciesSizeProps) %>%
-  left_join(SpFamily) %>%
-  brm( mean|mi(sd)  ~  Family ,
-       data = .) -> FamilyGroup_YearEffect_Model
-
-
-MS <- add_criterion(Size_YearEffect_Model, criterion = 'loo')
-MF <- add_criterion(FamilyGroup_YearEffect_Model, criterion = 'loo')
-
-
-save(MS, '../TopLevelModelFits/Size_YearEffect_Model')
-save(MF, '../TopLevelModelFits/FamilyGroup_YearEffect_Model')
-
-```
-
-```{r}
-load('../TopLevelModelFits/Size_YearEffect_Model')
-load('../TopLevelModelFits/FamilyGroup_YearEffect_Model')
-
-
-loo_compare(MS, MF)  # Can't differentate 
-
-
-MS %>% posterior_summary() %>% as.data.frame()-> SizeEffectSummary
-SizeEffectSummary
-
-mcmc_hist(MS,
-          pars = 'b_MeanRightWing')+
-  xlab('Slope of Average Size vs bYear Coefficient,\naccounting for uncertainty')+
-  theme_bw()-> PosteriorSizevsYear
-
-Trends %>%
-  filter( variable == 'b_YearRescale' ) %>%
-  ggplot(aes( x = MeanRightWing, y= mean))+
-  geom_abline(intercept = SizeEffectSummary$Estimate[1],
-              slope = SizeEffectSummary$Estimate[2])+
-  geom_point()+
-  geom_text(aes(label = Sp), size = 2)+
-  theme_bw()+
-  xlab('Butterfly Average Size,\n(Mean Right Wing)')+
-  ylab('Species_level Posterior Mean of\nProportional Size Response to Year') -> SizevsTrendWithYear
-
-
-plot_grid(SizevsTrendWithYear, PosteriorSizevsYear, rel_widths = c(2,1))
-
-ggsave('../figs/SizeEffectOnTemproralTrend.png', height = 4, width = 8)
-
 ```
 
 ### Family
@@ -488,7 +444,7 @@ FamilyDataForChiSq %>%
 
 ```
 
-# Figure for paper
+# Generating Combined Figure for paper + names for SI
 
 ```{r}
 Trends %>%
@@ -533,32 +489,6 @@ ggsave('../figs/PredictorsFigure_Both_withlabels.png',
 # Without text labels
 #####
 
-Trends %>%
-  filter( variable == 'b_YearRescale' ) %>%
-  ggplot(aes( x = MeanRightWing, y= mean))+
-  geom_abline(intercept = SizeEffectSummary$Estimate[1],
-              slope = SizeEffectSummary$Estimate[2])+
-  geom_point(aes(col = Family))+
-  theme_bw()+
-  scale_color_manual(values =  c( 'darkgreen',"blue",  'orange',
-                                  "gold", 'darkgrey', '#800020'))+
-  theme(legend.position = 'bottom')+
-  xlab('Butterfly Average Size,\n(Mean Right Wing)')+
-  ylab('"Year" Coefficient') ->YearEffect_Size_Plot_nolabels
-
-Trends %>%
-  filter( variable == 'b_Temp' ) %>%
-  ggplot(aes( x = RedListListed, y= mean))+
-  geom_boxplot(colour = 'grey80', fill = 'grey90', linewidth = 2)+
-  geom_point(aes(shape = factor(TrendSign), col = Family))+
-  scale_color_manual(values =  c( 'darkgreen',"blue",  'orange',
-                                  "gold", 'darkgrey', '#800020'))+
-  scale_shape_manual(values  = c(6,1,2))+
-  theme_bw()+
-  theme(legend.position = 'bottom')+
-  xlab('UK RedList\nStatus')+
-  ylab('"Temperature" Coefficient')  -> TempEffect_RedList_Plot_nolabels
-
 plot_grid(plot_grid( YearEffect_Size_Plot_nolabels +
                        guides( col = 'none'),
                      TempEffect_RedList_Plot_nolabels+
@@ -572,34 +502,68 @@ ggsave('../figs/PredictorsFigure_Both_nolabels.png',
 ```
 
 
+# Offcuts
+
+### SI Figures
+```{r}
+DataForMainNHMPlot%>%
+  ggplot( aes( y =  fct_rev(Sp),
+               x = mean))+
+  geom_errorbarh(aes( xmin = q5, xmax = q95), linewidth = 1, height = 0, col = 'grey')+
+  geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
+  geom_point(shape = 4)+
+  geom_vline(xintercept = 0)+
+  facet_grid(Label~Response, scales = 'free', space = "free_y")+
+  ggtitle('((NHM datasets, Species-level coefficients, Monthly, Facetted by Generalism cat))')+
+  theme_bw()+
+  ylab('')+
+  xlab('Fitted Coefficient')
+
+ggsave('../figs/NHM_Monthly_MainSpResults_by4wayGeneralism.png', width = 10, height = 7, bg = 'white')
+
+DataForMainNHMPlot%>%
+  mutate(Generalist = ifelse(Specialism== 'Habitat and foodplant generalist',
+                             'GENERALIST', 'SPECIALIST')) %>%
+  ggplot( aes( y =  fct_rev(Sp),
+               x = mean))+
+  geom_errorbarh(aes( xmin = q5, xmax = q95), linewidth = 1, height = 0, col = 'grey')+
+  geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
+  geom_point(shape = 4)+
+  geom_vline(xintercept = 0)+
+  facet_grid(Generalist~Response, scales = 'free', space = "free_y")+
+  ggtitle('((NHM datasets, Species-level coefficients, Monthly, Facetted by Generalism cat))')+
+  theme_bw()+
+  ylab('')+
+  xlab('Fitted Coefficient')
+
+ggsave('../figs/NHM_Monthly_MainSpResults_by2wayGeneralism.png', width = 10, height = 7, bg = 'white')
+
+# OrderTable$Family_Cols
+# 
+# plot_grid( SpNHMResultsPlot,
+#            get_legend(Legend_plot),
+#            rel_heights = c(10,1) , ncol = 1)
+```
 
 
-
-
-
-
-
-
-# Quantiative Estimates of Responses
-
-
-## Predictors of b_Temp 
-
+### Models for Specialism
 ```{r eval = FALSE}
 PS_NHM %>%
   left_join(specialism, by =c( 'Sp'='Taxon name'))%>%
   filter(Specialism !='Habitat specialist and foodplant generalist') %>% ## trying excluding the two HS/FG
   filter( variable =='b_Temp' ) -> bTemp_pred_NHM
 
+
+bTemp_pred_NHM %>%
+  brm( median|mi(sd)  ~  1,
+       data = ., iter = 1000)%>%
+  add_criterion(criterion = c("loo")) -> bTemp_model_NHM_AV
+
 bTemp_pred_NHM %>%
   brm( median|mi(sd)  ~  Specialism,
        data = ., iter = 1000)%>%
   add_criterion( criterion = c("loo")) -> bTemp_model_NHM
 
-bTemp_pred_NHM %>%
-  brm( median|mi(sd)  ~  1,
-       data = ., iter = 1000)%>%
-  add_criterion(criterion = c("loo")) -> bTemp_model_NHM_NoSpec
 
 save( bTemp_model_NHM, file = '../TopLevelModelFits/bTemp_model_NHM')
 save( bTemp_model_NHM_NoSpec,file =  '../TopLevelModelFits/bTemp_model_NHM_NoSpec')
@@ -613,295 +577,6 @@ loo_compare(bTemp_model_NHM,
             bTemp_model_NHM_NoSpec ) ### It is worth including specialism? Can't identify a clear signal
 
 plot(conditional_effects(bTemp_model_NHM, resp = "median", rug = TRUE), ask = FALSE)
-```
-
-
-## Predictors of b_year
-
-```{r eval = FALSE}
-PS_NHM %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name'))%>%
-  filter(Specialism !='Habitat specialist and foodplant generalist') %>% ## trying excluding the two HS/FG
-  filter( variable =='b_YearRescale' ) -> bYear_pred_NHM
-
-bYear_pred_NHM %>%
-  brm( median|mi(sd)  ~  Specialism,
-       data = ., iter = 1000)%>%
-  add_criterion( criterion = c("loo")) -> bYear_model_NHM
-
-bYear_pred_NHM %>%
-  brm( median|mi(sd)  ~  1,
-       data = ., iter = 1000)%>%
-  add_criterion(criterion = c("loo")) ->bYear_model_NHM_NoSpec
-
-
-save( bYear_model_NHM, file = '../TopLevelModelFits/bYear_model_NHM')
-save( bYear_model_NHM_NoSpec, file = '../TopLevelModelFits/bYear_model_NHM_NoSpec')
-```
-
-```{r}
-load('../TopLevelModelFits/bYear_model_NHM')
-load('../TopLevelModelFits/bYear_model_NHM_NoSpec')
-
-loo_compare(bYear_model_NHM,
-            bYear_model_NHM_NoSpec ) ### It is worth including specialism? Can't identify a clear signal
-
-plot(conditional_effects(bYear_model_NHM, resp = "median", rug = TRUE), ask = FALSE)
-```
-
-## Sample Size vs confidence
-
-```{r}
-NHM_ForFitting <- read_csv(  '../data/NHM_for_models_monthly.csv')
-
-PS_NHM %>%
-  filter( variable %in% c('b_YearRescale' , 'b_Temp'   , 'b_Latitude')) %>%
-  left_join(count(NHM_ForFitting, Sp)) %>%
-  mutate(ConfidentTrend =  sign(q5)== sign(q95)) %>%
-  ggplot(aes( x = n, y = sd))+
-  geom_point(aes(col = ConfidentTrend))+
-  scale_x_sqrt()+
-  facet_wrap(~variable, scales = 'free')+
-  ylab('SD of posterior of fitted coefficents')+
-  xlab('Sample size (NB Square-root scale)')+
-  ggtitle('Relationship between data size for each species and uncertainty in coefficent')
-
-ggsave('../figs/Corr_sample_size_trends_NHM.png', width = 9, height = 3)
-
-PS_NHM %>%
-  filter( variable %in% c('b_YearRescale' , 'b_Temp'   , 'b_Latitude')) %>%
-  left_join(count(NHM_ForFitting, Sp)) %>%
-  mutate(ConfidentTrend =  sign(q5)== sign(q95)) %>%
-  ggplot(aes( x = ConfidentTrend, y = sqrt(n)))+
-  geom_boxplot(aes(fill = ConfidentTrend))+
-  geom_point()+
-  facet_wrap(~variable, scales = 'free')
-
-```
-
-# OUNHM
-
-## Figure for paper main text
-
-```{r}
-# ORDER_f3 <- PS_OUM %>%
-#   left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
-#   distinct(Specialism, Sp ) %>%
-#   arrange(Specialism, Sp) %>%pluck('Sp')
-
-PS_OUM %>%
-  mutate(Sp  = factor(Sp, levels = ORDER_f3)) %>% 
-  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
-  left_join(SpFamily) %>%
-  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
-  filter( variable %in% c( 'b_Temp',
-                           'b_YearRescale',
-                           'b_Sexmale',
-                           'b_Latitude') )%>%
-  mutate(Response = case_match(variable, 
-                               'b_Temp'~ 'b. Temperature',
-                               'b_YearRescale'~'c. Year',
-                               'b_Sexmale'~'d. Male Offset',
-                               'b_Latitude'~'a. Latitude') )%>%
-  ggplot( aes( y =  fct_rev(Sp),
-               x = mean))+
-  geom_errorbarh(aes( xmin = q5, xmax = q95), linewidth = 1, height = 0, col = 'grey')+
-  geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
-  geom_point(shape = 4)+
-  geom_vline(xintercept = 0)+
-  facet_grid(~Response, scales = 'free', space = "free_y")+
-  ggtitle('((OUNHM datasets, Species-level coefficients, Monthly))',
-          'Colours are currrently random, but will be family')+
-  theme_bw()+
-  ylab('')+
-  xlab('Fitted Coefficient')
-
-
-##  theme(axis.text.y = element_text(colour = c("gold", "blue", 'darkgreen')))
-
-ggsave('../figs/OUNHM_Monthly_MainSpResults.png', width = 10, height = 5, bg = 'white')
-```
-
-## Predictors of b_Temp 
-
-```{r eval = FALSE}
-PS_OUM %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
-  left_join(SpFamily) %>%
-  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
-  left_join(SpeciesSizeProps)%>%
-  mutate(RedListListed = ifelse(is.na( `GB Red List category`),
-                                'Unlisted',
-                                'Listed')) %>%
-  filter( variable =='b_Temp' )-> bTemp_model_OUM
-
-
-bTemp_model_OUM %>%
-  ggplot(aes( x = MeanRightWing , y =mean     ))+
-  geom_point()+
-  geom_smooth(method = 'lm')
-
-
-bTemp_model_OUM %>%
-  brm( median|mi(sd)  ~  Specialism,  data = .)%>%
-  add_criterion(criterion = c("loo"))-> bTemp_model_OUM
-
-bTemp_model_OUM %>%
-  brm( median|mi(sd)  ~  1,  data = .)%>%
-  add_criterion(criterion = c("loo")) -> bTemp_model_OUM_NoSpec
-
-
-bTemp_model_OUM %>%
-  brm( median|mi(sd)  ~ RedListListed ,  data = .)%>%
-  add_criterion(criterion = c("loo"))-> RedList_bTemp_model_OUM
-
-RedList_bTemp_model_OUM %>% summarise_draws()
-
-
-
-save( bTemp_model_OUM, file = '../TopLevelModelFits/bTemp_model_OUM')
-save( bTemp_model_OUM_NoSpec, file = '../TopLevelModelFits/bTemp_model_OUM_NoSpec')
-save( RedList_bTemp_model_OUM, file = '../TopLevelModelFits/RedList_bTemp_model_OUM')
-
-```
-
-```{r}
-load('../TopLevelModelFits/bTemp_model_OUM')
-load('../TopLevelModelFits/bTemp_model_OUM_NoSpec')
-
-loo_compare(bTemp_model_OUM,bTemp_model_OUM_NoSpec ) ### It is worth including specialism
-
-bTemp_model_OUM
-
-plot(conditional_effects(bTemp_model_OUM , resp = "median", rug = TRUE), ask = FALSE)
-```
-
-## Predictors of b_Year
-
-```{r eval = FALSE}
-
-PS_OUM %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
-  left_join(SpFamily) %>%
-  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
-  left_join(SpeciesSizeProps)%>%
-  filter( variable =='b_YearRescale' )-> bYear_model_OUM
-
-bYear_pred_OUM %>%
-  brm( median|mi(sd)  ~  Specialism,  data = .)%>%
-  add_criterion(criterion = c("loo"))-> bYear_model_OUM
-
-bYear_pred_OUM %>%
-  brm( median|mi(sd)  ~  1,  data = .)%>%
-  add_criterion(criterion = c("loo")) -> bYear_model_OUM_NoSpec
-
-
-
-save( bYear_model_OUM, file = '../TopLevelModelFits/bYear_model_OUM')
-save( bYear_model_OUM_NoSpec, file = '../TopLevelModelFits/bYear_model_OUM_NoSpec')
-```
-
-```{r}
-load('../TopLevelModelFits/bYear_model_OUM')
-load('../TopLevelModelFits/bYear_model_OUM_NoSpec')
-
-loo_compare(bYear_model_OUM,
-            bYear_model_OUM_NoSpec ) ### It is worth including specialism
-
-bYear_model_OUM
-
-bYear_model_OUM_NoSpec %>% summarise_draws()
-
-
-
-plot(conditional_effects(bTemp_model_OUM , resp = "median", rug = TRUE), ask = FALSE)
-```
-
-# Comparison to Wilson fits
-
-### Species-level Plots
-
-```{r}
-
-PS_WIL <- read_csv('../statsresults/WIL_Posterior_Summaries_X2.csv')
-
-
-bind_rows(PS_NHM %>%
-            filter( variable %in% c( 'b_Temp',
-                                     'b_Latitude',
-                                     'b_YearRescale') ) %>%
-            mutate( Dataset= 'NHM'), 
-          PS_WIL %>%
-            filter( variable %in% c( 'b_Wilson_LateTemp',
-                                     #    'b_Latitude',
-                                     'b_YearRescale') )%>%
-            mutate( Dataset= 'Wilson'),
-          PS_OUM %>%
-            filter( variable %in% c( 'b_Temp',
-                                     'b_Latitude',
-                                     'b_YearRescale') )%>%
-            mutate( Dataset= 'OUNHM')) %>%
-  left_join(specialism, by =c( 'Sp'='Taxon name')) -> Joined_coefficients
-
-ORDER <- Joined_coefficients %>%
-  filter(variable=='b_Temp', Dataset =='NHM' ) %>%
-  arrange(mean) %>%pluck('Sp')
-
-
-Joined_coefficients%>%
-  ggplot( aes( y =  Sp , 
-               x = mean, 
-               col = Dataset))+
-  geom_point()+
-  geom_errorbarh(aes( xmin = q5, xmax = q95))+
-  geom_vline(xintercept = 0)+
-  scale_y_discrete(limits = ORDER)+
-  facet_grid(.~variable, scales = 'free')+
-  ggtitle('Species-level coefficients')
-
-
-ggsave(filename = '../figs/compare_coefs_across_three_datasetsM1.png', width = 10, height =6)
-
-
-
-Joined_coefficients%>%
-  filter(variable%in% c( 'b_Wilson_LateTemp')) %>%
-  ggplot( aes( y =  Sp , 
-               x = mean, 
-               col = Dataset))+
-  geom_point()+
-  geom_errorbarh(aes( xmin = q5, xmax = q95))+
-  geom_vline(xintercept = 0)+
-  #scale_y_discrete(limits = ORDER)+
-  facet_grid(Specialism~variable, scales = 'free')+
-  ggtitle('Species-level coefficients')
-
-
-
-## widen dataset to compare coefficents across datasets 
-
-Joined_coefficients %>%
-  select(  variable,
-           mean, q5, q95, Sp, Dataset, Specialism) %>%
-  pivot_wider( id_cols = c('variable', 'Specialism','Sp' ),
-               names_from = 'Dataset',
-               values_from = c( 'mean','q5','q95' )) %>%
-  filter( !is.na(mean_OUNHM )) %>%
-  ggplot( aes( y =  mean_NHM , 
-               x = mean_OUNHM))+
-  geom_point(aes(col = Specialism))+
-  geom_errorbarh(aes(col = Specialism,xmin = q5_OUNHM, xmax = q95_OUNHM))+
-  geom_errorbar(aes(col = Specialism,ymin = q5_NHM, ymax = q95_NHM))+
-  geom_abline(intercept = 0, slope =1)+
-  geom_vline(xintercept = 0)+
-  geom_hline(yintercept = 0)+
-  facet_wrap(~variable, scales = 'free')+
-  #coord_fixed()+
-  theme(legend.position = 'bottom')+
-  ggtitle('Correlation in Species-level coefficients')
-
-ggsave(filename = '../figs/compare_coefs_across_datasets.png', width = 10, height =6)
-
 ```
 
 # Session Info
