@@ -18,6 +18,7 @@ library(posterior)
 library(forcats)
 library(bayesplot)
 library(cowplot)
+library(ggrepel)
 ```
 
 ```{r}
@@ -43,20 +44,16 @@ read_csv('../data/brood_table_CTupdates.csv') %>%
   filter(Include == 'TRUE' )%>%
   select(Sp = `Taxon name` ,Family )-> SpFamily
 
-
-
 ## Butterfly Red List https://resjournals.onlinelibrary.wiley.com/doi/10.1111/icad.12582
-
 UKRedList <- read_csv('../data/ButterflyRedlistUK.csv')
 
 ```
 
 # NHM
 
-## Figure For paper
+## Figure Results1
 
 ### Prepping data
-
 ```{r}
 
 PS_NHM %>%
@@ -113,14 +110,16 @@ DataForMainNHMPlot%>%
   geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
   geom_point(shape = 4)+
   geom_vline(xintercept = 0)+
-  facet_grid(Redlist~Response, scales = 'free', space = "free_y")+
-  ggtitle('((NHM datasets, Species-level coefficients, Monthly, Facetted by Redlist)')+
+  facet_grid(Family ~Response, scales = 'free', space = "free_y")+
+  ggtitle('')+
   theme_bw()+
   ylab('')+
-  xlab('Fitted Coefficient')
+  xlab('Fitted Coefficient')+
+  theme(strip.text.y.right = element_text(angle = 0),
+        axis.text.y = element_text(face =  "italic"),
+        strip.background = element_rect(fill = 'grey80', colour = NA))
 
-ggsave('../figs/NHM_Monthly_MainSpResults_byRedlist.png', width = 10, height = 7, bg = 'white')
-
+ggsave('../figs/NHM_Monthly_MainSpResults_byFamily.png', width = 10, height = 7, bg = 'white')
 ```
 
 ### SI Figures
@@ -396,23 +395,43 @@ Generalist_TempEffect_Model %>% posterior_summary()
 
 ### Size
 
-```{r}
-Trends %>%
-  ggplot(aes( x = factor(TrendSign), y = MeanRightWing))+
-  geom_boxplot()+
-  geom_point()+
-  facet_wrap(~variable)
-
+```{r eval = FALSE}
 PS_NHM %>%
   filter( variable == 'b_YearRescale' ) %>%
   left_join(SpeciesSizeProps) %>%
   brm( mean|mi(sd)  ~  MeanRightWing ,
        data = .) -> Size_YearEffect_Model
 
-Size_YearEffect_Model %>% posterior_summary() %>% as.data.frame()-> SizeEffectSummary
+### Testing if effect can be explained as well just by family
+PS_NHM %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  left_join(SpeciesSizeProps) %>%
+  left_join(SpFamily) %>%
+  brm( mean|mi(sd)  ~  Family ,
+       data = .) -> FamilyGroup_YearEffect_Model
+
+
+MS <- add_criterion(Size_YearEffect_Model, criterion = 'loo')
+MF <- add_criterion(FamilyGroup_YearEffect_Model, criterion = 'loo')
+
+
+save(MS, '../TopLevelModelFits/Size_YearEffect_Model')
+save(MF, '../TopLevelModelFits/FamilyGroup_YearEffect_Model')
+
+```
+
+```{r}
+load('../TopLevelModelFits/Size_YearEffect_Model')
+load('../TopLevelModelFits/FamilyGroup_YearEffect_Model')
+
+
+loo_compare(MS, MF)  # Can't differentate 
+
+
+MS %>% posterior_summary() %>% as.data.frame()-> SizeEffectSummary
 SizeEffectSummary
 
-mcmc_hist(Size_YearEffect_Model,
+mcmc_hist(MS,
           pars = 'b_MeanRightWing')+
   xlab('Slope of Average Size vs bYear Coefficient,\naccounting for uncertainty')+
   theme_bw()-> PosteriorSizevsYear
@@ -428,23 +447,11 @@ Trends %>%
   xlab('Butterfly Average Size,\n(Mean Right Wing)')+
   ylab('Species_level Posterior Mean of\nProportional Size Response to Year') -> SizevsTrendWithYear
 
+
 plot_grid(SizevsTrendWithYear, PosteriorSizevsYear, rel_widths = c(2,1))
 
 ggsave('../figs/SizeEffectOnTemproralTrend.png', height = 4, width = 8)
 
-
-### Testing if effect can be explained as well just by family
-PS_NHM %>%
-  filter( variable == 'b_YearRescale' ) %>%
-  left_join(SpeciesSizeProps) %>%
-  left_join(SpFamily) %>%
-  brm( mean|mi(sd)  ~  Family ,
-       data = .) -> FamilyGroup_YearEffect_Model 
-
-MS <- add_criterion(Size_YearEffect_Model, criterion = 'loo')
-MF <- add_criterion(FamilyGroup_YearEffect_Model, criterion = 'loo')
-
-loo_compare(MS, MF)  # Can't differentate 
 ```
 
 ### Family
@@ -480,6 +487,95 @@ FamilyDataForChiSq %>%
   chisq.test()
 
 ```
+
+# Figure for paper
+
+```{r}
+Trends %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  ggplot(aes( x = MeanRightWing, y= mean))+
+  geom_abline(intercept = SizeEffectSummary$Estimate[1],
+              slope = SizeEffectSummary$Estimate[2])+
+  geom_point(aes(col = Family))+
+  geom_text_repel(aes(label = Sp), size = 2 ,hjust=-0.15, direction = 'both' )+
+  theme_bw()+
+  scale_color_manual(values =  c( 'darkgreen',"blue",  'orange',
+                                  "gold", 'darkgrey', '#800020'))+
+  theme(legend.position = 'bottom')+
+  xlab('Butterfly Average Size,\n(Mean Right Wing)')+
+  ylab('Response to Year Coefficient') ->YearEffect_Size_Plot
+
+Trends %>%
+  filter( variable == 'b_Temp' ) %>%
+  ggplot(aes( x = RedListListed, y= mean))+
+  geom_boxplot(colour = 'grey80', fill = 'grey90', linewidth = 2)+
+  geom_text_repel(aes(label = Sp), size = 2 ,hjust=-0.15, direction = 'y' )+
+  geom_point(aes(shape = factor(TrendSign), col = Family))+
+  scale_color_manual(values =  c( 'darkgreen',"blue",  'orange',
+                                  "gold", 'darkgrey', '#800020'))+
+  scale_shape_manual(values  = c(6,1,2))+
+  theme_bw()+
+  theme(legend.position = 'bottom')+
+  xlab('UK RedList\nStatus')+
+  ylab('Response to Temperature Coefficient')  -> TempEffect_RedList_Plot
+
+plot_grid(plot_grid( YearEffect_Size_Plot +
+                       guides( col = 'none'),
+                     TempEffect_RedList_Plot+
+                       guides( col = 'none', shape = 'none') ),
+          get_legend(YearEffect_Size_Plot ),
+          ncol=1 , rel_heights = c(5,1))
+
+ggsave('../figs/PredictorsFigure_Both_withlabels.png',
+       width = 10, height = 6, dpi = 300, bg = 'white')
+
+#####
+# Without text labels
+#####
+
+Trends %>%
+  filter( variable == 'b_YearRescale' ) %>%
+  ggplot(aes( x = MeanRightWing, y= mean))+
+  geom_abline(intercept = SizeEffectSummary$Estimate[1],
+              slope = SizeEffectSummary$Estimate[2])+
+  geom_point(aes(col = Family))+
+  theme_bw()+
+  scale_color_manual(values =  c( 'darkgreen',"blue",  'orange',
+                                  "gold", 'darkgrey', '#800020'))+
+  theme(legend.position = 'bottom')+
+  xlab('Butterfly Average Size,\n(Mean Right Wing)')+
+  ylab('"Year" Coefficient') ->YearEffect_Size_Plot_nolabels
+
+Trends %>%
+  filter( variable == 'b_Temp' ) %>%
+  ggplot(aes( x = RedListListed, y= mean))+
+  geom_boxplot(colour = 'grey80', fill = 'grey90', linewidth = 2)+
+  geom_point(aes(shape = factor(TrendSign), col = Family))+
+  scale_color_manual(values =  c( 'darkgreen',"blue",  'orange',
+                                  "gold", 'darkgrey', '#800020'))+
+  scale_shape_manual(values  = c(6,1,2))+
+  theme_bw()+
+  theme(legend.position = 'bottom')+
+  xlab('UK RedList\nStatus')+
+  ylab('"Temperature" Coefficient')  -> TempEffect_RedList_Plot_nolabels
+
+plot_grid(plot_grid( YearEffect_Size_Plot_nolabels +
+                       guides( col = 'none'),
+                     TempEffect_RedList_Plot_nolabels+
+                       guides( col = 'none', shape = 'none') ),
+          get_legend(YearEffect_Size_Plot_nolabels ),
+          ncol=1 , rel_heights = c(5,1))
+
+ggsave('../figs/PredictorsFigure_Both_nolabels.png',
+       width = 7, height = 4, dpi = 300, bg = 'white')
+
+```
+
+
+
+
+
+
 
 
 
