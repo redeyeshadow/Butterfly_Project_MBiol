@@ -9,7 +9,7 @@ editor_options:
 
 This doc links each record with a temperature for that year's spring, summer and summer of the year before. 
 
-The NHM data has lat-longs, the OUNHM data is at vice-county or unitary authority level. 
+The NHM data has lat-longs, the OUMNH data is at vice-county or unitary authority level. 
 
 
 ```{r}
@@ -163,7 +163,7 @@ NHM_records %>%
 ```
 
 
-# OUNHM
+# OUMNH
 
 
 ## Formatting Climate Data
@@ -297,7 +297,7 @@ LegalCounties %>%
 # Oxford Measurements
 
 ```{r}
-OUNHM_data <- read_csv('../data/OUNHM_measurements_clean.csv')
+OUMNH_data <- read_csv('../data/OUMNH_measurements_clean.csv')
 UA_temps <- read_csv( '../data/UA_Seasonal_Temps_Long.csv') 
 VC_temps <- read_csv('../data/VC_Seasonal_Temps_Long.csv')
 ```
@@ -338,9 +338,9 @@ SpringSummerTemps %>%
           SUMMER_before_temp = Summer_before)-> ThreeTemps_perLocYear
 
 
-OUNHM_data %>%
+OUMNH_data %>%
   left_join(ThreeTemps_perLocYear,
-            by = c('Location', 'LocationType', 'Year'))-> OUNHM_data_temps
+            by = c('Location', 'LocationType', 'Year'))-> OUMNH_data_temps
 
 ```
 
@@ -349,7 +349,7 @@ OUNHM_data %>%
 
 ```{r}
 
-write_csv(OUNHM_data_temps, '../data/OUNHM_data_temps.csv')
+write_csv(OUMNH_data_temps, '../data/OUMNH_data_temps.csv')
 
 ```
 

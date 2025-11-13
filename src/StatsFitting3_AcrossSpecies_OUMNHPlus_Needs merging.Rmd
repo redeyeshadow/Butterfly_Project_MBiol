@@ -1,5 +1,5 @@
 ---
-title: "StatsFitting3_AcrossSpecies_OUNHMPlus"
+title: "StatsFitting3_AcrossSpecies_OUMNHPlus"
 author: "Chris Terry"
 date: "2025-09-01"
 output: html_document
@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-Main document for making main text results for the OUNHM data and other comparisons. 
+Main document for making main text results for the OUMNH data and other comparisons. 
 
 Split off here to be a bit clener and keep the other doc (2) to just be the main NHM results
 
@@ -78,11 +78,11 @@ PS_OUM %>%
   theme_bw()+
   theme(  axis.text.y = element_text(face =  "italic"))+
   ylab('')+
-  xlab('Fitted Coefficient (OUNHM Dataset)')
+  xlab('Fitted Coefficient (OUMNH Dataset)')
 
 ##  theme(axis.text.y = element_text(colour = c("gold", "blue", 'darkgreen')))
 
-ggsave('../figs/OUNHM_Monthly_MainSpResults.png', width = 10, height = 5, bg = 'white')
+ggsave('../figs/OUMNH_Monthly_MainSpResults.png', width = 10, height = 5, bg = 'white')
 ```
 
 # Predictors of b_Year
@@ -171,7 +171,7 @@ RedList_bTemp_model_OUM %>% posterior_summary()
 
 ```
 
-# Correlations between fitted coefficents between OUNHM and NHM datasets
+# Correlations between fitted coefficents between OUMNH and NHM datasets
 
 ```{r}
 Joined_coefficients %>%
@@ -180,11 +180,11 @@ Joined_coefficients %>%
   pivot_wider( id_cols = c('variable', 'Specialism','Sp' ),
                names_from = 'Dataset',
                values_from = c( 'mean','q5','q95' )) %>%
-  filter( !is.na(mean_OUNHM )) %>%
+  filter( !is.na(mean_OUMNH )) %>%
   ggplot( aes( y =  mean_NHM , 
-               x = mean_OUNHM))+
+               x = mean_OUMNH))+
   geom_abline(intercept = 0, slope =1, col = 'red')+
-  geom_errorbarh(aes(xmin = q5_OUNHM, xmax = q95_OUNHM), col = 'grey')+
+  geom_errorbarh(aes(xmin = q5_OUMNH, xmax = q95_OUMNH), col = 'grey')+
   geom_errorbar(aes(ymin = q5_NHM, ymax = q95_NHM), col = 'grey')+
  geom_point()+
  #geom_vline(xintercept = 0)+
@@ -194,7 +194,7 @@ Joined_coefficients %>%
   theme_bw()+
   theme(legend.position = 'bottom')+
   ggtitle('Correlation in Species-level coefficients')+
-  xlab('OUNHM Estimate')+
+  xlab('OUMNH Estimate')+
   ylab('NHM Estimate')
 
 ggsave(filename = '../figs/compare_coefs_across_datasets.png', width = 10, height =4)
@@ -226,7 +226,7 @@ bind_rows(PS_NHM %>%
             filter( variable %in% c( 'b_Temp',
                                      'b_Latitude',
                                      'b_YearRescale') )%>%
-            mutate( Dataset= 'OUNHM')) %>%
+            mutate( Dataset= 'OUMNH')) %>%
   left_join(specialism, by =c( 'Sp'='Taxon name')) -> Joined_coefficients
 
 ORDER <- Joined_coefficients %>%

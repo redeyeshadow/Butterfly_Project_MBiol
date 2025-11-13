@@ -19,7 +19,7 @@ library(posterior)
 
 ```{r}
 NHM_ForFitting <- read_csv(  '../data/NHM_for_models_monthly.csv')
-OUM_ForFitting <- read_csv(  '../data/OUNHM_for_models_monthly.csv')
+OUM_ForFitting <- read_csv(  '../data/OUMNH_for_models_monthly.csv')
 ```
 
 # NHM Fit with sex as an offset for each species
@@ -82,7 +82,7 @@ write_csv(Posterior_Summaries_NHM2, '../statsresults/NHM_Posterior_Summaries_M1.
 
 ```
 
-# OUNHM with sex embedded
+# OUMNH with sex embedded
 
 ```{r}
 ## Cycle through each species to fit models 
@@ -98,36 +98,36 @@ sum(Batches$n  >=40)
 ## Build unique Name for each brood
 ```{r}
 Batches %>%
-  filter( n >=40 ) -> TableOfModels_OUNHM
+  filter( n >=40 ) -> TableOfModels_OUMNH
 
-Set2 = paste0('Sp.', TableOfModels_OUNHM$Sp)
+Set2 = paste0('Sp.', TableOfModels_OUMNH$Sp)
 ```
 
 ```{r eval = FALSE}
 ### Define and compile model when sexes are differentiated 
 CoreModel_OU_splitSex <-   OUM_ForFitting %>%
-  filter(Sp == TableOfModels_OUNHM$Sp[4]) %>%
+  filter(Sp == TableOfModels_OUMNH$Sp[4]) %>%
   brm( log(Wing_Length)   ~ YearRescale + Temp  + Latitude + Sex,
        data = ., refresh = 0)
 
 CoreModel_OU_jointSex <-   OUM_ForFitting %>%
-  filter(Sp == TableOfModels_OUNHM$Sp[2]) %>%
+  filter(Sp == TableOfModels_OUMNH$Sp[2]) %>%
   brm( log(Wing_Length)   ~ YearRescale + Temp  + Latitude ,
        data = ., refresh = 0)
 
 undetermined_sp<- distinct(OUM_ForFitting, Sp, Sex) %>% filter( Sex == 'undetermined') %>% pluck('Sp')
 
 ## Refit model to each set of data, saving each time
-for( i in 1:nrow( TableOfModels_OUNHM)){
+for( i in 1:nrow( TableOfModels_OUMNH)){
   print(Set2[i])
-  if(TableOfModels_OUNHM$Sp[i] %in% undetermined_sp ){
+  if(TableOfModels_OUMNH$Sp[i] %in% undetermined_sp ){
     OUM_ForFitting %>%
-      filter(Sp == TableOfModels_OUNHM$Sp[i]) -> batchDATA
+      filter(Sp == TableOfModels_OUMNH$Sp[i]) -> batchDATA
     update( CoreModel_OU_jointSex, newdata = batchDATA, refresh = 0) -> MODEL_FIT
     
   }else{
     OUM_ForFitting %>%
-      filter(Sp == TableOfModels_OUNHM$Sp[i]) -> batchDATA
+      filter(Sp == TableOfModels_OUMNH$Sp[i]) -> batchDATA
     update( CoreModel_OU_splitSex, newdata = batchDATA, refresh = 0) -> MODEL_FIT
   }
   save(MODEL_FIT, file = paste('../OUM_modelfitsM1/',Set2[i]  ))
@@ -140,13 +140,13 @@ for( i in 1:nrow( TableOfModels_OUNHM)){
 ### Collating model outputs into a df
 
 ```{r eval = FALSE}
-map_df(1:nrow( TableOfModels_OUNHM), function(i){
+map_df(1:nrow( TableOfModels_OUMNH), function(i){
   load(file = paste('../OUM_modelfitsM1/',Set2[i]  )) 
   MODEL_FIT %>%
     as_draws_array %>%
     summarise_draws("mean","median","sd","mad","quantile2",
                     ~quantile2(.x, probs = c(0.167, 0.833))) -> Fit_df
-  Fit_df$Sp = TableOfModels_OUNHM$Sp[i]
+  Fit_df$Sp = TableOfModels_OUMNH$Sp[i]
   return(Fit_df)
 })-> Posterior_Summaries_OUM2
 

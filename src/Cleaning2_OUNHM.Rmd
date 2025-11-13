@@ -1,5 +1,5 @@
 ---
-title: "Cleaning2_OUNHM"
+title: "Cleaning2_OUMNM"
 author: "Chris Terry"
 date: "`r Sys.Date()`"
 output: html_document
@@ -9,13 +9,13 @@ editor_options:
 
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
-OUNHM_measurements <- read_csv('../data/OUNHM_Measurements.csv' )
+OUMNH_measurements <- read_csv('../data/OUMNH_Measurements.csv' )
 ```
 
 ## Correlation between measurements
 
 ```{r}
-OUNHM_measurements %>%
+OUMNH_measurements %>%
   group_by(Species, Sex) %>%
   summarise( Corr_Length_Area = cor(  Wing_Length,Forewing_Area)) %>%
   arrange(Corr_Length_Area) -> Corr_Length_Area
@@ -34,9 +34,9 @@ OUNHM_measurements %>%
 ```{r}
 NameTable <- read_csv('../data/names_table.csv')
 
-OUNHM_measurements %>%
+OUMNH_measurements %>%
   filter( !is.na(Species)) %>%
-  left_join(NameTable, by = c('Species' = 'Elsa name'))-> OUNHM_measurements2
+  left_join(NameTable, by = c('Species' = 'Elsa name'))-> OUMNH_measurements2
 ```
 
 ## Consolidating Locations
@@ -49,7 +49,7 @@ VC_temps <- read_csv('../data/VC_Seasonal_Temps_Long.csv')
 
 ### Which names need manual fixing?
 ```{r}
-Ox_Locs_To_Match <- unique(OUNHM_measurements2$Location)  
+Ox_Locs_To_Match <- unique(OUMNH_measurements2$Location)  
 
 VC_names <- sort(unique(VC_temps$VCNAME))
 UA_names <- unique(UA_temps$CTYUA23NM)
@@ -62,10 +62,10 @@ NameNotInEither
 ## Which type of location?
 
 ```{R}
-OUNHM_measurements2 %>%
+OUMNH_measurements2 %>%
   mutate( LocationType = ifelse(Location%in%VC_names, 'VC',
                                 ifelse( Location %in% UA_names, 
-                                        'UA', 'NeedsFixing' ))) -> OUNHM_measurements3
+                                        'UA', 'NeedsFixing' ))) -> OUMNH_measurements3
 ```
 
 ### Fixing unresolved locations
@@ -75,10 +75,10 @@ OUNHM_measurements2 %>%
 
 NameResolver<- read_csv('../data/NameNotInEither_ResolverToVC.csv')
 
-OUNHM_measurements3 %>% 
+OUMNH_measurements3 %>% 
   left_join(NameResolver, by = 'Location') %>%
   mutate(Location =  ifelse(is.na(VC_To_Use), Location, VC_To_Use), 
-         LocationType =  ifelse(is.na(VC_To_Use), LocationType, 'VC')) -> OUNHM_measurements4
+         LocationType =  ifelse(is.na(VC_To_Use), LocationType, 'VC')) -> OUMNH_measurements4
 
 ```
 
@@ -87,7 +87,7 @@ OUNHM_measurements3 %>%
 
 ```{r}
 
-OUNHM_measurements4 %>%
+OUMNH_measurements4 %>%
   mutate(  Month_num = match(str_to_sentence(Month),# reading mess of different capitalisations
                              month.name)) %>%
   filter( Year >= 1885) %>%
@@ -98,7 +98,7 @@ OUNHM_measurements4 %>%
          Location,LocationType ,
          Month = Month_num, Year,
          Sex,
-         Wing_Length:Abdomen_Length ) -> OUNHM_measurements5
+         Wing_Length:Abdomen_Length ) -> OUMNH_measurements5
 
 
 ```
@@ -106,7 +106,7 @@ OUNHM_measurements4 %>%
 # Saving
 
 ```{r}
-write_csv(OUNHM_measurements5, '../data/OUNHM_measurements_clean.csv')
+write_csv(OUMNH_measurements5, '../data/OUMNH_measurements_clean.csv')
 ```
 
 # Session info

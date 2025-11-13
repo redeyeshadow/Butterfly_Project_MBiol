@@ -11,9 +11,9 @@
 
 <meta name="author" content="Chris Terry" />
 
-<meta name="date" content="2025-07-14" />
+<meta name="date" content="2025-11-13" />
 
-<title>Cleaning2_OUNHM</title>
+<title>Cleaning2_OUMNM</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -350,15 +350,47 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Cleaning2_OUNHM</h1>
+<h1 class="title toc-ignore">Cleaning2_OUMNM</h1>
 <h4 class="author">Chris Terry</h4>
-<h4 class="date">2025-07-14</h4>
+<h4 class="date">2025-11-13</h4>
 
 </div>
 
 
 <pre class="r"><code>library(tidyverse)
-OUNHM_measurements &lt;- read_csv(&#39;../data/OUNHM_Measurements.csv&#39; )</code></pre>
+OUMNH_measurements &lt;- read_csv(&#39;../data/OUMNH_Measurements.csv&#39; )</code></pre>
+<div id="correlation-between-measurements" class="section level2">
+<h2>Correlation between measurements</h2>
+<pre class="r"><code>OUMNH_measurements %&gt;%
+  group_by(Species, Sex) %&gt;%
+  summarise( Corr_Length_Area = cor(  Wing_Length,Forewing_Area)) %&gt;%
+  arrange(Corr_Length_Area) -&gt; Corr_Length_Area</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;Species&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<pre class="r"><code>  Corr_Length_Area</code></pre>
+<pre><code>## # A tibble: 46 × 3
+## # Groups:   Species [29]
+##    Species                Sex    Corr_Length_Area
+##    &lt;chr&gt;                  &lt;chr&gt;             &lt;dbl&gt;
+##  1 small skipper          male              0.760
+##  2 silver spotted skipper male              0.803
+##  3 small skipper          female            0.826
+##  4 dingy skipper          &lt;NA&gt;              0.834
+##  5 silver spotted skipper female            0.847
+##  6 grizzled skipper       &lt;NA&gt;              0.860
+##  7 large heath            &lt;NA&gt;              0.864
+##  8 gatekeeper             male              0.896
+##  9 meadow brown           male              0.901
+## 10 wood white             male              0.912
+## # ℹ 36 more rows</code></pre>
+<pre class="r"><code>  Corr_Length_Area$Corr_Length_Area %&gt;% mean(na.rm=TRUE)</code></pre>
+<pre><code>## [1] 0.9252827</code></pre>
+<pre class="r"><code>    Corr_Length_Area$Corr_Length_Area %&gt;% range(na.rm=TRUE)</code></pre>
+<pre><code>## [1] 0.7595768 0.9813883</code></pre>
+<pre class="r"><code>   Corr_Length_Area$Corr_Length_Area %&gt;% quantile(na.rm = TRUE, probs = c(0.05, 0.95))</code></pre>
+<pre><code>##        5%       95% 
+## 0.8273775 0.9732939</code></pre>
+</div>
 <div id="consolidating-names" class="section level2">
 <h2>Consolidating names</h2>
 <pre class="r"><code>NameTable &lt;- read_csv(&#39;../data/names_table.csv&#39;)</code></pre>
@@ -369,9 +401,9 @@ OUNHM_measurements &lt;- read_csv(&#39;../data/OUNHM_Measurements.csv&#39; )</co
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>OUNHM_measurements %&gt;%
+<pre class="r"><code>OUMNH_measurements %&gt;%
   filter( !is.na(Species)) %&gt;%
-  left_join(NameTable, by = c(&#39;Species&#39; = &#39;Elsa name&#39;))-&gt; OUNHM_measurements2</code></pre>
+  left_join(NameTable, by = c(&#39;Species&#39; = &#39;Elsa name&#39;))-&gt; OUMNH_measurements2</code></pre>
 </div>
 <div id="consolidating-locations" class="section level2">
 <h2>Consolidating Locations</h2>
@@ -398,7 +430,7 @@ UA_temps &lt;- read_csv( &#39;../data/UA_Seasonal_Temps_Long.csv&#39;) #  </code
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <div id="which-names-need-manual-fixing" class="section level3">
 <h3>Which names need manual fixing?</h3>
-<pre class="r"><code>Ox_Locs_To_Match &lt;- unique(OUNHM_measurements2$Location)  
+<pre class="r"><code>Ox_Locs_To_Match &lt;- unique(OUMNH_measurements2$Location)  
 
 VC_names &lt;- sort(unique(VC_temps$VCNAME))
 UA_names &lt;- unique(UA_temps$CTYUA23NM)
@@ -416,25 +448,25 @@ NameNotInEither</code></pre>
 </div>
 <div id="which-type-of-location" class="section level2">
 <h2>Which type of location?</h2>
-<pre class="r"><code>OUNHM_measurements2 %&gt;%
+<pre class="r"><code>OUMNH_measurements2 %&gt;%
   mutate( LocationType = ifelse(Location%in%VC_names, &#39;VC&#39;,
                                 ifelse( Location %in% UA_names, 
-                                        &#39;UA&#39;, &#39;NeedsFixing&#39; ))) -&gt; OUNHM_measurements3</code></pre>
+                                        &#39;UA&#39;, &#39;NeedsFixing&#39; ))) -&gt; OUMNH_measurements3</code></pre>
 <div id="fixing-unresolved-locations" class="section level3">
 <h3>Fixing unresolved locations</h3>
 <pre class="r"><code>## Swap in Best fit VC location for the iffy names
 
 NameResolver&lt;- read_csv(&#39;../data/NameNotInEither_ResolverToVC.csv&#39;)
 
-OUNHM_measurements3 %&gt;% 
+OUMNH_measurements3 %&gt;% 
   left_join(NameResolver, by = &#39;Location&#39;) %&gt;%
   mutate(Location =  ifelse(is.na(VC_To_Use), Location, VC_To_Use), 
-         LocationType =  ifelse(is.na(VC_To_Use), LocationType, &#39;VC&#39;)) -&gt; OUNHM_measurements4</code></pre>
+         LocationType =  ifelse(is.na(VC_To_Use), LocationType, &#39;VC&#39;)) -&gt; OUMNH_measurements4</code></pre>
 </div>
 </div>
 <div id="other-tidying" class="section level2">
 <h2>Other Tidying</h2>
-<pre class="r"><code>OUNHM_measurements4 %&gt;%
+<pre class="r"><code>OUMNH_measurements4 %&gt;%
   mutate(  Month_num = match(str_to_sentence(Month),# reading mess of different capitalisations
                              month.name)) %&gt;%
   filter( Year &gt;= 1885) %&gt;%
@@ -445,11 +477,11 @@ OUNHM_measurements3 %&gt;%
          Location,LocationType ,
          Month = Month_num, Year,
          Sex,
-         Wing_Length:Abdomen_Length ) -&gt; OUNHM_measurements5</code></pre>
+         Wing_Length:Abdomen_Length ) -&gt; OUMNH_measurements5</code></pre>
 </div>
 <div id="saving" class="section level1">
 <h1>Saving</h1>
-<pre class="r"><code>write_csv(OUNHM_measurements5, &#39;../data/OUNHM_measurements_clean.csv&#39;)</code></pre>
+<pre class="r"><code>write_csv(OUMNH_measurements5, &#39;../data/OUMNH_measurements_clean.csv&#39;)</code></pre>
 </div>
 <div id="session-info" class="section level1">
 <h1>Session info</h1>
@@ -475,22 +507,22 @@ OUNHM_measurements3 %&gt;%
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] lubridate_1.9.4 forcats_1.0.0   stringr_1.5.1   dplyr_1.1.4    
+##  [1] lubridate_1.9.4 forcats_1.0.1   stringr_1.5.2   dplyr_1.1.4    
 ##  [5] purrr_1.1.0     readr_2.1.5     tidyr_1.3.1     tibble_3.3.0   
-##  [9] ggplot2_3.5.2   tidyverse_2.0.0
+##  [9] ggplot2_4.0.0   tidyverse_2.0.0
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] bit_4.6.0          gtable_0.3.6       jsonlite_2.0.0     crayon_1.5.3      
 ##  [5] compiler_4.5.1     tidyselect_1.2.1   parallel_4.5.1     jquerylib_0.1.4   
 ##  [9] scales_1.4.0       yaml_2.3.10        fastmap_1.2.0      R6_2.6.1          
-## [13] generics_0.1.4     knitr_1.50         bslib_0.9.0        pillar_1.11.0     
-## [17] RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.1.6        cachem_1.1.0      
-## [21] stringi_1.8.7      xfun_0.52          sass_0.4.10        bit64_4.6.0-1     
-## [25] timechange_0.3.0   cli_3.6.5          withr_3.0.2        magrittr_2.0.3    
-## [29] digest_0.6.37      grid_4.5.1         vroom_1.6.5        rstudioapi_0.17.1 
-## [33] hms_1.1.3          lifecycle_1.0.4    vctrs_0.6.5        evaluate_1.0.4    
-## [37] glue_1.8.0         farver_2.1.2       rmarkdown_2.29     tools_4.5.1       
-## [41] pkgconfig_2.0.3    htmltools_0.5.8.1</code></pre>
+## [13] generics_0.1.4     knitr_1.50         bslib_0.9.0        pillar_1.11.1     
+## [17] RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.1.6        utf8_1.2.6        
+## [21] stringi_1.8.7      cachem_1.1.0       xfun_0.53          sass_0.4.10       
+## [25] S7_0.2.0           bit64_4.6.0-1      timechange_0.3.0   cli_3.6.5         
+## [29] withr_3.0.2        magrittr_2.0.3     digest_0.6.37      grid_4.5.1        
+## [33] vroom_1.6.6        rstudioapi_0.17.1  hms_1.1.4          lifecycle_1.0.4   
+## [37] vctrs_0.6.5        evaluate_1.0.5     glue_1.8.0         farver_2.1.2      
+## [41] rmarkdown_2.30     tools_4.5.1        pkgconfig_2.0.3    htmltools_0.5.8.1</code></pre>
 </div>
 
 

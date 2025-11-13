@@ -11,7 +11,7 @@ editor_options:
 library(tidyverse)
 library(readxl)
 
-OUNHM_data_temps<- read_csv('../data/OUNHM_data_temps_Monthly.csv')
+OUMNH_data_temps<- read_csv('../data/OUMNH_data_temps_Monthly.csv')
 NHM_data_temps <- read_csv('../data/NHM_w_temps_Monthly.csv')
 BroodTable <- read_csv('../data/brood_table_CTupdates.csv')
 ```
@@ -71,7 +71,7 @@ write_csv(NHM_for_models, '../data/NHM_for_models_monthly.csv')
 
 ```
 
-# Adding Brood Tables and Lats to OUNHM
+# Adding Brood Tables and Lats to OUMNH
 
 ## Load lats for each location
 ```{r}
@@ -83,7 +83,7 @@ combined_locations <- read_csv("../data/combined_midpoints.csv")
 Also add location filterring
 
 ```{r}
-OUNHM_for_models <- OUNHM_data_temps %>%
+OUMNH_for_models <- OUMNH_data_temps %>%
   left_join(combined_locations,
             by = c("Location","LocationType")) %>%
   left_join( select(Brood_table2,
@@ -128,7 +128,7 @@ OUNHM_for_models <- OUNHM_data_temps %>%
 
 # View and save
 ```{r}
-OUNHM_for_models
-write_csv(OUNHM_for_models, "../data/OUNHM_for_models_monthly.csv")
+OUMNH_for_models
+write_csv(OUMNH_for_models, "../data/OUMNH_for_models_monthly.csv")
 ```
 

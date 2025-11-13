@@ -12,11 +12,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
-'/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.1.ceda/25km/tas/mon/v20250415'
-wget -O -q https://dap.ceda.ac.uk/badc/ARCHIVE_INFO/ACCESS_TEST/RESTRICTED/TOKEN_CHECK --header "Authorization: Bearer TOKEN"
+#'/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.1.ceda/25km/tas/mon/v20250415'
+# wget -O -q https://dap.ceda.ac.uk/badc/ARCHIVE_INFO/ACCESS_TEST/RESTRICTED/TOKEN_CHECK --header "Authorization: Bearer TOKEN"
 
 ## token from 
-wget -e robots=off --mirror --no-parent -r https://dap.ceda.ac.uk/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.1.ceda/25km/tas/mon/ --header "Authorization: Bearer TOKEN"
+#wget -e robots=off --mirror --no-parent -r https://dap.ceda.ac.uk/badc/ukmo-hadobs/data/insitu/MOHC/HadOBS/HadUK-Grid/v1.3.1.ceda/25km/tas/mon/ --header "Authorization: Bearer TOKEN"
 
 ```
 
@@ -202,7 +202,7 @@ NHM_records %>%
 
 ## Oxford records
 
-# OUNHM
+# OUMNH
 
 ## Formatting Climate Data
 
@@ -322,7 +322,7 @@ LegalCounties %>%
 # Oxford Measurements
 
 ```{r}
-OUNHM_data <- read_csv('../data/OUNHM_measurements_clean.csv')
+OUMNH_data <- read_csv('../data/OUMNH_measurements_clean.csv')
 UA_temps <- read_csv( '../data/UA_Monthly_Temps_Long.csv') 
 VC_temps <- read_csv('../data/VC_Monthly_Temps_Long.csv')
 ```
@@ -373,9 +373,9 @@ MonthlyTemps %>%
           T_JuneBefore   = JuneBefore  )-> Temps_perLocYear
 
 
-OUNHM_data %>%
+OUMNH_data %>%
   left_join(Temps_perLocYear,
-            by = c('Location', 'LocationType', 'Year'))-> OUNHM_data_temps
+            by = c('Location', 'LocationType', 'Year'))-> OUMNH_data_temps
 
 ```
 
@@ -384,14 +384,9 @@ OUNHM_data %>%
 
 ```{r}
 
-write_csv(OUNHM_data_temps, '../data/OUNHM_data_temps_Monthly.csv')
+write_csv(OUMNH_data_temps, '../data/OUMNH_data_temps_Monthly.csv')
 
 ```
-
-
-
-
-
 
 
 # Quick code to pull out data from wilson spreadsheet and merge with brood table
