@@ -1,0 +1,271 @@
+---
+title: "Stats Fitting 3 Across Species OUMNH"
+author: "Chris Terry"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+Main document for making main text results for the OUMNH data and other comparisons. 
+
+At the end, also includes comparison between coefficients from different datasets. 
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(brms)
+library(posterior)
+library(forcats)
+library(bayesplot)
+library(cowplot)
+library(ggrepel)
+```
+
+# Data Prep
+
+```{r}
+## Summaries of posteriors of each species-level model
+PS_OUM<- read_csv('../statsresults/OUM_Posterior_Summaries_M1.csv')
+PS_NHM<- read_csv('../statsresults/NHM_Posterior_Summaries_M1.csv')
+```
+
+```{r}
+# Specialism 
+specialism <- read_csv( '../data/specialism_with_nhm.csv')%>%
+  mutate(Label = case_match(Specialism, 
+                            'Habitat and foodplant generalist' ~ 'Habitat generalist\n&\nfoodplant generalist',
+                            'Habitat and foodplant specialist'~ 'Habitat specialist\n&\nfoodplant specialist',
+                            'Habitat generalist and foodplant specialist'~ 'Habitat generalist\n&\nfoodplant specialist',
+                            'Habitat specialist and foodplant generalist'~  'Habitat specialist \n&\nfoodplant generalist'))
+
+read_csv('../data/brood_table_CTupdates.csv') %>%
+  filter(Include == 'TRUE' )%>%
+  select(Sp = `Taxon name` ,Family )-> SpFamily
+
+## Butterfly Red List https://resjournals.onlinelibrary.wiley.com/doi/10.1111/icad.12582
+UKRedList <- read_csv('../data/ButterflyRedlistUK.csv')
+
+```
+
+# Figure for paper main text (Species level responses)
+
+```{r}
+PS_OUM %>%
+  #  mutate(Sp  = factor(Sp, levels = ORDER_f3)) %>% 
+  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
+  left_join(SpFamily) %>%
+  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
+  filter( variable %in% c( 'b_Temp',
+                           'b_YearRescale',
+                           'b_Sexmale',
+                           'b_Latitude') )%>%
+  mutate(Response = case_match(variable, 
+                               'b_Temp'~ 'b. Temperature',
+                               'b_YearRescale'~'c. Year',
+                               'b_Sexmale'~'d. Male Offset',
+                               'b_Latitude'~'a. Latitude') )%>%
+  ggplot( aes( y =  fct_rev(Sp),
+               x = mean))+
+  geom_errorbarh(aes( xmin = q5, xmax = q95), linewidth = 1, height = 0, col = 'grey')+
+  geom_errorbarh(aes(xmin = q16.7, xmax =  q83.3), linewidth = 2, height = 0, col = 'grey')+
+  geom_point(shape = 4)+
+  geom_vline(xintercept = 0)+
+  facet_grid(Family~Response, scales = 'free', space = "free_y")+
+  theme_bw()+
+  theme(  axis.text.y = element_text(face =  "italic"),
+          strip.text.y.right = element_text(angle = 0),
+        strip.background = element_rect(fill = 'grey80', colour = NA))+
+  ylab('')+
+  xlab('Fitted Coefficient (OUMNH Dataset)')
+
+ggsave('../figs/OUMNH_Monthly_MainSpResults.png', width = 10, height = 5, bg = 'white')
+```
+
+# Predictors of b_Year
+
+```{r eval = FALSE}
+SpeciesSizeProps <- read_csv('../data/SpeciesSizeProps.csv') ### load average butterfly sizes from the NHM data
+
+PS_OUM %>%
+  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
+  left_join(SpFamily) %>%
+  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
+  left_join(SpeciesSizeProps) %>%
+  filter( variable =='b_YearRescale' )-> bYear_pred_OUM
+
+## Average
+bYear_pred_OUM %>%
+  brm( mean|mi(sd)  ~  1,  data = .)%>%
+  add_criterion(criterion = c("loo")) -> bYear_model_OUM_Average
+
+bYear_pred_OUM %>%
+  brm( mean|mi(sd)  ~  Specialism,  data = .)%>%
+  add_criterion(criterion = c("loo"))-> bYear_model_OUM_specialism
+
+bYear_pred_OUM %>%
+  brm( mean|mi(sd)  ~  MeanRightWing ,  data = ., iter = 10000)%>%
+  add_criterion(criterion = c("loo"))-> bYear_model_OUM_Size ### doesn't mix nicely, so extended chain
+
+save( bYear_model_OUM_Average, file = '../TopLevelModelFits/bYear_model_OUM_Average')
+save( bYear_model_OUM_specialism, file = '../TopLevelModelFits/bYear_model_OUM_specialism')
+save( bYear_model_OUM_Size, file = '../TopLevelModelFits/bYear_model_OUM_Size')
+
+```
+
+```{r}
+load('../TopLevelModelFits/bYear_model_OUM_specialism')
+load('../TopLevelModelFits/bYear_model_OUM_Average')
+load('../TopLevelModelFits/bYear_model_OUM_Size')
+
+### Overall average calculation
+bYear_model_OUM_Average %>% posterior_summary()
+
+### Effect of specialism on the year coefficient
+bYear_model_OUM_specialism %>% posterior_summary()
+
+## Size Effects on the year coefficient
+bYear_model_OUM_Size  ## NB not a great convergence (still getting divergent transitions)
+bYear_model_OUM_Size %>% posterior_summary()
+
+```
+
+# Predictors of b_Temp 
+
+```{r eval = FALSE}
+PS_OUM %>%
+  left_join(specialism, by =c( 'Sp'='Taxon name')) %>%
+  left_join(SpFamily) %>%
+  left_join(UKRedList, by =c( 'Sp'='Species') ) %>%
+  left_join(SpeciesSizeProps)%>%
+  mutate(RedListListed = ifelse(is.na( `GB Red List category`),
+                                'Unlisted',
+                                'Listed')) %>%
+  filter( variable =='b_Temp' )-> bTemp_model_OUM_data
+
+bTemp_model_OUM_data %>%
+  ggplot(aes( x = MeanRightWing , y =mean     ))+
+  geom_point()+
+  geom_smooth(method = 'lm')
+
+bTemp_model_OUM_data %>%
+  brm( mean|mi(sd)  ~  1,  data = .)%>%
+  add_criterion(criterion = c("loo")) -> bTemp_model_OUM_Average
+
+bTemp_model_OUM_data %>%
+  brm( mean|mi(sd)  ~  Specialism,  data = .)%>%
+  add_criterion(criterion = c("loo"))-> bTemp_model_OUM_Specialism
+
+bTemp_model_OUM_data %>%
+  brm( mean|mi(sd)  ~ RedListListed ,  data = .)%>%
+  add_criterion(criterion = c("loo"))-> bTemp_model_OUM_Redlist
+
+save( bTemp_model_OUM_Average, file = '../TopLevelModelFits/bTemp_model_OUM_Average')
+save( bTemp_model_OUM_Specialism, file = '../TopLevelModelFits/bTemp_model_OUM_Specialism')
+save( bTemp_model_OUM_Redlist, file = '../TopLevelModelFits/bTemp_model_OUM_Redlist')
+
+```
+
+```{r}
+load('../TopLevelModelFits/bTemp_model_OUM_Average')
+load('../TopLevelModelFits/bTemp_model_OUM_Specialism')
+load('../TopLevelModelFits/bTemp_model_OUM_Redlist')
+
+bTemp_model_OUM_Average   %>% posterior_summary()
+bTemp_model_OUM_Specialism%>% posterior_summary()
+bTemp_model_OUM_Redlist   %>% posterior_summary()
+
+```
+
+# Correlations between fitted coefficients between OUMNH and NHM datasets
+
+## Joining Datasets
+
+```{r}
+PS_WIL <- read_csv('../statsresults/WIL_Posterior_Summaries_X2.csv')
+
+bind_rows(PS_NHM %>%
+            filter( variable %in% c( 'b_Temp',
+                                     'b_Latitude',
+                                     'b_YearRescale') ) %>%
+            mutate( Dataset= 'NHM'), 
+          PS_WIL %>%
+            filter( variable %in% c( 'b_Wilson_LateTemp',
+                                     #    'b_Latitude',
+                                     'b_YearRescale') )%>%
+            mutate( Dataset= 'Wilson'),
+          PS_OUM %>%
+            filter( variable %in% c( 'b_Temp',
+                                     'b_Latitude',
+                                     'b_YearRescale') )%>%
+            mutate( Dataset= 'OUMNH')) %>%
+  left_join(specialism, by =c( 'Sp'='Taxon name')) -> Joined_coefficients
+
+```
+
+## NHM v OUMNH
+
+```{r}
+Joined_coefficients %>%
+  select(  variable,
+           mean, q5, q95, Sp, Dataset, Specialism) %>%
+  pivot_wider( id_cols = c('variable', 'Specialism','Sp' ),
+               names_from = 'Dataset',
+               values_from = c( 'mean','q5','q95' )) %>%
+  filter( !is.na(mean_OUMNH )) %>%
+  ggplot( aes( y =  mean_NHM , 
+               x = mean_OUMNH))+
+  geom_abline(intercept = 0, slope =1, col = 'red')+
+  geom_errorbarh(aes(xmin = q5_OUMNH, xmax = q95_OUMNH), col = 'grey')+
+  geom_errorbar(aes(ymin = q5_NHM, ymax = q95_NHM), col = 'grey')+
+ geom_point()+
+  facet_wrap(~variable, scales = 'free')+
+  theme_bw()+
+  theme(legend.position = 'bottom')+
+  ggtitle('Correlation in Species-level coefficients')+
+  xlab('OUMNH Estimate')+
+  ylab('NHM Estimate')
+
+ggsave(filename = '../figs/compare_coefs_across_datasets.png', width = 10, height =4)
+
+```
+## Comparison Of all three  values
+
+(including equivilent fits from original Wilson et al paper)
+
+```{r}
+ORDER <- Joined_coefficients %>%
+  filter(variable=='b_Temp', Dataset =='NHM' ) %>%
+  arrange(mean) %>%pluck('Sp')
+
+Joined_coefficients%>%
+  ggplot( aes( y =  Sp , 
+               x = mean, 
+               col = Dataset))+
+  geom_point()+
+  geom_errorbarh(aes( xmin = q5, xmax = q95))+
+  geom_vline(xintercept = 0)+
+  scale_y_discrete(limits = ORDER)+
+  facet_grid(.~variable, scales = 'free')+
+  ggtitle('Species-level coefficients')
+
+
+ggsave(filename = '../figs/compare_coefs_across_three_datasetsM1.png', width = 10, height =6)
+
+Joined_coefficients%>%
+  filter(variable%in% c( 'b_Wilson_LateTemp')) %>%
+  ggplot( aes( y =  Sp , 
+               x = mean, 
+               col = Dataset))+
+  geom_point()+
+  geom_errorbarh(aes( xmin = q5, xmax = q95))+
+  geom_vline(xintercept = 0)+
+  facet_grid(Specialism~variable, scales = 'free')+
+  ggtitle('Species-level coefficients')
+
+```
+
+# Session Info
+
+```{r}
+sessionInfo()
+```

@@ -11,6 +11,10 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+This script fits and saves brms models predicting size for each species:
+
+log(Size)  ~ YearRescale + Temp  + Latitude + Sex
+
 ```{r message = FALSE}
 library(tidyverse)
 library(brms)
@@ -23,8 +27,6 @@ OUM_ForFitting <- read_csv(  '../data/OUMNH_for_models_monthly.csv')
 ```
 
 # NHM Fit with sex as an offset for each species
-
-This allows easier analysis down the line. 
 
 ```{r}
 ## Cycle through each species to fit models 
@@ -40,7 +42,6 @@ sum(Batches$n >100) # 52 species
 
 ## Build unique Name for each brood
 ```{r}
-## Exclude all of brood 2:
 Batches %>%
   filter( n >100 ) -> TableOfModels_NHM
 
@@ -132,9 +133,6 @@ for( i in 1:nrow( TableOfModels_OUMNH)){
   }
   save(MODEL_FIT, file = paste('../OUM_modelfitsM1/',Set2[i]  ))
 }
- 
- 
-
 ```
 
 ### Collating model outputs into a df

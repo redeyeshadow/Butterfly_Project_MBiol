@@ -357,6 +357,9 @@ display: none;
 </div>
 
 
+<p>This script fits and saves brms models predicting size for each
+species:</p>
+<p>log(Size) ~ YearRescale + Temp + Latitude + Sex</p>
 <pre class="r"><code>library(tidyverse)
 library(brms)
 library(posterior)</code></pre>
@@ -380,7 +383,6 @@ library(posterior)</code></pre>
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <div id="nhm-fit-with-sex-as-an-offset-for-each-species" class="section level1">
 <h1>NHM Fit with sex as an offset for each species</h1>
-<p>This allows easier analysis down the line.</p>
 <pre class="r"><code>## Cycle through each species to fit models 
 Batches&lt;- count(NHM_ForFitting,
                 Sp)%&gt;%
@@ -393,8 +395,7 @@ Batches$n %&gt;% log10 %&gt;% plot; abline(h = 2) # almost perfect log-normal pl
 <pre><code>## [1] 52</code></pre>
 <div id="build-unique-name-for-each-brood" class="section level2">
 <h2>Build unique Name for each brood</h2>
-<pre class="r"><code>## Exclude all of brood 2:
-Batches %&gt;%
+<pre class="r"><code>Batches %&gt;%
   filter( n &gt;100 ) -&gt; TableOfModels_NHM
 
 Set2 = paste0(&#39;Sp.&#39;, TableOfModels_NHM$Sp)</code></pre>
