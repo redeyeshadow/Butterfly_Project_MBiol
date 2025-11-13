@@ -99,7 +99,7 @@ sum(Batches$n  >=40)
 ## Build unique Name for each brood
 ```{r}
 Batches %>%
-  filter( n >=40 ) -> TableOfModels_OUMNH
+  filter( n >1) -> TableOfModels_OUMNH ## No longer include a threshold
 
 Set2 = paste0('Sp.', TableOfModels_OUMNH$Sp)
 ```

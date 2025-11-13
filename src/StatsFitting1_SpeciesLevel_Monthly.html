@@ -443,7 +443,7 @@ Batches$n  %&gt;% plot; abline(h = 40) # almost perfect log-normal plot</code></
 <div id="build-unique-name-for-each-brood-1" class="section level2">
 <h2>Build unique Name for each brood</h2>
 <pre class="r"><code>Batches %&gt;%
-  filter( n &gt;=40 ) -&gt; TableOfModels_OUMNH
+  filter( n &gt;1) -&gt; TableOfModels_OUMNH ## No longer include a threshold
 
 Set2 = paste0(&#39;Sp.&#39;, TableOfModels_OUMNH$Sp)</code></pre>
 <pre class="r"><code>### Define and compile model when sexes are differentiated 
