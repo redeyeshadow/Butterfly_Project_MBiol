@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+This document visualises the spatio-temporal distribution of records used for each of the datasets. 
 
 ```{R}
 library(tidyverse)
@@ -28,11 +29,10 @@ Species_info <- left_join(read_csv('../data/brood_table.csv'),
 
 NHM_ForFitting <- read_csv(  '../data/NHM_for_models_monthly.csv')%>%
   left_join(Species_info)
-OUM_ForFitting <- read_csv(  '../data/OUNHM_for_models_monthly.csv')
+OUM_ForFitting <- read_csv(  '../data/OUMNH_for_models_monthly.csv')
 
 
 SouthBritishIsles<- map_data('worldHires') 
-
 ```
 
 # Plotting Function
@@ -176,7 +176,7 @@ for(i in 1:7){
                          ncol = 1)
   
   ## add scales to the bottom of each
-  ggsave(paste0('../figs/SI_dataspread_', i ,'.png'), 
+  ggsave(paste0('../figs/SI_NHM_dataspread_', i ,'.png'), 
          WithScales, width = 8, height = 20, bg = 'white')
 }
 
@@ -184,7 +184,7 @@ for(i in 1:7){
 ```
 
 
-# OUNHM Maps and Plots
+# OUMNH Maps and Plots
 
 ```{r}
 OUM_Species<-sort(unique(OUM_ForFitting$Sp))
@@ -204,7 +204,7 @@ for(i in 1:4){
                          Scales, ## add scales to the bottom of each
                          rel_heights = c(10,1), ncol = 1)
   
-  ggsave(paste0('../figs/SI_OUNHM_dataspread_', i ,'.png'), 
+  ggsave(paste0('../figs/SI_OUM_dataspread_', i ,'.png'), 
          WithScales, width = 8, height = 20, bg = 'white')
 }
 
