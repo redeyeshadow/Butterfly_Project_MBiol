@@ -279,7 +279,7 @@ Trends %>%
   scale_shape_manual(values  = c(6,1,2))+
   theme_bw()+
   theme(legend.position = 'bottom')+
-  xlab('UK RedList\nStatus')+
+  xlab('UK Red List\nStatus')+
   ylab('"Temperature" Coefficient')  -> TempEffect_RedList_Plot_nolabels
 
 TempEffect_RedList_Plot_nolabels
@@ -460,7 +460,7 @@ Trends %>%
   scale_shape_manual(values  = c(6,1,2))+
   theme_bw()+
   theme(legend.position = 'bottom')+
-  xlab('UK RedList\nStatus')+
+  xlab('UK Red List\nStatus')+
   ylab('Response to Temperature Coefficient')  -> TempEffect_RedList_Plot
 
 plot_grid(plot_grid( YearEffect_Size_Plot +
