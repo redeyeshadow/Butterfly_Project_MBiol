@@ -131,6 +131,7 @@ DataForMainNHMPlot%>%
         strip.background = element_rect(fill = 'grey80', colour = NA))
 
 ggsave('../figs/NHM_Monthly_MainSpResults_byFamily.png', width = 10, height = 7, bg = 'white')
+ggsave('../figs/NHM_Monthly_MainSpResults_byFamily.pdf', width = 10, height = 7, bg = 'white')
 ```
 
 # Sample Size vs confidence (SI Figure)
