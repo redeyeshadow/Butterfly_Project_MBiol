@@ -11,7 +11,7 @@ library(tidyverse)
 OUMNH_measurements <- read_csv('../data/OUMNH_Measurements.csv' )
 ```
 
-This document teks in the raw 
+This document takes in the raw data and cleans up the location names. 
 
 ## Correlation between measurements
 

@@ -6,7 +6,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-This document uses area locations for the OUNHM data to calculate best-guess coordinates from the midpoint of each region. 
+This document uses area locations for the OUMNH data to calculate best-guess coordinates from the midpoint of each region. 
 
 # Load libraries
 ```{r message=FALSE}
