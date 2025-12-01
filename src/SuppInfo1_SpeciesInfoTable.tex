@@ -1,0 +1,367 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Pretty Species Info Table for Paper},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Pretty Species Info Table for Paper}
+\author{}
+\date{\vspace{-2.5em}2025-07-30}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyverse)}
+
+
+\NormalTok{Species\_info }\OtherTok{\textless{}{-}} \FunctionTok{left\_join}\NormalTok{(}\FunctionTok{read\_csv}\NormalTok{(}\StringTok{\textquotesingle{}../data/brood\_table\_CTupdates.csv\textquotesingle{}}\NormalTok{),}
+                          \FunctionTok{read\_csv}\NormalTok{(}\StringTok{\textquotesingle{}../data/names\_table.csv\textquotesingle{}}\NormalTok{))}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{( }\AttributeTok{Sp =} \StringTok{\textasciigrave{}}\AttributeTok{Taxon name}\StringTok{\textasciigrave{}}\NormalTok{,}
+\NormalTok{          maximum\_plausible,}
+\NormalTok{          minimum\_plausible)}
+
+\NormalTok{NHM\_ForFitting }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(  }\StringTok{\textquotesingle{}../data/NHM\_for\_models\_monthly.csv\textquotesingle{}}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{left\_join}\NormalTok{(Species\_info)}
+\NormalTok{OUM\_ForFitting }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(  }\StringTok{\textquotesingle{}../data/OUMNH\_for\_models\_monthly.csv\textquotesingle{}}\NormalTok{)}
+\NormalTok{SpeciesToInclude}\OtherTok{\textless{}{-}}   \FunctionTok{unique}\NormalTok{(}\FunctionTok{read\_csv}\NormalTok{(}\StringTok{\textquotesingle{}../statsresults/NHM\_Posterior\_Summaries\_M1.csv\textquotesingle{}}\NormalTok{)}\SpecialCharTok{$}\NormalTok{Sp)}
+
+\NormalTok{UKRedList }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{\textquotesingle{}../data/ButterflyRedlistUK.csv\textquotesingle{}}\NormalTok{)}
+\NormalTok{specialism }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{( }\StringTok{\textquotesingle{}../data/specialism\_with\_nhm.csv\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Making Table 1}\label{making-table-1}
+
+Table summarising each species. Might end up in SI
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{left\_join}\NormalTok{(NHM\_ForFitting }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_by}\NormalTok{(Sp) }\SpecialCharTok{\%\textgreater{}\%}
+            \FunctionTok{count}\NormalTok{(}\AttributeTok{name =} \StringTok{\textquotesingle{}NHM\_n\textquotesingle{}}\NormalTok{) , }
+\NormalTok{          OUM\_ForFitting }\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{group\_by}\NormalTok{(Sp) }\SpecialCharTok{\%\textgreater{}\%}
+            \FunctionTok{count}\NormalTok{(}\AttributeTok{name =} \StringTok{\textquotesingle{}OUM\_n\textquotesingle{}}\NormalTok{) ) }\OtherTok{{-}\textgreater{}}\NormalTok{ CountsUsedInModels}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Joining with `by = join_by(Sp)`
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{left\_join}\NormalTok{(}\FunctionTok{read\_csv}\NormalTok{(}\StringTok{\textquotesingle{}../data/brood\_table\_CTupdates.csv\textquotesingle{}}\NormalTok{),}
+          \FunctionTok{read\_csv}\NormalTok{(}\StringTok{\textquotesingle{}../data/names\_table.csv\textquotesingle{}}\NormalTok{))}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{left\_join}\NormalTok{(specialism) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Taxon name}\StringTok{\textasciigrave{}}  \SpecialCharTok{\%in\%}\NormalTok{  SpeciesToInclude) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{left\_join}\NormalTok{(UKRedList, }\AttributeTok{by =}\FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}Taxon name\textquotesingle{}}\OtherTok{=}\StringTok{\textquotesingle{}Species\textquotesingle{}}\NormalTok{) ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{left\_join}\NormalTok{(CountsUsedInModels, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}Taxon name\textquotesingle{}} \OtherTok{=}\StringTok{\textquotesingle{}Sp\textquotesingle{}}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{( }\AttributeTok{Habitat =} \FunctionTok{ifelse}\NormalTok{( Specialism }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}Habitat and foodplant generalist\textquotesingle{}}\NormalTok{ ,}
+                                              \StringTok{\textquotesingle{}Habitat generalist and foodplant specialist\textquotesingle{}}\NormalTok{),}
+                            \StringTok{\textquotesingle{}G\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}S\textquotesingle{}}\NormalTok{),}
+          \AttributeTok{Foodplant =} \FunctionTok{ifelse}\NormalTok{( Specialism }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}Habitat and foodplant generalist\textquotesingle{}}\NormalTok{ ,}
+                                                \StringTok{\textquotesingle{}Habitat specialist and foodplant generalist\textquotesingle{}}\NormalTok{),}
+                              \StringTok{\textquotesingle{}G\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}S\textquotesingle{}}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{( }\StringTok{\textasciigrave{}}\AttributeTok{Focal Brood}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{ifelse}\NormalTok{(Univoltine,}
+                                 \StringTok{\textquotesingle{}Univoltine\textquotesingle{}}\NormalTok{,}
+                                 \FunctionTok{paste0}\NormalTok{( FocalBrood,}\StringTok{\textquotesingle{}: \textquotesingle{}}\NormalTok{,}
+\NormalTok{                                         month.abb[FirstMonthBrood\_focal],}\StringTok{\textquotesingle{}{-}\textquotesingle{}}\NormalTok{,}
+\NormalTok{                                         month.abb[LastMonthBrood\_focal]))) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(Univoltine,}\StringTok{\textasciigrave{}}\AttributeTok{Taxon name}\StringTok{\textasciigrave{}}\NormalTok{ ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Common Name}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{ifelse}\NormalTok{( }\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(EnglishName),EnglishName,}
+                                 \FunctionTok{ifelse}\NormalTok{( }\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Elsa name}\StringTok{\textasciigrave{}}\NormalTok{ ),}
+                                         \StringTok{\textasciigrave{}}\AttributeTok{Elsa name}\StringTok{\textasciigrave{}}\NormalTok{ ,}
+                                         \StringTok{\textquotesingle{}TO BE ADDED\textquotesingle{}}\NormalTok{) )) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{GB Red List category}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{ifelse}\NormalTok{( }\FunctionTok{is.na}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{GB Red List category}\StringTok{\textasciigrave{}}\NormalTok{),}
+                                          \StringTok{\textquotesingle{}Not Listed\textquotesingle{}}\NormalTok{,}
+                                          \StringTok{\textasciigrave{}}\AttributeTok{GB Red List category}\StringTok{\textasciigrave{}}\NormalTok{) ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\AttributeTok{Species =}\StringTok{\textasciigrave{}}\AttributeTok{Taxon name}\StringTok{\textasciigrave{}}\NormalTok{,}
+         \StringTok{\textasciigrave{}}\AttributeTok{Common Name}\StringTok{\textasciigrave{}}\NormalTok{,}
+\NormalTok{         Family,}
+\NormalTok{         Habitat,}
+\NormalTok{         Foodplant,}
+\NormalTok{         NHM\_n,}
+\NormalTok{         OUM\_n,}
+         \StringTok{\textasciigrave{}}\AttributeTok{Focal Brood}\StringTok{\textasciigrave{}}\NormalTok{,}
+\NormalTok{         FocalMonthLateLarval ,}
+         \StringTok{\textasciigrave{}}\AttributeTok{GB Red List category}\StringTok{\textasciigrave{}}\NormalTok{ ) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Rows: 100 Columns: 19
+## -- Column specification --------------------------------------------------------
+## Delimiter: ","
+## chr (12): Elsa name, Taxon name, NHM name, Family, Month egg layed, Month la...
+## dbl  (5): FocalBrood, FirstMonthBrood_focal, LastMonthBrood_focal, maximum_p...
+## lgl  (2): Include, Univoltine
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 55 Columns: 3
+## -- Column specification --------------------------------------------------------
+## Delimiter: ","
+## chr (3): Elsa name, NHM name, Taxon name
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Joining with `by = join_by(`Elsa name`, `Taxon name`, `NHM name`)`
+## Joining with `by = join_by(`Taxon name`)`
+\end{verbatim}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1623}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.2078}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0844}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0519}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0649}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0390}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0390}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0779}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1364}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1364}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Species
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Common Name
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Family
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Habitat
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Foodplant
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+NHM\_n
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+OUM\_n
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Focal Brood
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+FocalMonthLateLarval
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+GB Red List category
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Aglais urticae & Small tortoiseshell & Nymphalidae & G & S & 971 & 34 &
+1: Jun-Aug & May & Not Listed \\
+Aricia agestis & Brown argus & Lycaenidae & S & S & 975 & 42 & 2:
+Aug-Oct & July & Not Listed \\
+Celastrina argiolus & Holly blue & Lycaenidae & G & G & 303 & 25 & 2:
+Aug-Oct & June & Not Listed \\
+Lasiommata megera & Wall & Nymphalidae & G & G & 619 & 62 & 2: Aug-Oct &
+June & Endangered \\
+Leptidea sinapis & Wood White & Pieridae & S & S & 791 & 70 & 1: Mar-Jun
+& JulyBefore & Endangered \\
+Lycaena phlaeas & Small copper & Lycaenidae & G & S & 2877 & 65 & 2:
+Jul-Oct & June & Not Listed \\
+Pararge aegeria & Speckled wood & Nymphalidae & G & G & 471 & 38 & 2:
+Jul-Aug & June & Not Listed \\
+Pieris brassicae & Large white & Pieridae & G & S & 344 & 44 & 2:
+Jul-Sep & June & Not Listed \\
+Pieris napi & Green-veined white & Pieridae & G & G & 766 & NA & 2:
+Jul-Sep & June & Not Listed \\
+Pieris rapae & Cabbage white & Pieridae & G & G & 445 & NA & 2: Jul-Sep
+& June & Not Listed \\
+Polygonia c-album & Comma & Nymphalidae & G & G & 466 & 39 & 1: Jun-Aug
+& June & Not Listed \\
+Polyommatus bellargus & Adonis Blue & Lycaenidae & S & S & 4830 & 63 &
+2: Aug-Sep & July & Vulnerable \\
+Polyommatus icarus & Common blue & Lycaenidae & G & G & 3752 & 63 & 2:
+Aug-Sep & July & Not Listed \\
+Aglais io & Peacock & Nymphalidae & G & S & 505 & 80 & Univoltine & June
+& Not Listed \\
+Anthocharis cardamines & Orange tip & Pieridae & G & G & 1661 & 64 &
+Univoltine & JulyBefore & Not Listed \\
+Apatura iris & Purple emperor & Nymphalidae & S & S & 124 & NA &
+Univoltine & March & Not Listed \\
+Aphantopus hyperantus & Ringlet & Nymphalidae & G & G & 2206 & NA &
+Univoltine & June & Not Listed \\
+Argynnis paphia & Silver washed fritillary & Nymphalidae & G & S & 1447
+& 83 & Univoltine & June & Not Listed \\
+Boloria euphrosyne & Pearl-bordered Fritillary & Nymphalidae & G & S &
+1865 & NA & Univoltine & April & Vulnerable \\
+Boloria selene & Small Pearl-bordered Fritillary & Nymphalidae & S & S &
+1925 & NA & Univoltine & April & Vulnerable \\
+Callophrys rubi & Green hairstreak & Lycaenidae & G & G & 990 & NA &
+Univoltine & JuneBefore & Not Listed \\
+Carterocephalus palaemon & Chequered Skipper & Hesperiidae & S & S & 604
+& NA & Univoltine & AugustBefore & Not Listed \\
+Coenonympha pamphilus & Small Heath & Nymphalidae & G & S & 3058 & NA &
+Univoltine & April & Vulnerable \\
+Coenonympha tullia & Large Heath & Nymphalidae & S & S & 1409 & 44 &
+Univoltine & April & Endangered \\
+Cupido minimus & Small Blue & Lycaenidae & G & S & 1453 & 89 &
+Univoltine & JulyBefore & Near Threatened \\
+Erynnis tages & Dingy skipper & Hesperiidae & G & S & 856 & 85 &
+Univoltine & AugustBefore & Not Listed \\
+Euphydryas aurinia & Marsh Fritillary & Nymphalidae & G & S & 1926 & NA
+& Univoltine & May & Vulnerable \\
+Fabriciana adippe & High Brown Fritillary & Nymphalidae & G & S & 994 &
+NA & Univoltine & May & Endangered \\
+Favonius quercus & Purple hairstreak & Lycaenidae & G & S & 494 & 83 &
+Univoltine & May & Not Listed \\
+Gonepteryx rhamni & Brimstone & Pieridae & G & S & 483 & 81 & Univoltine
+& June & Not Listed \\
+Hamearis lucina & Duke of Burgundy & Riodinidae & S & S & 951 & NA &
+Univoltine & JulyBefore & Vulnerable \\
+Hesperia comma & Silver-spotted Skipper & Hesperiidae & S & S & 646 &
+103 & Univoltine & June & Vulnerable \\
+Hipparchia semele & Grayling & Nymphalidae & S & G & 1654 & NA &
+Univoltine & April & Endangered \\
+Limenitis camilla & White Admiral & Nymphalidae & S & S & 761 & 97 &
+Univoltine & May & Vulnerable \\
+Maniola jurtina & Meadow brown & Nymphalidae & G & G & 4730 & 70 &
+Univoltine & April & Not Listed \\
+Melanargia galathea & Marbled white & Nymphalidae & G & G & 2169 & 101 &
+Univoltine & May & Not Listed \\
+Melitaea athalia & Heath Fritillary & Nymphalidae & G & G & 1619 & NA &
+Univoltine & March & Endangered \\
+Melitaea cinxia & Glanville Fritillary & Nymphalidae & S & S & 579 & NA
+& Univoltine & March & Endangered \\
+Nymphalis polychloros & Large Tortoiseshell & Nymphalidae & G & G & 197
+& NA & Univoltine & June & Regionally Extinct \\
+Ochlodes sylvanus & Large skipper & Hesperiidae & G & G & 1029 & NA &
+Univoltine & May & Not Listed \\
+Papilio machaon & Swallowtail & Papilionidae & S & S & 166 & 54 &
+Univoltine & JulyBefore & Vulnerable \\
+Plebejus argus & Silver-studded Blue & Lycaenidae & S & G & 7105 & NA &
+Univoltine & May & Vulnerable \\
+Polyommatus coridon & Chalk Hill Blue & Lycaenidae & G & S & 19584 & NA
+& Univoltine & June & Vulnerable \\
+Pyrgus malvae & Grizzled Skipper & Hesperiidae & G & G & 1285 & 108 &
+Univoltine & July & Vulnerable \\
+Pyronia tithonus & Gatekeeper & Nymphalidae & G & S & 2313 & 125 &
+Univoltine & June & Not Listed \\
+Satyrium pruni & Black Hairstreak & Lycaenidae & S & S & 377 & NA &
+Univoltine & May & Endangered \\
+Satyrium w-album & White-letter Hairstreak & Lycaenidae & S & S & 346 &
+NA & Univoltine & May & Vulnerable \\
+Speyeria aglaja & Dark Green Fritillary & Nymphalidae & G & S & 1028 &
+51 & Univoltine & May & Near Threatened \\
+Thecla betulae & Brown Hairstreak & Lycaenidae & G & S & 165 & NA &
+Univoltine & June & Vulnerable \\
+Thymelicus acteon & Lulworth Skipper & Hesperiidae & S & S & 544 & NA &
+Univoltine & May & Near Threatened \\
+Thymelicus lineola & Essex skipper & Hesperiidae & G & G & 707 & NA &
+Univoltine & May & Not Listed \\
+Thymelicus sylvestris & Small skipper & Hesperiidae & G & G & 918 & 98 &
+Univoltine & May & Not Listed \\
+\end{longtable}
+
+\end{document}

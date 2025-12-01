@@ -93,7 +93,8 @@ abline(v=0, col = 'red'); abline(v=mean(SpeciesLvlCorrs$YvT), col = 'blue')
 SpeciesLvlCorrs$LvT %>% hist(breaks=20, main ='Temperature v Latitude')
 abline(v=0, col = 'red'); abline(v=mean(SpeciesLvlCorrs$LvT), col = 'blue')
 
-pdf(file ='../figs/SI_corr_inTempLatYear.pdf', width = 5, height = 3)
+png(file ='../figs/SI_corr_inTempLatYear.png',
+    units ='in', width = 5, height = 3, res = 400)
 par(mfrow= c(1,3))
 SpeciesLvlCorrs$YvL %>% hist(breaks=20, main ='Year v Latitude')
 abline(v=0, col = 'red'); abline(v=mean(SpeciesLvlCorrs$YvL), col = 'blue')

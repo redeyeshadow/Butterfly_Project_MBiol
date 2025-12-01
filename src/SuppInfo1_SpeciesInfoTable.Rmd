@@ -1,8 +1,10 @@
 ---
 title: "Pretty Species Info Table for Paper"
 output:
-  word_document: default
+  pdf_document: 
+    keep_tex: true
   html_document: default
+  word_document: default
 date: "2025-07-30"
 editor_options:
   chunk_output_type: console
@@ -24,7 +26,7 @@ Species_info <- left_join(read_csv('../data/brood_table_CTupdates.csv'),
 
 NHM_ForFitting <- read_csv(  '../data/NHM_for_models_monthly.csv')%>%
   left_join(Species_info)
-OUM_ForFitting <- read_csv(  '../data/OUMHN_for_models_monthly.csv')
+OUM_ForFitting <- read_csv(  '../data/OUMNH_for_models_monthly.csv')
 SpeciesToInclude<-   unique(read_csv('../statsresults/NHM_Posterior_Summaries_M1.csv')$Sp)
 
 UKRedList <- read_csv('../data/ButterflyRedlistUK.csv')

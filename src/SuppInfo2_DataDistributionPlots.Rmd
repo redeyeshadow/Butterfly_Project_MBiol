@@ -68,8 +68,7 @@ Plot_Summary<- function(species, data, dataset, Jitter=FALSE){
       coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
       theme_minimal()+
       theme(axis.title = element_blank())+
-      ggtitle(paste(dataset, '\n',species ),
-              subtitle = 'NB Locations jittered to reduce overlap' )-> Map2
+      ggtitle(paste0(species,' (',dataset,')'))-> Map2
     
   }else{
     XX%>%
@@ -166,27 +165,34 @@ plotlist_NHM<-purrr::map(NHM_Species,
                          data=NHM_ForFitting, 
                          dataset='NHM' )
 
-## 52 species, 8 per page:
-for(i in 1:7){
-  plotlist<- plotlist_NHM[ ((i*8)-7):(i*8)]
-  EightPlots<- plot_grid( plotlist = plotlist,
+## 52 species, 7 per page, 8 pages
+for(i in 1:8){
+  plotlist<- plotlist_NHM[((i*7)-6):(i*7)]
+
+  if( i == 8){
+    ## add scales to the bottom of last one
+    
+      ThreePlots<- plot_grid( plotlist = plotlist[1:3],
                           ncol = 1)
-  WithScales<-plot_grid( EightPlots, Scales,
-                         rel_heights = c(10,1),
-                         ncol = 1)
-  
-  ## add scales to the bottom of each
-  ggsave(paste0('../figs/SI_NHM_dataspread_', i ,'.png'), 
-         WithScales, width = 8, height = 20, bg = 'white')
+        WithScales<-plot_grid( ThreePlots, Scales,
+                           rel_heights = c(4,1),
+                           ncol = 1)
+    ggsave(paste0('../figs/SI_NHM_dataspread_', i ,'.png'), 
+           WithScales, width = 8, height = 8, bg = 'white')
+  }else{
+     SevenPlots<- plot_grid( plotlist = plotlist,
+                          ncol = 1)
+    ggsave(paste0('../figs/SI_NHM_dataspread_', i ,'.png'), 
+           SevenPlots, width = 8, height = 12, bg = 'white')
+  }
 }
 
 
 ```
 
-
 # OUMNH Maps and Plots
 
-```{r}
+```{r eval = FALSE}
 OUM_Species<-sort(unique(OUM_ForFitting$Sp))
 
 plotlist_OUM<-purrr::map(OUM_Species,
@@ -195,17 +201,25 @@ plotlist_OUM<-purrr::map(OUM_Species,
                          dataset='OUM', Jitter = TRUE )
 
 
-## 8 per page:
+## 7 per page:
 for(i in 1:4){
-  plotlist_OUM2<- plotlist_OUM[ ((i*8)-7):(i*8)]
-  EightPlots<- plot_grid( plotlist = plotlist_OUM2,
+  plotlist_OUM2<- plotlist_OUM[ ((i*7)-6):(i*7)]
+  
+  if(i == 4){
+  Plots<- plot_grid( plotlist = plotlist_OUM2,
                           ncol = 1)
-  WithScales<-plot_grid( EightPlots,
+  WithScales<-plot_grid( Plots,
                          Scales, ## add scales to the bottom of each
                          rel_heights = c(10,1), ncol = 1)
   
   ggsave(paste0('../figs/SI_OUM_dataspread_', i ,'.png'), 
-         WithScales, width = 8, height = 20, bg = 'white')
+         WithScales, width = 8, height = 12, bg = 'white')
+  }else{
+      Plots<- plot_grid( plotlist = plotlist_OUM2,
+                          ncol = 1)
+  ggsave(paste0('../figs/SI_OUM_dataspread_', i ,'.png'), 
+         Plots, width = 8, height = 14, bg = 'white')
+  }
 }
 
 ```
