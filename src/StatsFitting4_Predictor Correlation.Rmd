@@ -3,6 +3,8 @@ title: "StatsFitting4_ Predictor Correlation"
 author: "Chris Terry"
 date: "2025-09-01"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r message=FALSE, warning=FALSE}
@@ -113,7 +115,7 @@ Trends %>%
 
 FamilyCorrelates_a <- ggplot(x, aes( x = Family, fill = RedListListed))+
   geom_bar()+theme_bw()+theme(legend.position="bottom")+
-  scale_fill_manual(values = c('darkred', 'lightgreen'))+
+  scale_fill_manual(values = c('darkred', 'lightgreen'), name = 'Red List:')+
   ylab('Count in Dataset')
 
 FamilyCorrelates_b <- ggplot(x, aes( x = Family, y = MeanRightWing))+
@@ -122,7 +124,7 @@ FamilyCorrelates_b <- ggplot(x, aes( x = Family, y = MeanRightWing))+
 
 FamilyCorrelates_c <- ggplot(x, aes( x = Family, fill = Generalist))+
   geom_bar()+theme_bw()+theme(legend.position="bottom")+
-  scale_fill_manual(values = c('blue','yellow' ))+
+  scale_fill_manual(values = c('blue','gold' ))+
   ylab('Count in Dataset')
 
 
@@ -138,7 +140,7 @@ plot_grid(Predictor_CorrPlot,
           FamilyCorrelates_a,
           FamilyCorrelates_b,
           FamilyCorrelates_c, 
-          labels = c('a) Correlations',
+          labels = c('a) Correlations between Cross-Species Predictors',
                      'b) Red Listing by Family', 
                      'c) Average Size by Family',
                      'd) Specialism by Family'),

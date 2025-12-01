@@ -6,11 +6,12 @@
 \usepackage{hyperref}
 \usepackage{longtable}
 \usepackage{array}
+\usepackage{float}
 \usepackage{pdflscape}
 \usepackage{microtype}   % nicer justification
 \usepackage{caption}
 
-\title{SI for Museum specimens reveal butterfly size increases through time but divergent responses to temperature}
+\title{SI for \emph{Museum specimens reveal butterfly size increases through time but divergent responses to temperature}}
 \author{Elsa Heywood,  Zoe M. Simmons, J. Christopher D. Terry, Ailsa H. C. McLean}
 \date{}
 
@@ -19,14 +20,14 @@
 \maketitle
 
 \renewcommand{\thetable}{S1} % makes this table Table S1
-\begin{landscape} 
+\begin{landscape}
 \section{SI Tables}
 
 \footnotesize % shrink table text; change to \small or \scriptsize if needed
 \setlength{\tabcolsep}{4pt} % reduce horizontal padding between columns
 \renewcommand{\arraystretch}{1.05} % slightly tighter row spacing
 
-\begin{longtable}{@{} 
+\begin{longtable}{@{}
   >{\itshape}p{0.15\linewidth}  % Species (wraps)
   p{0.18\linewidth}  % Common Name (wraps)
   p{0.10\linewidth}  % Family
@@ -38,7 +39,7 @@
   p{0.10\linewidth}  % FocalMonthLateLarval
   p{0.10\linewidth}  % GB Red List category
  @{}}
- 
+
 \caption{Details of butterfly species used in this study. Habitat and foodplant specialism status was split into two categories divided  specialists (S) and generalists (G). Numbers for each datasets are the post-filterring counts.}\\
 \toprule
 Species & Common Name & Family & Habitat & Foodplant & n (NHM) & n (OUMNH) & Focal Brood & Focal Month (Late Larval) & GB Red List category \\
@@ -138,51 +139,110 @@ Red Listed    & 5  & 9  & 12 \\
 \caption{Categorisation of Temperatures – Size trends by British Red list status (Unlisted versus either \emph{Regionally Extinct}, \emph{Endangered}, \emph{Vulnerable}, or \emph{Near-Threatened}) Temperature responses were categorised into positive, negative or not-detectable based on whether the 90\% posterior support of that species’ fitted coefficient straddles zero. ($\chi^2$-test with Yates' continuity correction $\chi^2$= 6.0952, df = 2, p-value = 0.047)}
 
 \end{table}
-% 
+%
 
 \newpage
 
 \section{SI Figures}
 
-\\
-\includegraphics[width=\linewidth]{../figs/SI_correlation_in_predictors.png}
-\\Figure S1: . Associations between cross-species predictors. A) Correlations between three principle predictors. B-D) Relationship between taxonomic Family and other species-level predictors. Families differ greatly in size, but otherwise there is an approximately even spread. 
+\renewcommand{\thefigure}{\textbf{S\arabic{figure}}}
+\renewcommand{\figurename}{\textbf{Figure}}
 
-\\
-\includegraphics[width=\linewidth]{../figs/compare_coefs_across_datasets.png}
-\\Figure S2: \includegraphics[width=\linewidth]{../figs/SI_corr_inTempLatYear.png}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{../figs/SI_corr_inTempLatYear.png}
+    \caption{
+        \textbf{Distribution of within species-level correlations between key predictors in the records in the NHM dataset.} Red line shows 0, blue line shows median. There is no consistent geographic trend through time. Temperature tended to be positively correlated with year, but the trend is very noisy. Likewise, there is an overall negative correlation between temeprature and latitude, but is neither strong or consistent. 
+    }
+\end{figure}
 
-\\
-\includegraphics[width=\linewidth]{../figs/Corr_sample_size_trends_NHM.png}
-\\Figure S3: Relationship between sample size, confidence of posterior estimate and identification of species-level trends in the NHM, LONDON dataset. Precision of posterior estimates was strongly related to the sample size for each species, but the identification of confident trends was less dependent on sample size. 
 
-\includegraphics[width=\linewidth]{../figs/PredictorsFigure_Both_withlabels.png}
-\\Figure S4: Main text Figure 4 with species labels. 
 
-%
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{../figs/SI_correlation_in_predictors.png}
+    \caption{
+        \textbf{Associations between cross-species predictors.}
+        (A) Correlations among the three principal predictors.
+        (B–D) Relationships between taxonomic family and other species-level predictors.
+        Families vary substantially in average size, but are otherwise approximately evenly distributed across predictor space.
+    }
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{../figs/Corr_sample_size_trends_NHM.png}
+    \caption{
+        \textbf{ Relationship between sample size, confidence of posterior estimate and identification of species-level trends in the NHM dataset.} Precision of posterior estimates was strongly related to the sample size for each species, but the identification of confident trends was less dependent on sample size. 
+    }
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{../figs/PredictorsFigure_Both_withlabels.png}
+    \caption{
+        \textbf{Main text Figure 4 with species labels. } 
+    }
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{../figs/compare_coefs_across_datasets.png}
+    \caption{
+        \textbf{Coefficient Correlations between datasets.} Here, each dot represents a species best-fit coefficent of the record-predictors within the two datasets. Error bars show 90\% posterior confidence interval. Estimates from the smaller dataset were mich more uncertain (note the unequal axis scales). Pearson's correlation of the mean estimates between the datasets was insigificant in each case ( p-values: 0.158, 0.429, 0.0797 respectively (unadjusted for multiple tests)). 
+        }
+\end{figure}
+
+
+
 \newpage
 
 \section{Specimen Spatio-temporal Distributions}
-\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_1.png}
-\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_2.png}
-\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_3.png}
-\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_4.png}
-\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_5.png}
-\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_6.png}
-\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_7.png}
-\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_8.png}
 
-Figure S5: srthsbh \\
+
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_1.png}
+\end{figure}
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_2.png}
+\end{figure}
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_3.png}
+\end{figure}
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_4.png}
+\end{figure}
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_5.png}
+\end{figure}
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_6.png}
+\end{figure}
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_7.png}
+\end{figure}
+\begin{figure}[H]
+\includegraphics[width=\linewidth]{../figs/SI_NHM_dataspread_8.png}
+\end{figure}
+
+\textbf{Figure S5: Distribution of records (post-filtering) from the NHM dataset for each species}
 
 % Ox Data Distributions
 \newpage
 
 \includegraphics[width=\linewidth]{../figs/SI_OUM_dataspread_1.png}
+\begin{figure}[H]
 \includegraphics[width=\linewidth]{../figs/SI_OUM_dataspread_2.png}
+\end{figure}
+\begin{figure}[H]
 \includegraphics[width=\linewidth]{../figs/SI_OUM_dataspread_3.png}
+\end{figure}
+\begin{figure}[H]
 \includegraphics[width=\linewidth]{../figs/SI_OUM_dataspread_4.png}
+\end{figure}
 
-\\ Figure S6 NB Locations jittered to reduce overlap \\
+\textbf{Figure S6: Distribution of records (post-filtering) from the NHM dataset for each species} NB Locations on the map have been slightly jittered to reduce overlap. 
 
 
 \end{document}
