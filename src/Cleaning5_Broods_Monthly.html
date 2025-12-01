@@ -9,9 +9,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Chris Terry" />
+<meta name="author" content="Heywood et al." />
 
-<meta name="date" content="2025-11-13" />
 
 <title>Cleaning5_Broods_Monthly</title>
 
@@ -351,18 +350,20 @@ display: none;
 
 
 <h1 class="title toc-ignore">Cleaning5_Broods_Monthly</h1>
-<h4 class="author">Chris Terry</h4>
-<h4 class="date">2025-11-13</h4>
+<h4 class="author">Heywood et al.</h4>
 
 </div>
 
 
+<p>This document deals with the different broods of the multivoltine
+species, and then matches the right temperature record for each species,
+to create the data sets to be passed to the modelling.</p>
 <pre class="r"><code>library(tidyverse)
 library(readxl)
 
 OUMNH_data_temps&lt;- read_csv(&#39;../data/OUMNH_data_temps_Monthly.csv&#39;)
 NHM_data_temps &lt;- read_csv(&#39;../data/NHM_w_temps_Monthly.csv&#39;)
-BroodTable &lt;- read_csv(&#39;../data/brood_table_CTupdates.csv&#39;)</code></pre>
+BroodTable &lt;- read_csv(&#39;../data/brood_table.csv&#39;)</code></pre>
 <div id="tidying-brood-table" class="section level1">
 <h1>Tidying Brood Table</h1>
 <pre class="r"><code>Names_table&lt;- read_csv(&#39;../data/names_table.csv&#39;)</code></pre>

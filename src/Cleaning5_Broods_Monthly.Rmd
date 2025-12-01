@@ -6,13 +6,15 @@ editor_options:
   chunk_output_type: console
 ---
 
+This document deals with the different broods of the multivoltine species, and then matches the right temperature record for each species, to create the data sets to be passed to the modelling. 
+
 ```{R message = FALSE}
 library(tidyverse)
 library(readxl)
 
 OUMNH_data_temps<- read_csv('../data/OUMNH_data_temps_Monthly.csv')
 NHM_data_temps <- read_csv('../data/NHM_w_temps_Monthly.csv')
-BroodTable <- read_csv('../data/brood_table_CTupdates.csv')
+BroodTable <- read_csv('../data/brood_table.csv')
 ```
 
 # Tidying Brood Table

@@ -188,7 +188,7 @@ write_csv(Long_Lats_Years,
 
 
 ```{r}
-Long_Lats_Years <- read_csv(  '../data/NHM_Long_Lats_Years.csv')
+Long_Lats_Years <- read_csv('../data/NHM_Long_Lats_Years.csv')
 
 NHM_records %>%
   left_join(select( Long_Lats_Years,
@@ -297,7 +297,7 @@ write_csv(UA_Monthly_Temps_Long,
 ```
 
 ```{r}
-UA_Monthly_Temps_Long <- read_csv( '../data/UA_Monthly_Temps_Long.csv')
+UA_Monthly_Temps_Long <- read_csv('../data/UA_Monthly_Temps_Long.csv')
 
 ## Visual checks
 
@@ -324,7 +324,7 @@ LegalCounties %>%
 
 ```{r}
 OUMNH_data <- read_csv('../data/OUMNH_measurements_clean.csv')
-UA_temps <- read_csv( '../data/UA_Monthly_Temps_Long.csv') 
+UA_temps <- read_csv('../data/UA_Monthly_Temps_Long.csv') 
 VC_temps <- read_csv('../data/VC_Monthly_Temps_Long.csv')
 ```
 

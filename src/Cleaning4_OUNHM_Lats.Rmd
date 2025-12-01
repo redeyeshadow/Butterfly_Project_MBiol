@@ -6,7 +6,8 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Adding the shapefiles to get midpoint data for each location and then combining that with temperature, brood, and name data.
+This document uses area locations for the OUNHM data to calculate best-guess coordinates from the midpoint of each region. 
+
 # Load libraries
 ```{r message=FALSE}
 library(sf)
