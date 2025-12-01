@@ -1,7 +1,6 @@
 ---
 title: "Cleaning4_OUMNH_Lats"
-author: "Chris Terry & Elsa Heywood"
-date: "`r Sys.Date()`"
+author: "Heywood et al."
 output: html_document
 editor_options: 
   chunk_output_type: console

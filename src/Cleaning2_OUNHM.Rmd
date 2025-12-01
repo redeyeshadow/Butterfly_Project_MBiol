@@ -1,7 +1,6 @@
 ---
 title: "Cleaning2_OUMNM"
-author: "Chris Terry"
-date: "`r Sys.Date()`"
+author: "Heywood et al."
 output: html_document
 editor_options: 
   chunk_output_type: console

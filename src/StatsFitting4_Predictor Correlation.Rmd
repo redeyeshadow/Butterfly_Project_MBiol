@@ -1,7 +1,6 @@
 ---
 title: "StatsFitting4_ Predictor Correlation"
-author: "Chris Terry"
-date: "2025-09-01"
+author: "Heywood et al."
 output: html_document
 editor_options: 
   chunk_output_type: console

@@ -5,7 +5,7 @@ output:
     keep_tex: true
   html_document: default
   word_document: default
-date: "2025-07-30"
+author: "Heywood et al."
 editor_options:
   chunk_output_type: console
 ---

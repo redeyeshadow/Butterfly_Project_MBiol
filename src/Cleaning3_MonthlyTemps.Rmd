@@ -1,7 +1,7 @@
 ---
 title: "Monthly Data"
 output: html_document
-date: "`r Sys.Date()`"
+author: "Heywood et al."
 editor_options: 
   chunk_output_type: console
 ---
