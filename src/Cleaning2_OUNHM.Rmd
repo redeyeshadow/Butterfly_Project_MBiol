@@ -11,6 +11,8 @@ library(tidyverse)
 OUMNH_measurements <- read_csv('../data/OUMNH_Measurements.csv' )
 ```
 
+This document teks in the raw 
+
 ## Correlation between measurements
 
 ```{r}
@@ -42,8 +44,8 @@ OUMNH_measurements %>%
 
 ```{r}
 ### Temperature files (just for names)
-UA_temps <- read_csv( '../data/UA_Seasonal_Temps_Long.csv') #  
-VC_temps <- read_csv('../data/VC_Seasonal_Temps_Long.csv')
+UA_temps <- read_csv( '../data/UA_Monthly_Temps_Long.csv') #  
+VC_temps <- read_csv('../data/VC_Monthly_Temps_Long.csv')
 ```
 
 ### Which names need manual fixing?

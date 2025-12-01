@@ -74,7 +74,7 @@ UKGRID_COORDS<-sf_project(pts=  select(Long_Lats_Years,decimalLongitude,decimalL
                           from ='epsg:4326', 
                           to ='+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +a=6377563.396 +rf=299.324961266495 +units=m +no_defs')
 
-## Extracting all years out into a table of specimen x seasons
+## Extracting all years out into a table of specimen x months
 RecordTemps<- terra::extract(x = Collated_MonthlyTemps,
                              y=UKGRID_COORDS)
 
@@ -159,10 +159,10 @@ for(i in WeirdCoastal_Numbs){   ## takes a little while to run (~1 minute)
   XX<- rep(NA, length(Months))
   
   for(m in 1:length(Months)){
-    SeasonLayer = Long_Lats_Years[[i,Months[m]] ]
+    MonthLayer = Long_Lats_Years[[i,Months[m]] ]
     
     x<- terra::extract(x =subset(Collated_MonthlyTemps,
-                                 SeasonLayer) ,
+                                 MonthLayer) ,
                        y=vect(UKGRID_COORDS)[i],
                        search_radius=50000) ## up to 50km to nearest box
     XX[m]<- x[1,2]
@@ -236,17 +236,17 @@ ViceCounties %>%
 ### Vice Counties
 
 ```{r echo=TRUE, include=FALSE, eval = FALSE}
-VC_Seasonal_Temps<- exactextractr::exact_extract(Collated_MonthlyTemps,
+VC_Monthly_Temps<- exactextractr::exact_extract(Collated_MonthlyTemps,
                                                  ViceCounties, fun = 'mean', weights ='area',
                                                  append_cols = c( 'VCNUMBER','VCNAME' ))
 
-write_csv(VC_Seasonal_Temps, '../data/VC_Monthly_Temps.csv' )
+write_csv(VC_Monthly_Temps, '../data/VC_Monthly_Temps.csv' )
 ```
 
 ```{r}
-VC_Seasonal_Temps<- read_csv('../data/VC_Monthly_Temps.csv' )
+VC_Monthly_Temps<- read_csv('../data/VC_Monthly_Temps.csv' )
 
-VC_Seasonal_Temps %>% 
+VC_Monthly_Temps %>% 
   pivot_longer(cols = starts_with('mean'), 
                names_to = 'MidDate',
                values_to = 'MeanTemp',

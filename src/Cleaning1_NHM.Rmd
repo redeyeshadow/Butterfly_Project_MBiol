@@ -11,37 +11,29 @@ library(tidyverse)
 library(readxl)
 ```
 
+This document takes in the raw data from the original NHM sources and does some first-pass filterring steps. 
+
 # Loading Data
-
-## Measurements 
-
-Using data from: Wilson et al https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13844
-
+Loading and cleaning data from original data sources: Wilson et al https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13844 , 
 Sourced from: 
 https://zenodo.org/records/5759759
 and
-https://zenodo.org/records/6066070
+https://zenodo.org/records/6066070 for the measurements. 
+
+and for the locations: Paterson, Albuquerque, Blagoderov, Brooks et al. (2016). iCollections [Data set]. Natural History Museum. https://doi.org/10.5519/0038559  https://doi.org/10.5519/qd.tqng8ri6. 
+
+## Measurements 
 
 ```{r}
 WilsonSH3<- read_xlsx('../data/NHM/Wilson_et_al_MEE_data.xlsx', sheet = 3)
 Sizes<- read_csv('../data/NHM/iCollections_Nov_2021_butterflies.csv')
 ```
 
-# Locations
-
-Gordon L J Paterson; Sara Albuquerque; Vladimir Blagoderov; Stephen J Brooks et al. (2016). iCollections [Data set]. Natural History Museum. https://doi.org/10.5519/0038559
-
-*DOI has been created for this download request: https://doi.org/10.5519/qd.tqng8ri6. Please ensure you reference this DOI when citing these data*
+## Locations
 
 ```{r eval = FALSE}
 ### Large files, so pre-wrangling data: 
-
-Sizes<- read_csv('../data/NHM/iCollections_Nov_2021_butterflies.csv')
-
-NHM_data <- read_csv("C:/Users/pemb4504/Documents/7ba5ee8575924a906078531b9212aec880045725/resource.csv")
-
-colnames(NHM_data)
-
+NHM_data <- read_csv("C:/Users/pemb4504/Documents/7ba5ee8575924a906078531b9212aec880045725/resource.csv") ## large file not included in dataset -> available from the doi above. 
 NHM_data %>%
   select( "_id","basisOfRecord","catalogNumber",
           "class","collectionCode",
@@ -67,18 +59,20 @@ NHM_data_firstcut %>%
 write_csv(Just_Names_Loc_and_Numbers, '../data/Just_Names_Loc_and_Numbers.csv')
 ```
 
+
+# Processing
+
+## Joining datasets 
+
 ```{r warning=FALSE}
 Sizes %>% 
   left_join(read_csv( '../data/Just_Names_Loc_and_Numbers.csv'), 
             by = join_by(`specimen number`)) -> Joined_sizes_and_Locs
-
 ```
 
-# Processing
+## First filtering cut
 
-## First cut of filterring
-
-Where wings differ by more than 2mm, assume either damage or AI errors and remove: 
+Various self-explanatory bounding box, very rare species, and obvious error filtering steps. Where wings differ by more than 2mm, assume either damage or AI errors and removed. 
 
 ```{r}
 Joined_sizes_and_Locs%>%
@@ -95,7 +89,6 @@ Joined_sizes_and_Locs%>%
   add_count(name = 'Total_Obs') %>%
   filter( Total_Obs>50) %>%## Exclude species with very few observations
   ungroup -> NHM_filter1
-
 ```
 
 ## Aligning species names
@@ -106,7 +99,7 @@ Names_table<- read_csv('../data/names_table.csv')
 NHM_filter1 %>%
   rename(  `NHM name` = `Taxon Name` ) %>%
   left_join(Names_table, by = 'NHM name')%>%
-  filter( !is.na(`Taxon name`))-> NHM_filter2  ## filter out those vagrants etc that are not in the name table because they are not going to be anaylsed
+  filter( !is.na(`Taxon name`))-> NHM_filter2  ## filter out those vagrants etc that are not in the name table because they are not going to be analysed
 
 ```
 
@@ -118,7 +111,7 @@ These bounds are listed in `brood_table.csv`
 
 ```{r}
 read_csv('../data/brood_table.csv') %>%
-  left_join(read_csv('../data/names_table.csv'), by = 'NHM name')%>%
+  left_join(read_csv('../data/names_table.csv'), by = c('NHM name', 'Taxon name'))%>%
   select( `Taxon name`,
          maximum_plausible,
          minimum_plausible) -> MaxMinPlausible
@@ -136,7 +129,7 @@ NHM_filter3 %>%
   theme(axis.text.x = element_text(angle =-90, hjust = 0))
 ```
 
-## Dealing with month windows by picking middle
+## Dealing with odd month windows by picking middle
 
 ```{r}
 NHM_filter3 %>%
