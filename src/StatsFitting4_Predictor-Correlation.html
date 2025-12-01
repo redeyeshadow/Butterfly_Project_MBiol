@@ -9,9 +9,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Chris Terry" />
+<meta name="author" content="Heywood et al." />
 
-<meta name="date" content="2025-09-01" />
 
 <title>StatsFitting4_ Predictor Correlation</title>
 
@@ -351,8 +350,7 @@ display: none;
 
 
 <h1 class="title toc-ignore">StatsFitting4_ Predictor Correlation</h1>
-<h4 class="author">Chris Terry</h4>
-<h4 class="date">2025-09-01</h4>
+<h4 class="author">Heywood et al.</h4>
 
 </div>
 
@@ -375,7 +373,7 @@ PS_NHM&lt;- read_csv(&#39;../statsresults/NHM_Posterior_Summaries_M1.csv&#39;)</
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>NHM_ForFitting &lt;- read_csv(  &#39;../data/NHM_for_models_monthly.csv&#39;)</code></pre>
+<pre class="r"><code>NHM_ForFitting &lt;- read_csv(&#39;../data/NHM_for_models_monthly.csv&#39;)</code></pre>
 <pre><code>## Rows: 88483 Columns: 10
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
@@ -398,7 +396,7 @@ specialism &lt;- read_csv( &#39;../data/specialism_with_nhm.csv&#39;)%&gt;%
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>read_csv(&#39;../data/brood_table_CTupdates.csv&#39;) %&gt;%
+<pre class="r"><code>read_csv(&#39;../data/brood_table.csv&#39;) %&gt;%
   filter(Include == &#39;TRUE&#39; )%&gt;%
   select(Sp = `Taxon name` ,Family )-&gt; SpFamily</code></pre>
 <pre><code>## Rows: 100 Columns: 19

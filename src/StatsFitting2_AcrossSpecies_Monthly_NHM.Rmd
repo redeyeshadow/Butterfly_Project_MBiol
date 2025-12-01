@@ -8,7 +8,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-Main document for making main text results for the NHM data. 
+Main document for making main text results for the NHM data, comparing across species and fitting further models. Model fits at this level are saved in `TopLevelModelFits/`. 
 
 # Packages and Data input
 ```{r message=FALSE, warning=FALSE}
@@ -36,7 +36,7 @@ specialism <- read_csv( '../data/specialism_with_nhm.csv')%>%
                             'Habitat generalist and foodplant specialist'~ 'Habitat generalist\n&\nfoodplant specialist',
                             'Habitat specialist and foodplant generalist'~  'Habitat specialist \n&\nfoodplant generalist'))
 
-read_csv('../data/brood_table_CTupdates.csv') %>%
+read_csv('../data/brood_table.csv') %>%
   filter(Include == 'TRUE' )%>%
   select(Sp = `Taxon name` ,Family )-> SpFamily
 

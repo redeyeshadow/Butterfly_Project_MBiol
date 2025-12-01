@@ -9,9 +9,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Chris Terry" />
+<meta name="author" content="Heywood et al." />
 
-<meta name="date" content="2025-11-17" />
 
 <title>Data Distribution</title>
 
@@ -351,8 +350,7 @@ display: none;
 
 
 <h1 class="title toc-ignore">Data Distribution</h1>
-<h4 class="author">Chris Terry</h4>
-<h4 class="date">2025-11-17</h4>
+<h4 class="author">Heywood et al.</h4>
 
 </div>
 
@@ -390,10 +388,10 @@ library(cowplot)</code></pre>
   select( Sp = `Taxon name`,
           maximum_plausible,
           minimum_plausible)</code></pre>
-<pre><code>## Rows: 100 Columns: 18
+<pre><code>## Rows: 100 Columns: 19
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
-## chr (11): Elsa name, Taxon name, NHM name, Month egg layed, Month larval dev...
+## chr (12): Elsa name, Taxon name, NHM name, Family, Month egg layed, Month la...
 ## dbl  (5): FocalBrood, FirstMonthBrood_focal, LastMonthBrood_focal, maximum_p...
 ## lgl  (2): Include, Univoltine
 ## 
@@ -460,8 +458,7 @@ library(cowplot)</code></pre>
       coord_fixed(xlim = c(-6, 2) , ylim = c(49.5, 54))+
       theme_minimal()+
       theme(axis.title = element_blank())+
-      ggtitle(paste(dataset, &#39;\n&#39;,species ),
-              subtitle = &#39;NB Locations jittered to reduce overlap&#39; )-&gt; Map2
+      ggtitle(paste0(species,&#39; (&#39;,dataset,&#39;)&#39;))-&gt; Map2
     
   }else{
     XX%&gt;%
@@ -555,18 +552,26 @@ plotlist_NHM&lt;-purrr::map(NHM_Species,
                          data=NHM_ForFitting, 
                          dataset=&#39;NHM&#39; )
 
-## 52 species, 8 per page:
-for(i in 1:7){
-  plotlist&lt;- plotlist_NHM[ ((i*8)-7):(i*8)]
-  EightPlots&lt;- plot_grid( plotlist = plotlist,
+## 52 species, 7 per page, 8 pages
+for(i in 1:8){
+  plotlist&lt;- plotlist_NHM[((i*7)-6):(i*7)]
+
+  if( i == 8){
+    ## add scales to the bottom of last one
+    
+      ThreePlots&lt;- plot_grid( plotlist = plotlist[1:3],
                           ncol = 1)
-  WithScales&lt;-plot_grid( EightPlots, Scales,
-                         rel_heights = c(10,1),
-                         ncol = 1)
-  
-  ## add scales to the bottom of each
-  ggsave(paste0(&#39;../figs/SI_NHM_dataspread_&#39;, i ,&#39;.png&#39;), 
-         WithScales, width = 8, height = 20, bg = &#39;white&#39;)
+        WithScales&lt;-plot_grid( ThreePlots, Scales,
+                           rel_heights = c(4,1),
+                           ncol = 1)
+    ggsave(paste0(&#39;../figs/SI_NHM_dataspread_&#39;, i ,&#39;.png&#39;), 
+           WithScales, width = 8, height = 8, bg = &#39;white&#39;)
+  }else{
+     SevenPlots&lt;- plot_grid( plotlist = plotlist,
+                          ncol = 1)
+    ggsave(paste0(&#39;../figs/SI_NHM_dataspread_&#39;, i ,&#39;.png&#39;), 
+           SevenPlots, width = 8, height = 12, bg = &#39;white&#39;)
+  }
 }</code></pre>
 </div>
 <div id="oumnh-maps-and-plots" class="section level1">
@@ -576,130 +581,28 @@ for(i in 1:7){
 plotlist_OUM&lt;-purrr::map(OUM_Species,
                          Plot_Summary,
                          data=OUM_ForFitting, 
-                         dataset=&#39;OUM&#39;, Jitter = TRUE )</code></pre>
-<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;
-## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<pre class="r"><code>## 8 per page:
+                         dataset=&#39;OUM&#39;, Jitter = TRUE )
+
+
+## 7 per page:
 for(i in 1:4){
-  plotlist_OUM2&lt;- plotlist_OUM[ ((i*8)-7):(i*8)]
-  EightPlots&lt;- plot_grid( plotlist = plotlist_OUM2,
+  plotlist_OUM2&lt;- plotlist_OUM[ ((i*7)-6):(i*7)]
+  
+  if(i == 4){
+  Plots&lt;- plot_grid( plotlist = plotlist_OUM2,
                           ncol = 1)
-  WithScales&lt;-plot_grid( EightPlots,
+  WithScales&lt;-plot_grid( Plots,
                          Scales, ## add scales to the bottom of each
                          rel_heights = c(10,1), ncol = 1)
   
   ggsave(paste0(&#39;../figs/SI_OUM_dataspread_&#39;, i ,&#39;.png&#39;), 
-         WithScales, width = 8, height = 20, bg = &#39;white&#39;)
+         WithScales, width = 8, height = 12, bg = &#39;white&#39;)
+  }else{
+      Plots&lt;- plot_grid( plotlist = plotlist_OUM2,
+                          ncol = 1)
+  ggsave(paste0(&#39;../figs/SI_OUM_dataspread_&#39;, i ,&#39;.png&#39;), 
+         Plots, width = 8, height = 14, bg = &#39;white&#39;)
+  }
 }</code></pre>
 </div>
 

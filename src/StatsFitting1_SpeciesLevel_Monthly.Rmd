@@ -10,9 +10,10 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This script fits and saves brms models predicting size for each species:
+This script fits and saves brms models predicting size for each species. The core model is: log(Size)  ~ YearRescale + Temp  + Latitude + Sex
 
-log(Size)  ~ YearRescale + Temp  + Latitude + Sex
+`brms` model objects are saved in folders, and summaries of the posteriors are saved as .csvs for further use. 
+
 
 ```{r message = FALSE}
 library(tidyverse)

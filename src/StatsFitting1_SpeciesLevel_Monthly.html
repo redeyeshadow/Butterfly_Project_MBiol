@@ -9,9 +9,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Chris Terry" />
+<meta name="author" content="Heywood et al." />
 
-<meta name="date" content="2025-12-01" />
 
 <title>StatsFitting1_SpeciesLevel</title>
 
@@ -351,15 +350,16 @@ display: none;
 
 
 <h1 class="title toc-ignore">StatsFitting1_SpeciesLevel</h1>
-<h4 class="author">Chris Terry</h4>
-<h4 class="date">2025-12-01</h4>
+<h4 class="author">Heywood et al.</h4>
 
 </div>
 
 
 <p>This script fits and saves brms models predicting size for each
-species:</p>
-<p>log(Size) ~ YearRescale + Temp + Latitude + Sex</p>
+species. The core model is: log(Size) ~ YearRescale + Temp + Latitude +
+Sex</p>
+<p><code>brms</code> model objects are saved in folders, and summaries
+of the posteriors are saved as .csvs for further use.</p>
 <pre class="r"><code>library(tidyverse)
 library(brms)
 library(posterior)</code></pre>

@@ -6,9 +6,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-Main document for making main text results for the OUMNH data and other comparisons. 
-
-At the end, also includes comparison between coefficients from different datasets. 
+Main document for making main text results for the OUMNH data and other comparisons.  Model fits at this level are saved in `TopLevelModelFits/`. At the end, also includes comparison between coefficients from different datasets. 
 
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)

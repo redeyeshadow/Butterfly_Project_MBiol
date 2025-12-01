@@ -111,12 +111,13 @@
 \urlstyle{same}
 \hypersetup{
   pdftitle={Pretty Species Info Table for Paper},
+  pdfauthor={Heywood et al.},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 
 \title{Pretty Species Info Table for Paper}
-\author{}
-\date{\vspace{-2.5em}2025-07-30}
+\author{Heywood et al.}
+\date{}
 
 \begin{document}
 \maketitle
@@ -126,7 +127,7 @@
 \FunctionTok{library}\NormalTok{(tidyverse)}
 
 
-\NormalTok{Species\_info }\OtherTok{\textless{}{-}} \FunctionTok{left\_join}\NormalTok{(}\FunctionTok{read\_csv}\NormalTok{(}\StringTok{\textquotesingle{}../data/brood\_table\_CTupdates.csv\textquotesingle{}}\NormalTok{),}
+\NormalTok{Species\_info }\OtherTok{\textless{}{-}} \FunctionTok{left\_join}\NormalTok{(}\FunctionTok{read\_csv}\NormalTok{(}\StringTok{\textquotesingle{}../data/brood\_table.csv\textquotesingle{}}\NormalTok{),}
                           \FunctionTok{read\_csv}\NormalTok{(}\StringTok{\textquotesingle{}../data/names\_table.csv\textquotesingle{}}\NormalTok{))}\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{select}\NormalTok{( }\AttributeTok{Sp =} \StringTok{\textasciigrave{}}\AttributeTok{Taxon name}\StringTok{\textasciigrave{}}\NormalTok{,}
 \NormalTok{          maximum\_plausible,}
@@ -161,7 +162,7 @@ Table summarising each species. Might end up in SI
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{left\_join}\NormalTok{(}\FunctionTok{read\_csv}\NormalTok{(}\StringTok{\textquotesingle{}../data/brood\_table\_CTupdates.csv\textquotesingle{}}\NormalTok{),}
+\FunctionTok{left\_join}\NormalTok{(}\FunctionTok{read\_csv}\NormalTok{(}\StringTok{\textquotesingle{}../data/brood\_table.csv\textquotesingle{}}\NormalTok{),}
           \FunctionTok{read\_csv}\NormalTok{(}\StringTok{\textquotesingle{}../data/names\_table.csv\textquotesingle{}}\NormalTok{))}\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{left\_join}\NormalTok{(specialism) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{filter}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Taxon name}\StringTok{\textasciigrave{}}  \SpecialCharTok{\%in\%}\NormalTok{  SpeciesToInclude) }\SpecialCharTok{\%\textgreater{}\%}
